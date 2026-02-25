@@ -8,7 +8,7 @@ const useStyles = createStyles(({ css }) => ({
     height: 100%;
     display: flex;
     flex-direction: column;
-    background: #000;
+    background: #79797934;
     border-radius: 24px;
     overflow: hidden;
     max-height: 100%;
@@ -31,7 +31,7 @@ const useStyles = createStyles(({ css }) => ({
   `,
 
   emptyText: css`
-    color: #666;
+    color: #667;
   `,
 
   /* --- Timeline --- */
@@ -56,7 +56,7 @@ const useStyles = createStyles(({ css }) => ({
     top: 40px;
     bottom: 0;
     width: 1px;
-    background: #333;
+    background: #939393;
     z-index: 0;
   `,
 
@@ -157,12 +157,12 @@ const useStyles = createStyles(({ css }) => ({
 
   metaText: css`
     font-size: 0.7rem;
-    color: #555;
+    color: #adadad;
   `,
 
   itemDescription: css`
     font-size: 0.78rem;
-    color: #888;
+    color: #d4d4d4;
     line-height: 1.5;
     display: block;
     margin-bottom: 8px;
@@ -173,7 +173,7 @@ const useStyles = createStyles(({ css }) => ({
     align-items: center;
     gap: 12px;
     padding-top: 8px;
-    border-top: 1px solid #1e1e1e;
+    border-top: 1px solid #6b6b6b;
   `,
 
   assignee: css`
@@ -192,7 +192,7 @@ const useStyles = createStyles(({ css }) => ({
 
   assigneeText: css`
     font-size: 0.7rem;
-    color: #555;
+    color: #bcbcbc;
   `,
 
   participants: css`
