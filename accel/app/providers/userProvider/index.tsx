@@ -20,79 +20,57 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(UserReducer, INITIAL_USER_STATE);
   const instance = getAxiosInstance();
 
-  // Handle Login
   const login = async (payload: any) => {
-    dispatch(loginPending());
-    const endpoint = `/api/Auth/login`;
+    dispatch(loginPending()); 
     
-    await instance.post(endpoint, payload)
-      .then((response) => {
-        const userData: IUser = response.data;
-        
-        // --- COOKIE PERSISTENCE ---
-        // We set 'token' for the Axios interceptor and 'accel_user' for the state
-        // expires: 1 means the cookie lasts for 1 day.
-        Cookies.set("token", userData.token, { expires: 1, secure: true, sameSite: 'strict' });
-        Cookies.set("accel_user", JSON.stringify(userData), { expires: 1 });
-        
-        dispatch(loginSuccess(userData));
-      })
-      .catch((error) => {
-        console.error("Login failed:", error);
-        dispatch(loginError());
-      });
+    try {
+      const response = await instance.post(`/api/Auth/login`, payload);
+      const userData: IUser = response.data;
+
+      Cookies.set("token", userData.token, { expires: 1, secure: false });
+      Cookies.set("accel_user", JSON.stringify(userData), { expires: 1 });
+
+      dispatch(loginSuccess(userData));
+    } catch (error) {
+      console.error("Login failed:", error);
+      dispatch(loginError());
+      throw error; // rethrow so login.tsx catch block can handle it
+    }
   };
 
-  // Handle Registration
-  const register = async (payload: any) => {
-    dispatch(registerPending());
-    const endpoint = `/api/Auth/register`;
-
-    console.log(payload);
-    
-    await instance.post(endpoint, payload)
-      .then(() => {
-        dispatch(registerSuccess());
-      })
-      .catch((error) => {
-// 1. Extract the specific error info from the Swagger response
-    const errorData = error.response?.data;
-    
-    // 2. Log it so you can see the "detail" in the console
-    console.log("Server Error Detail:", errorData?.detail);
-    console.log("Server Error Title:", errorData?.title);
-    console.log(error.response);
-
-    // 3. Display the most descriptive message to the user
-    const friendlyMsg = errorData?.detail || errorData?.title || "Registration failed";
-    
-    // If the server sends a list of strings (common in .NET Identity)
-
-        dispatch(registerError());
-      });
-  };
-
-  // Handle Logout
-  const logout = () => {
-    // --- CLEAR COOKIES ---
-    Cookies.remove("token");
-    Cookies.remove("accel_user");
-    
-    dispatch(logoutAction());
-    window.location.href = "/login";
-  };
-
-  // Check Auth (Re-hydrate state from Cookies)
   const checkAuth = () => {
     const savedUser = Cookies.get("accel_user");
     if (savedUser) {
       try {
-        dispatch(loginSuccess(JSON.parse(savedUser)));
+        const userData = JSON.parse(savedUser);
+        dispatch(loginSuccess(userData));
       } catch (e) {
-        console.error("Failed to parse user cookie", e);
-        logout(); // Clean up if cookie is corrupted
+        logout();
       }
     }
+  };
+
+  const register = async (payload: any) => {
+    dispatch(registerPending());
+
+    try {
+      await instance.post(`/api/Auth/register`, payload);
+      dispatch(registerSuccess());
+    } catch (error: any) {
+      const errorData = error.response?.data;
+      console.log("Server Error Detail:", errorData?.detail);
+      console.log("Server Error Title:", errorData?.title);
+      console.log(error.response);
+      dispatch(registerError());
+      throw error; // rethrow so register page catch block can handle it
+    }
+  };
+
+  const logout = () => {
+    Cookies.remove("token");
+    Cookies.remove("accel_user");
+    dispatch(logoutAction());
+    window.location.href = "/login";
   };
 
   useEffect(() => {
@@ -108,9 +86,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-// ... custom hooks stay the same
-
-// Custom Hooks for consumption
 export const useUserState = () => {
   const context = useContext(UserStateContext);
   if (context === undefined) {

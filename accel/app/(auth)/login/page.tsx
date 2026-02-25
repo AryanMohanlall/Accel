@@ -2,32 +2,22 @@
 
 import React, { useState } from 'react';
 import { Form, Input, Button, message } from 'antd';
-import useStyles from './style'; // Reusing your existing style file
-import { getAxiosInstance } from '@/app/utils/axiosInstance';
+import useStyles from './style';
 import { useRouter } from 'next/navigation';
+import { useUserActions } from '../../providers/userProvider';
 
 const Login = () => {
   const { styles } = useStyles();
-  const instance = getAxiosInstance();
+  const { login } = useUserActions();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const onFinish = async (values: any) => {
     setLoading(true);
     try {
-      // payload: { email, password }
-      const response = await instance.post('/api/Auth/login', values);
-
-      if (response.status === 200) {
-        // Assuming your API returns a token in response.data.token
-        const { token } = response.data;
-        if (token) {
-          localStorage.setItem('token', token);
-        }
-
-        message.success('Login successful! Redirecting...');
-        router.replace('/');
-      }
+      await login(values);
+      message.success('Login successful! Redirecting...');
+      router.replace('/dashboard');
     } catch (error: any) {
       const errorMsg = error.response?.data?.title || 'Invalid email or password';
       message.error(errorMsg);
@@ -48,7 +38,6 @@ const Login = () => {
           onFinish={onFinish}
           requiredMark={false}
         >
-          {/* Email Field */}
           <Form.Item
             className={styles.formItem}
             label={<span className={styles.label}>Email</span>}
@@ -61,7 +50,6 @@ const Login = () => {
             <Input className={styles.input} placeholder="Enter your email" />
           </Form.Item>
 
-          {/* Password Field */}
           <Form.Item
             className={styles.formItem}
             label={<span className={styles.label}>Password</span>}
@@ -82,7 +70,6 @@ const Login = () => {
             </Button>
           </Form.Item>
 
-          {/* Quick link to switch back to register */}
           <div style={{ marginTop: '10px', color: '#fff' }}>
             Don't have an account? <a href="/register" style={{ color: '#52c41a' }}>Register here</a>
           </div>
