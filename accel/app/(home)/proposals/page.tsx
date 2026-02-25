@@ -3,28 +3,10 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Input, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import {
-  PlusOutlined, EditOutlined, DeleteOutlined,
-  SearchOutlined, FileTextOutlined,
-} from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, FileTextOutlined } from '@ant-design/icons';
 import useStyles from './style';
-import { getAxiosInstance } from '@/app/utils/axiosInstance';
-
-interface Proposal {
-  id: string;
-  proposalNumber: string;
-  opportunityTitle: string;
-  clientName: string;
-  title: string;
-  statusName: string;
-  status: number;
-  totalAmount: number;
-  currency: string;
-  validUntil: string;
-  submittedDate: string;
-  createdByName: string;
-  lineItemsCount: number;
-}
+import { useProposalState, useProposalActions } from '../../providers/proposalsProvider';
+import { Proposal } from '../../providers/proposalsProvider/context';
 
 const STATUS_COLORS: Record<number, string> = {
   1: 'blue',
@@ -39,27 +21,14 @@ const formatCurrency = (value: number, currency: string) =>
 const formatDate = (dateStr: string | null) =>
   dateStr ? new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
 
-const Proposals = () => {
+const ProposalsPage = () => {
   const { styles } = useStyles();
-  const instance = getAxiosInstance();
-
-  const [proposals, setProposals]   = useState<Proposal[]>([]);
-  const [loading, setLoading]       = useState(true);
-  const [search, setSearch]         = useState('');
-  const [selected, setSelected]     = useState<Proposal | null>(null);
+  const { proposals, isPending, selected } = useProposalState();
+  const { fetchProposals, setSelected, deleteProposal } = useProposalActions();
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
-    const fetch = async () => {
-      try {
-        const res = await instance.get<Proposal[]>('/api/Proposals');
-        setProposals(res.data);
-      } catch (e) {
-        console.error('Failed to fetch proposals:', e);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetch();
+    fetchProposals();
   }, []);
 
   const filtered = proposals.filter(p =>
@@ -67,6 +36,15 @@ const Proposals = () => {
     p.clientName?.toLowerCase().includes(search.toLowerCase()) ||
     p.proposalNumber?.toLowerCase().includes(search.toLowerCase())
   );
+
+  const handleSelect = (record: Proposal) =>
+    setSelected(selected?.id === record.id ? null : record);
+
+  const handleDelete = async () => {
+    if (!selected) return;
+    await deleteProposal(selected.id);
+    setSelected(null);
+  };
 
   const columns: ColumnsType<Proposal> = [
     {
@@ -155,21 +133,18 @@ const Proposals = () => {
           rowKey="id"
           columns={columns}
           dataSource={filtered}
-          loading={loading}
+          loading={isPending}
           pagination={{ pageSize: 10, size: 'small' }}
           size="small"
           className={styles.table}
           rowClassName={(record) =>
             record.id === selected?.id ? styles.rowSelected : styles.row
           }
-          onRow={(record) => ({
-            onClick: () => setSelected(prev => prev?.id === record.id ? null : record),
-          })}
+          onRow={(record) => ({ onClick: () => handleSelect(record) })}
           scroll={{ y: 'calc(100% - 40px)' }}
         />
       </div>
 
-      {/* ACTION BAR */}
       <div className={styles.actionBar}>
         <Button icon={<PlusOutlined />} className={styles.btnCreate}>
           Create
@@ -185,6 +160,8 @@ const Proposals = () => {
           icon={<DeleteOutlined />}
           className={`${styles.btnAction} ${!selected ? styles.btnDisabled : ''}`}
           disabled={!selected}
+          loading={isPending}
+          onClick={handleDelete}
         >
           Delete
         </Button>
@@ -201,4 +178,4 @@ const Proposals = () => {
   );
 };
 
-export default Proposals;
+export default ProposalsPage;
