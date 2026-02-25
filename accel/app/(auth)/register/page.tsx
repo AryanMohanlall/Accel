@@ -1,40 +1,32 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Form, Input, Button, Typography, message } from 'antd';
+import React, { useEffect } from 'react';
+import { Form, Input, Button, message } from 'antd';
 import useStyles from './style';
-import { getAxiosInstance } from '@/app/utils/axiosInstance';
 import { useRouter } from 'next/navigation';
-
-const { Text } = Typography;
+import { useUserActions, useUserState } from '../../providers/userProvider';
 
 const Register = () => {
   const { styles } = useStyles();
-  const instance = getAxiosInstance();
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  
+  // Access Provider State and Actions
+  const { register } = useUserActions();
+  const { isPending, isSuccess, isError } = useUserState();
 
-  const onFinish = async (values: any) => {
-    //setLoading(true);
-
-    try {
-      const response = await instance.post('/api/Auth/register', values, {
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
-
-      if (response.status === 200 || response.status === 201) {
-        message.success('Registration successful! Please log in.');
-        router.replace('/login');
-      }
-    } catch (error: any) {
-      const errorMsg = error.response?.data?.title || 'There was an error registering!';
-      message.error(errorMsg);
-      console.error('Registration Error:', error.response?.data || error.message);
-    } finally {
-      //setLoading(false);
+  // Unified Side Effects for Auth Status
+  useEffect(() => {
+    if (isSuccess) {
+      message.success('Registration successful! Please log in.');
+      router.push('/login');
     }
+    if (isError) {
+      message.error('Registration failed. Please try again.');
+    }
+  }, [isSuccess, isError, router]);
+
+  const onFinish = (values: any) => {
+    register(values);
   };
 
   return (
@@ -49,56 +41,63 @@ const Register = () => {
           onFinish={onFinish}
           requiredMark={false}
           autoComplete="off"
+          style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
         >
-          {/* firstName Field */}
           <Form.Item
             className={styles.formItem}
             label={<span className={styles.label}>Name</span>}
             name="firstName"
-            rules={[{ required: true, message: 'Please enter your name' }]}
+            rules={[{ required: true, message: 'Required' }]}
           >
-            <Input className={styles.input} placeholder="Enter your name" />
+            <Input className={styles.input} placeholder="First Name" />
           </Form.Item>
 
-          {/* lastName Field */}
           <Form.Item
             className={styles.formItem}
             label={<span className={styles.label}>Surname</span>}
             name="lastName"
-            rules={[{ required: true, message: 'Please enter your surname' }]}
+            rules={[{ required: true, message: 'Required' }]}
           >
-            <Input className={styles.input} placeholder="Enter your surname" />
+            <Input className={styles.input} placeholder="Last Name" />
+          </Form.Item>
+          
+          {/* Add this after LastName and before Email */}
+          <Form.Item
+            className={styles.formItem}
+            label={<span className={styles.label}>Phone Number</span>}
+            name="phoneNumber"
+            rules={[{ required: true, message: 'Required' }]}
+          >
+            <Input className={styles.input} placeholder="0123456789" />
           </Form.Item>
 
-          {/* email Field */}
           <Form.Item
             className={styles.formItem}
             label={<span className={styles.label}>Email</span>}
             name="email"
             rules={[
-              { required: true, message: 'Please enter your email' },
-              { type: 'email', message: 'Please enter a valid email!' }
+              { required: true, message: 'Required' },
+              { type: 'email', message: 'Invalid email' }
             ]}
           >
-            <Input className={styles.input} placeholder="Enter your email" />
+            <Input className={styles.input} placeholder="Email Address" />
           </Form.Item>
 
-          {/* password Field */}
           <Form.Item
             className={styles.formItem}
             label={<span className={styles.label}>Password</span>}
             name="password"
-            rules={[{ required: true, message: 'Please enter a password' }]}
+            rules={[{ required: true, message: 'Required' }]}
           >
-            <Input.Password className={styles.input} placeholder="Enter your password" />
+            <Input.Password className={styles.input} placeholder="Password" />
           </Form.Item>
 
-          <Form.Item>
+          <Form.Item style={{ marginBottom: 0 }}>
             <Button 
               type="primary" 
               htmlType="submit" 
               className={styles.button}
-              loading={loading} // Visual feedback during the API call
+              loading={isPending}
             >
               SIGN UP
             </Button>
