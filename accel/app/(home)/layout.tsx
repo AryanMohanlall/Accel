@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import useStyles from './style';
 import { useUserActions, useUserState } from '../providers/userProvider';
+import { OpportunityProvider } from '../providers/opportunitiesProvider';
 import { ProposalProvider } from '../providers/proposalsProvider';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
@@ -13,63 +14,58 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const router = useRouter();
   const pathname = usePathname();
 
-  // Navigation items configuration
   const navItems = [
-    { label: 'Dashboard', path: '/dashboard' },
+    { label: 'Dashboard',     path: '/dashboard' },
     { label: 'Opportunities', path: '/opportunities' },
-    { label: 'Proposals', path: '/proposals' },
-    { label: 'Contracts', path: '/contracts' },
-    { label: 'Activities', path: '/activities' },
+    { label: 'Proposals',     path: '/proposals' },
+    { label: 'Contracts',     path: '/contracts' },
+    { label: 'Activities',    path: '/activities' },
   ];
 
-  const handleLogout = () => {
-    logout();
-    
-    // 2. Redirect to login
-    router.push('/login');
-  };
-
-useEffect(() => {
-  if (user) {
-    console.log("User has loaded:", user);
-  } else {
-    console.log("User is currently null (waiting for hydration...)");
-  }
-}, [user]); // This triggers every time 'user' changes
+  useEffect(() => {
+    if (user) {
+      console.log("User has loaded:", user);
+    } else {
+      console.log("User is currently null (waiting for hydration...)");
+    }
+  }, [user]);
 
   return (
-    <ProposalProvider>
-      <div className={styles.container}>
-        {/* SHARED HEADER */}
-        <header className={styles.header}>
-          <div className={styles.welcomeText}>
-            Welcome<br />{user?.firstName || 'User'}
-          </div>
-          <h1 className={styles.logo}>Accel</h1>
-        </header>
+    <OpportunityProvider>
+      <ProposalProvider>
+        <div className={styles.container}>
 
-        {/* SHARED SIDEBAR */}
-        <aside className={styles.sidebar}>
-          {navItems.map((item) => (
-            <div
-              key={item.path}
-              className={`${styles.navButton} ${pathname === item.path ? 'active' : ''}`}
-              onClick={() => router.push(item.path)}
-            >
-              {item.label}
+          {/* SHARED HEADER */}
+          <header className={styles.header}>
+            <div className={styles.welcomeText}>
+              Welcome<br />{user?.firstName || 'User'}
             </div>
-          ))}
-          
-          <button className={styles.logoutBtn} onClick={handleLogout}>
-            Logout
-          </button>
-        </aside>
+            <h1 className={styles.logo}>Accel</h1>
+          </header>
 
-        {/* PAGE CONTENT */}
-        <main className={styles.mainContent}>
-          {children}
-        </main>
-      </div>
-    </ProposalProvider>
+          {/* SHARED SIDEBAR */}
+          <aside className={styles.sidebar}>
+            {navItems.map((item) => (
+              <div
+                key={item.path}
+                className={`${styles.navButton} ${pathname === item.path ? 'active' : ''}`}
+                onClick={() => router.push(item.path)}
+              >
+                {item.label}
+              </div>
+            ))}
+            <div className={styles.navButton} onClick={logout}>
+              Logout
+            </div>
+          </aside>
+
+          {/* PAGE CONTENT */}
+          <main className={styles.mainContent}>
+            {children}
+          </main>
+
+        </div>
+      </ProposalProvider>
+    </OpportunityProvider>
   );
 }

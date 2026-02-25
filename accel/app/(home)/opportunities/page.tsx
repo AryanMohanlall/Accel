@@ -1,35 +1,15 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Button, Input, Empty, Spin, Tag, Typography, Avatar } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, UserOutlined, DollarOutlined } from '@ant-design/icons';
 import useStyles from './style';
-import { getAxiosInstance } from '@/app/utils/axiosInstance';
+import { useOpportunityState, useOpportunityActions } from '../../providers/opportunitiesProvider';
+import { useState } from 'react';
 
 const { Text, Title } = Typography;
 
-interface Opportunity {
-  id: string;
-  title: string;
-  clientName: string;
-  contactName: string | null;
-  ownerName: string;
-  estimatedValue: number;
-  currency: string;
-  probability: number;
-  stage: number;
-  stageName: string;
-  expectedCloseDate: string;
-  isActive: boolean;
-}
-
-interface OpportunitiesResponse {
-  items: Opportunity[];
-  totalCount: number;
-}
-
 const STAGES = ['Lead', 'Qualified', 'Proposal', 'Negotiation'];
-
 const STAGE_COLORS: Record<string, string> = {
   Lead:        '#6C8EBF',
   Qualified:   '#82B366',
@@ -38,83 +18,19 @@ const STAGE_COLORS: Record<string, string> = {
 };
 
 const formatCurrency = (value: number, currency: string) =>
-  new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency,
-    maximumFractionDigits: 0,
-  }).format(value);
+  new Intl.NumberFormat('en-US', { style: 'currency', currency, maximumFractionDigits: 0 }).format(value);
 
 const formatDate = (dateStr: string) =>
   new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
-const OpportunityCard = ({
-  opportunity,
-  styles,
-  isSelected,
-  onClick,
-}: {
-  opportunity: Opportunity;
-  styles: any;
-  isSelected: boolean;
-  onClick: () => void;
-}) => (
-  <div
-    className={`${styles.card} ${isSelected ? styles.cardSelected : ''}`}
-    onClick={onClick}
-  >
-    <div className={styles.cardHeader}>
-      <Text className={styles.cardTitle}>{opportunity.title}</Text>
-      <Tag className={styles.probabilityTag}>{opportunity.probability}%</Tag>
-    </div>
-
-    <Text className={styles.clientName}>{opportunity.clientName}</Text>
-
-    {opportunity.contactName && (
-      <div className={styles.cardRow}>
-        <UserOutlined className={styles.cardIcon} />
-        <Text className={styles.cardMeta}>{opportunity.contactName}</Text>
-      </div>
-    )}
-
-    <div className={styles.cardRow}>
-      <DollarOutlined className={styles.cardIcon} />
-      <Text className={styles.cardValue}>
-        {formatCurrency(opportunity.estimatedValue, opportunity.currency)}
-      </Text>
-    </div>
-
-    <div className={styles.cardFooter}>
-      <Text className={styles.cardDate}>
-        Close: {formatDate(opportunity.expectedCloseDate)}
-      </Text>
-      <Avatar size={20} className={styles.ownerAvatar}>
-        {opportunity.ownerName?.trim()?.[0] ?? '?'}
-      </Avatar>
-    </div>
-  </div>
-);
-
-const Opportunities = () => {
+const OpportunitiesPage = () => {
   const { styles } = useStyles();
-  const instance = getAxiosInstance();
-
-  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
-  const [loading, setLoading]             = useState(true);
-  const [search, setSearch]               = useState('');
-  const [selected, setSelected]           = useState<Opportunity | null>(null);
+  const { opportunities, isPending, selected } = useOpportunityState();
+  const { fetchOpportunities, setSelected, deleteOpportunity } = useOpportunityActions();
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
-    const fetch = async () => {
-      try {
-        const res = await instance.get<OpportunitiesResponse>('/api/Opportunities');
-        setOpportunities(res.data.items);
-      } catch (e) {
-        console.error('Failed to fetch opportunities:', e);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetch();
+    fetchOpportunities();
   }, []);
 
   const filtered = opportunities.filter(o =>
@@ -122,33 +38,32 @@ const Opportunities = () => {
     o.clientName.toLowerCase().includes(search.toLowerCase())
   );
 
-  const byStage = (stageName: string) =>
-    filtered.filter(o => o.stageName === stageName);
+  const byStage = (stageName: string) => filtered.filter(o => o.stageName === stageName);
 
-  const handleSelect = (opp: Opportunity) =>
-    setSelected(prev => prev?.id === opp.id ? null : opp);
+  const handleSelect = (id: string) => {
+    const opp = opportunities.find(o => o.id === id) ?? null;
+    setSelected(selected?.id === id ? null : opp);
+  };
+
+  const handleDelete = async () => {
+    if (!selected) return;
+    await deleteOpportunity(selected.id);
+    setSelected(null);
+  };
 
   return (
     <div className={styles.wrapper}>
-
-      {/* KANBAN BOARD */}
       <div className={styles.board}>
-        {loading ? (
-          <div className={styles.spinWrapper}>
-            <Spin size="large" />
-          </div>
+        {isPending && opportunities.length === 0 ? (
+          <div className={styles.spinWrapper}><Spin size="large" /></div>
         ) : (
           STAGES.map(stage => (
             <div key={stage} className={styles.column}>
               <div className={styles.columnHeader}>
-                <span
-                  className={styles.stageIndicator}
-                  style={{ background: STAGE_COLORS[stage] }}
-                />
+                <span className={styles.stageIndicator} style={{ background: STAGE_COLORS[stage] }} />
                 <Title level={5} className={styles.columnTitle}>{stage}</Title>
                 <span className={styles.columnCount}>{byStage(stage).length}</span>
               </div>
-
               <div className={styles.columnBody}>
                 {byStage(stage).length === 0 ? (
                   <Empty
@@ -158,13 +73,33 @@ const Opportunities = () => {
                   />
                 ) : (
                   byStage(stage).map(opp => (
-                    <OpportunityCard
+                    <div
                       key={opp.id}
-                      opportunity={opp}
-                      styles={styles}
-                      isSelected={selected?.id === opp.id}
-                      onClick={() => handleSelect(opp)}
-                    />
+                      className={`${styles.card} ${selected?.id === opp.id ? styles.cardSelected : ''}`}
+                      onClick={() => handleSelect(opp.id)}
+                    >
+                      <div className={styles.cardHeader}>
+                        <Text className={styles.cardTitle}>{opp.title}</Text>
+                        <Tag className={styles.probabilityTag}>{opp.probability}%</Tag>
+                      </div>
+                      <Text className={styles.clientName}>{opp.clientName}</Text>
+                      {opp.contactName && (
+                        <div className={styles.cardRow}>
+                          <UserOutlined className={styles.cardIcon} />
+                          <Text className={styles.cardMeta}>{opp.contactName}</Text>
+                        </div>
+                      )}
+                      <div className={styles.cardRow}>
+                        <DollarOutlined className={styles.cardIcon} />
+                        <Text className={styles.cardValue}>{formatCurrency(opp.estimatedValue, opp.currency)}</Text>
+                      </div>
+                      <div className={styles.cardFooter}>
+                        <Text className={styles.cardDate}>Close: {formatDate(opp.expectedCloseDate)}</Text>
+                        <Avatar size={20} className={styles.ownerAvatar}>
+                          {opp.ownerName?.trim()?.[0] ?? '?'}
+                        </Avatar>
+                      </div>
+                    </div>
                   ))
                 )}
               </div>
@@ -173,13 +108,8 @@ const Opportunities = () => {
         )}
       </div>
 
-      {/* ACTION BAR */}
       <div className={styles.actionBar}>
-        <Button
-          icon={<PlusOutlined />}
-          className={styles.btnCreate}
-          onClick={() => console.log('Create')}
-        >
+        <Button icon={<PlusOutlined />} className={styles.btnCreate} onClick={() => console.log('Create')}>
           Create
         </Button>
         <Button
@@ -194,7 +124,8 @@ const Opportunities = () => {
           icon={<DeleteOutlined />}
           className={`${styles.btnAction} ${!selected ? styles.btnDisabled : ''}`}
           disabled={!selected}
-          onClick={() => console.log('Delete', selected)}
+          loading={isPending}
+          onClick={handleDelete}
         >
           Delete
         </Button>
@@ -207,9 +138,8 @@ const Opportunities = () => {
           allowClear
         />
       </div>
-
     </div>
   );
 };
 
-export default Opportunities;
+export default OpportunitiesPage;
