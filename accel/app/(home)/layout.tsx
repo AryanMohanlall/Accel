@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import useStyles from './style';
 import { useUserActions, useUserState } from '../providers/userProvider';
+import { OpportunityProvider } from '../providers/opportunitiesProvider';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const { styles } = useStyles();
@@ -37,6 +38,9 @@ useEffect(() => {
 }, [user]); // This triggers every time 'user' changes
 
   return (
+    <OpportunityProvider>
+
+    
     <div className={styles.container}>
       {/* SHARED HEADER */}
       <header className={styles.header}>
@@ -68,5 +72,6 @@ useEffect(() => {
         {children}
       </main>
     </div>
+    </OpportunityProvider>
   );
 }
