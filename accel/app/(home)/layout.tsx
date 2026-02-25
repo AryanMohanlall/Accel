@@ -6,6 +6,7 @@ import useStyles from './style';
 import { useUserActions, useUserState } from '../providers/userProvider';
 import { OpportunityProvider } from '../providers/opportunitiesProvider';
 import { ProposalProvider } from '../providers/proposalsProvider';
+import { ContractProvider } from '../providers/contractsProvider';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const { styles } = useStyles();
@@ -31,6 +32,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   }, [user]);
 
   return (
+    <ContractProvider>
     <OpportunityProvider>
       <ProposalProvider>
         <div className={styles.container}>
@@ -67,5 +69,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         </div>
       </ProposalProvider>
     </OpportunityProvider>
+    </ContractProvider>
   );
 }
