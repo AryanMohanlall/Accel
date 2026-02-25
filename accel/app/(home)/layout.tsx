@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import useStyles from './style';
 import { useUserActions, useUserState } from '../providers/userProvider';
+import { ProposalProvider } from '../providers/proposalsProvider';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const { styles } = useStyles();
@@ -37,36 +38,38 @@ useEffect(() => {
 }, [user]); // This triggers every time 'user' changes
 
   return (
-    <div className={styles.container}>
-      {/* SHARED HEADER */}
-      <header className={styles.header}>
-        <div className={styles.welcomeText}>
-          Welcome<br />{user?.firstName || 'User'}
-        </div>
-        <h1 className={styles.logo}>Accel</h1>
-      </header>
-
-      {/* SHARED SIDEBAR */}
-      <aside className={styles.sidebar}>
-        {navItems.map((item) => (
-          <div
-            key={item.path}
-            className={`${styles.navButton} ${pathname === item.path ? 'active' : ''}`}
-            onClick={() => router.push(item.path)}
-          >
-            {item.label}
+    <ProposalProvider>
+      <div className={styles.container}>
+        {/* SHARED HEADER */}
+        <header className={styles.header}>
+          <div className={styles.welcomeText}>
+            Welcome<br />{user?.firstName || 'User'}
           </div>
-        ))}
-        
-        <button className={styles.logoutBtn} onClick={handleLogout}>
-          Logout
-        </button>
-      </aside>
+          <h1 className={styles.logo}>Accel</h1>
+        </header>
 
-      {/* PAGE CONTENT */}
-      <main className={styles.mainContent}>
-        {children}
-      </main>
-    </div>
+        {/* SHARED SIDEBAR */}
+        <aside className={styles.sidebar}>
+          {navItems.map((item) => (
+            <div
+              key={item.path}
+              className={`${styles.navButton} ${pathname === item.path ? 'active' : ''}`}
+              onClick={() => router.push(item.path)}
+            >
+              {item.label}
+            </div>
+          ))}
+          
+          <button className={styles.logoutBtn} onClick={handleLogout}>
+            Logout
+          </button>
+        </aside>
+
+        {/* PAGE CONTENT */}
+        <main className={styles.mainContent}>
+          {children}
+        </main>
+      </div>
+    </ProposalProvider>
   );
 }
