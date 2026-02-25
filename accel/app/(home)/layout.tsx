@@ -7,6 +7,7 @@ import { useUserActions, useUserState } from '../providers/userProvider';
 import { OpportunityProvider } from '../providers/opportunitiesProvider';
 import { ProposalProvider } from '../providers/proposalsProvider';
 import { ContractProvider } from '../providers/contractsProvider';
+import { ActivityProvider } from '../providers/activitiesProvider';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const { styles } = useStyles();
@@ -32,6 +33,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   }, [user]);
 
   return (
+    <ActivityProvider>
     <ContractProvider>
     <OpportunityProvider>
       <ProposalProvider>
@@ -56,7 +58,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 {item.label}
               </div>
             ))}
-            <div className={styles.navButton} onClick={logout}>
+            <div className={styles.logoutBtn} onClick={logout}>
               Logout
             </div>
           </aside>
@@ -70,5 +72,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       </ProposalProvider>
     </OpportunityProvider>
     </ContractProvider>
+    </ActivityProvider>
   );
 }
