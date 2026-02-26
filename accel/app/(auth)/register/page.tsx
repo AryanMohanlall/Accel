@@ -1,17 +1,32 @@
 "use client";
 
-import React, { useEffect } from 'react';
-import { Form, Input, Button, message } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Form, Input, Button, message, Select, Segmented } from 'antd';
 import useStyles from './style';
 import { useRouter } from 'next/navigation';
 import { useUserActions, useUserState } from '../../providers/userProvider';
 
+const ROLE_OPTIONS = [
+  { value: 'SalesRep',                  label: 'Sales Rep' },
+  { value: 'SalesManager',              label: 'Sales Manager' },
+  { value: 'BusinessDevelopmentManager', label: 'Business Development Manager' },
+];
+
+type Scenario = 'new' | 'join' | 'default';
+
+const SCENARIO_OPTIONS = [
+  { label: 'New Organisation', value: 'new' },
+  { label: 'Join Organisation', value: 'join' },
+  { label: 'Default Tenant',   value: 'default' },
+];
+
 const Register = () => {
   const { styles } = useStyles();
   const router = useRouter();
-  
   const { register } = useUserActions();
   const { isPending, isSuccess, isError } = useUserState();
+  const [scenario, setScenario] = useState<Scenario>('new');
+  const [form] = Form.useForm();
 
   useEffect(() => {
     if (isSuccess) {
@@ -23,9 +38,34 @@ const Register = () => {
     }
   }, [isSuccess, isError, router]);
 
+  // Clear scenario-specific fields when switching
+  const handleScenarioChange = (val: any) => {
+    setScenario(val as Scenario);
+    form.resetFields(['tenantName', 'tenantId', 'role']);
+  };
+
   const onFinish = async (values: any) => {
     try {
-      await register(values);
+      const payload: any = {
+        email:       values.email,
+        password:    values.password,
+        firstName:   values.firstName,
+        lastName:    values.lastName,
+        phoneNumber: values.phoneNumber,
+      };
+
+      if (scenario === 'new') {
+        payload.tenantName = values.tenantName;
+        // role is ignored by API when tenantName is provided
+      } else if (scenario === 'join') {
+        payload.tenantId = values.tenantId;
+        payload.role     = values.role;
+      } else {
+        // default — role optional
+        if (values.role) payload.role = values.role;
+      }
+
+      await register(payload);
     } catch (error: any) {
       const errorData = error.response?.data;
       const msg = errorData?.detail || errorData?.title || 'Registration failed. Please try again.';
@@ -36,17 +76,27 @@ const Register = () => {
   return (
     <div className={styles.container}>
       <h1 className={styles.logo}>Accel</h1>
-      
+
       <div className={styles.card}>
-        <h2 className={styles.title}>Register</h2>
-        
+        <h2 className={styles.title}>Create Account</h2>
+
+        {/* Scenario selector */}
+        <Segmented
+          options={SCENARIO_OPTIONS}
+          value={scenario}
+          onChange={handleScenarioChange}
+          style={{ marginBottom: 24, width: '100%' }}
+        />
+
         <Form
+          form={form}
           layout="vertical"
           onFinish={onFinish}
           requiredMark={false}
           autoComplete="off"
           style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
         >
+          {/* ── Always shown ── */}
           <Form.Item
             className={styles.formItem}
             label={<span className={styles.label}>First Name</span>}
@@ -79,7 +129,7 @@ const Register = () => {
             name="email"
             rules={[
               { required: true, message: 'Required' },
-              { type: 'email', message: 'Invalid email' }
+              { type: 'email', message: 'Invalid email' },
             ]}
           >
             <Input className={styles.input} placeholder="Email Address" />
@@ -91,21 +141,58 @@ const Register = () => {
             name="password"
             rules={[
               { required: true, message: 'Required' },
-              { min: 6, message: 'Minimum 6 characters' }
+              { min: 6, message: 'Minimum 6 characters' },
             ]}
           >
             <Input.Password className={styles.input} placeholder="Password" />
           </Form.Item>
 
-          {/* Creates a new organisation — caller becomes Admin */}
-          <Form.Item
-            className={styles.formItem}
-            label={<span className={styles.label}>Organisation Name</span>}
-            name="tenantName"
-            rules={[{ required: true, message: 'Required' }]}
-          >
-            <Input className={styles.input} placeholder="Your company name" />
-          </Form.Item>
+          {/* ── Scenario A: New Organisation ── */}
+          {scenario === 'new' && (
+            <Form.Item
+              className={styles.formItem}
+              label={<span className={styles.label}>Organisation Name</span>}
+              name="tenantName"
+              rules={[{ required: true, message: 'Required' }]}
+            >
+              <Input className={styles.input} placeholder="Your company name" />
+            </Form.Item>
+          )}
+
+          {/* ── Scenario B: Join Organisation ── */}
+          {scenario === 'join' && (
+            <>
+              <Form.Item
+                className={styles.formItem}
+                label={<span className={styles.label}>Tenant ID</span>}
+                name="tenantId"
+                rules={[{ required: true, message: 'Required' }]}
+              >
+                <Input className={styles.input} placeholder="Organisation Tenant ID (UUID)" />
+              </Form.Item>
+              <Form.Item
+                className={styles.formItem}
+                label={<span className={styles.label}>Role</span>}
+                name="role"
+                rules={[{ required: true, message: 'Required' }]}
+                initialValue="SalesRep"
+              >
+                <Select className={styles.input} options={ROLE_OPTIONS} />
+              </Form.Item>
+            </>
+          )}
+
+          {/* ── Scenario C: Default Tenant ── */}
+          {scenario === 'default' && (
+            <Form.Item
+              className={styles.formItem}
+              label={<span className={styles.label}>Role (optional)</span>}
+              name="role"
+              initialValue="SalesRep"
+            >
+              <Select className={styles.input} options={ROLE_OPTIONS} />
+            </Form.Item>
+          )}
 
           <Form.Item style={{ marginBottom: 0 }}>
             <Button
@@ -119,7 +206,8 @@ const Register = () => {
           </Form.Item>
 
           <div style={{ marginTop: '10px', color: '#fff' }}>
-            Already have an account? <a href="/login" style={{ color: '#52c41a' }}>Login here</a>
+            Already have an account?{' '}
+            <a href="/login" style={{ color: '#52c41a' }}>Login here</a>
           </div>
         </Form>
       </div>

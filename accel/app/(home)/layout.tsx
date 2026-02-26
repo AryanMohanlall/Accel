@@ -2,6 +2,8 @@
 
 import React, { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import { Tooltip, message } from 'antd';
+import { CopyOutlined } from '@ant-design/icons';
 import useStyles from './style';
 import { useUserActions, useUserState } from '../providers/userProvider';
 import { OpportunityProvider } from '../providers/opportunitiesProvider';
@@ -10,6 +12,7 @@ import { ContractProvider } from '../providers/contractsProvider';
 import { ActivityProvider } from '../providers/activitiesProvider';
 import { ClientProvider } from '../providers/clientsProvider';
 import { ContactProvider } from '../providers/contactsProvider';
+import ShareTenantButton from '../components/ShareTenantButton';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const { styles } = useStyles();
@@ -24,7 +27,15 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     { label: 'Proposals',     path: '/proposals' },
     { label: 'Contracts',     path: '/contracts' },
     { label: 'Activities',    path: '/activities' },
+    {label: 'Clients & Contacts', path: '/clientscontacts'}
   ];
+
+  const handleCopyTenantId = () => {
+    if (!user?.tenantId) return;
+    navigator.clipboard.writeText(user.tenantId).then(() => {
+      message.success('Tenant ID copied to clipboard');
+    });
+  };
 
   useEffect(() => {
     if (user) {
@@ -48,7 +59,13 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             <div className={styles.welcomeText}>
               Welcome<br />{user?.firstName || 'User'} {user?.roles ? `|` : ``} {user?.roles || ''}
             </div>
+
             <h1 className={styles.logo}>Accel</h1>
+
+            {/* TENANT ID */}
+            {!!(user?.tenantId && user?.roles?.includes('Admin')) && (
+              <ShareTenantButton tenantId={user.tenantId} />
+            )}
           </header>
 
           {/* SHARED SIDEBAR */}

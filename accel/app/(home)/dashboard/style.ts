@@ -105,8 +105,9 @@ const useStyles = createStyles(({ css }) => {
     `,
 
     summaryTileHighlight: css`
-      background: #000;
+      background: #000000;
       border: 2px solid #00b86e;
+      color : #00b86e;
       border-radius: 20px;
       height: 14vh;
       display: flex;
@@ -115,7 +116,7 @@ const useStyles = createStyles(({ css }) => {
       align-items: center;
       .ant-statistic-title {
         font-size: 0.8rem;
-        color: #fff;
+        color: #00b86e;
         opacity: 0.8;
         text-align: center;
       }

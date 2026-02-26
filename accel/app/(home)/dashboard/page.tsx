@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, Row, Col, Typography, Statistic, Flex, Spin } from 'antd';
 import useStyles from './style';
 import { getAxiosInstance } from '@/app/utils/axiosInstance';
+import withAuth from '@/app/hoc/withAuth';
 
 const { Title, Text } = Typography;
 
@@ -124,6 +125,30 @@ const Dashboard = () => {
   return (
     <div className={styles.glassPanel}>
 
+      {/* 3. SUMMARY TILES */}
+      <Row gutter={[15, 0]} >
+        <Col span={6}>
+          <div className={styles.summaryTile}>
+            <Statistic title="Active Deals" value={data.opportunities.activeCount} />
+          </div>
+        </Col>
+        <Col span={6}>
+          <div className={styles.summaryTile}>
+            <Statistic title="Active Contracts" value={data.contracts.totalActiveCount} />
+          </div>
+        </Col>
+        <Col span={6}>
+          <div className={styles.summaryTile}>
+            <Statistic title="Weekly Tasks" value={data.activities.completedThisWeekCount} />
+          </div>
+        </Col>
+        <Col span={6}>
+          <div className={styles.summaryTileHighlight}>
+            <Statistic title="Win Rate" value={data.opportunities.winRate} suffix="%" />
+          </div>
+        </Col>
+      </Row>
+
       {/* 1. PIPELINE */}
       <Card className={styles.sectionCard} variant="borderless">
         <Title level={5} className={styles.sectionTitle}>Pipeline</Title>
@@ -164,32 +189,8 @@ const Dashboard = () => {
         </Row>
       </Card>
 
-      {/* 3. SUMMARY TILES */}
-      <Row gutter={[15, 0]} style={{ flex: 1, alignItems: 'flex-end' }}>
-        <Col span={6}>
-          <div className={styles.summaryTile}>
-            <Statistic title="Active Deals" value={data.opportunities.activeCount} />
-          </div>
-        </Col>
-        <Col span={6}>
-          <div className={styles.summaryTile}>
-            <Statistic title="Active Contracts" value={data.contracts.totalActiveCount} />
-          </div>
-        </Col>
-        <Col span={6}>
-          <div className={styles.summaryTile}>
-            <Statistic title="Weekly Tasks" value={data.activities.completedThisWeekCount} />
-          </div>
-        </Col>
-        <Col span={6}>
-          <div className={styles.summaryTileHighlight}>
-            <Statistic title="Win Rate" value={data.opportunities.winRate} suffix="%" />
-          </div>
-        </Col>
-      </Row>
-
     </div>
   );
 };
 
-export default Dashboard;
+export default withAuth(Dashboard);

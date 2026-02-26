@@ -16,6 +16,7 @@ import { useOpportunityState, useOpportunityActions } from '../../providers/oppo
 import { useUserState } from '../../providers/userProvider';
 import { Contract } from '../../providers/contractsProvider/context';
 import ContractCard from '@/app/components/contracts/contracts';
+import withAuth from '@/app/hoc/withAuth';
 
 const { TextArea } = Input;
 
@@ -182,6 +183,7 @@ const ContractsPage = () => {
   const isDraft     = selected?.statusName === 'Draft';
   const isActive    = selected?.statusName === 'Active';
   const isCancelled = selected?.statusName === 'Cancelled';
+  
 
   return (
     <div className={styles.wrapper}>
@@ -251,6 +253,8 @@ const ContractsPage = () => {
           Cancel
         </Button>
 
+{
+  user?.roles.includes('Admin') &&
         <Button
           icon={<DeleteOutlined />}
           className={`${styles.btnAction} ${!selected ? styles.btnDisabled : ''}`}
@@ -260,6 +264,7 @@ const ContractsPage = () => {
         >
           Delete
         </Button>
+}
 
         <Input
           placeholder="Search..."
@@ -391,4 +396,4 @@ const ContractsPage = () => {
   );
 };
 
-export default ContractsPage;
+export default withAuth(ContractsPage);
