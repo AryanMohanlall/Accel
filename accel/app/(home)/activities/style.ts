@@ -14,6 +14,52 @@ const useStyles = createStyles(({ css }) => ({
     max-height: 100%;
   `,
 
+  /* --- Stats Strip --- */
+  statsStrip: css`
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 10px 32px;
+    background: #0a0a0a;
+    border-bottom: 1px solid #1a1a1a;
+    flex-shrink: 0;
+  `,
+
+  statBadge: css`
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  `,
+
+  statLabel: css`
+    font-size: 0.75rem !important;
+    color: #666 !important;
+  `,
+
+  /* --- Filter Bar --- */
+  filterBar: css`
+    padding: 10px 32px;
+    background: #0a0a0a;
+    border-bottom: 1px solid #1a1a1a;
+    flex-shrink: 0;
+  `,
+
+  segmented: css`
+    background: #1a1a1a !important;
+    .ant-segmented-item {
+      color: #666 !important;
+      font-size: 0.78rem !important;
+      font-weight: 500 !important;
+    }
+    .ant-segmented-item-selected {
+      background: #00b86e !important;
+      color: #fff !important;
+    }
+    .ant-segmented-item:hover {
+      color: #fff !important;
+    }
+  `,
+
   timelineWrapper: css`
     flex: 1;
     min-height: 0;
@@ -261,6 +307,7 @@ const useStyles = createStyles(({ css }) => ({
   searchIcon: css`
     color: #667;
   `,
+
 }));
 
 export default useStyles;

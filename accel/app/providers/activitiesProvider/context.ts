@@ -42,6 +42,8 @@ export interface IActivityActionContext {
   setSelected: (activity: Activity | null) => void;
   createActivity: (payload: any) => Promise<void>;
   updateActivity: (id: string, payload: any) => Promise<void>;
+  completeActivity: (id: string, outcome: string) => Promise<void>; // add
+  cancelActivity: (id: string) => Promise<void>;                    // add
   deleteActivity: (id: string) => Promise<void>;
 }
 
