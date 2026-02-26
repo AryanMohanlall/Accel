@@ -63,11 +63,11 @@ export const OpportunityProvider = ({ children }: { children: React.ReactNode })
   };
 
   // Separate method for stage moves — hits the /stage endpoint
-const moveOpportunityStage = async (id: string, newStage: number, notes?: string, lossReason?: string) => {
+const moveOpportunityStage = async (id: string, stage: number, notes?: string, lossReason?: string) => {
   dispatch(mutatePending());
   try {
     await instance.put(`/api/Opportunities/${id}/stage`, {
-      newStage,
+      stage,
       notes: notes || '',
       lossReason: lossReason || '',
     });
