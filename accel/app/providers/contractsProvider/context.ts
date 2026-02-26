@@ -42,6 +42,8 @@ export interface IContractActionContext {
   createContract: (payload: any) => Promise<void>;
   updateContract: (id: string, payload: any) => Promise<void>;
   deleteContract: (id: string) => Promise<void>;
+  activateContract: (id: string) => Promise<void>;
+  cancelContract: (id: string) => Promise<void>;
 }
 
 export const INITIAL_CONTRACT_STATE: IContractStateContext = {
