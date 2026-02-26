@@ -26,6 +26,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     { label: 'Proposals',     path: '/proposals' },
     { label: 'Contracts',     path: '/contracts' },
     { label: 'Activities',    path: '/activities' },
+    {label: 'Clients & Contacts', path: '/clientscontacts'}
   ];
 
   const handleCopyTenantId = () => {
