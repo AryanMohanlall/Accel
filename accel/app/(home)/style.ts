@@ -5,9 +5,7 @@ import { createStyles } from "antd-style";
 const useStyles = createStyles(({ token, css }) => {
 return {
     container: css`
-      /* Set the font for the whole container and children */
       font-family: var(--font-inter-mono), monospace !important;
-      
       height: 100vh;
       width: 100vw;
       overflow: hidden; 
@@ -17,15 +15,13 @@ return {
       background: url('/auth.jpg');
       background-size: cover;
 
-      /* SCROLLBAR REMOVAL (Modern Way) */
       * {
-        scrollbar-width: none !important; /* Firefox */
-        -ms-overflow-style: none !important; /* IE/Edge */
-        font-family: inherit; /* Ensure children inherit the font */
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+        font-family: inherit;
       }
-
       *::-webkit-scrollbar {
-        display: none !important; /* Chrome/Safari/Brave */
+        display: none !important;
         width: 0 !important;
         height: 0 !important;
       }
@@ -43,7 +39,6 @@ return {
       color: #ffffff;
       font-size: 1.5rem;
       line-height: 1.1;
-      /* removed hardcoded font-family */
     `,
     logo: css`
       color: #ffffff;
@@ -86,10 +81,9 @@ return {
         border-color: #005010;
         color: #00B86E;
         box-shadow: 0 0 15px rgba(0, 184, 110, 0.3);
-        
         &:hover {
-           background: #111111;
-           box-shadow: 0 0 20px rgba(0, 184, 110, 0.5);
+          background: #111111;
+          box-shadow: 0 0 20px rgba(0, 184, 110, 0.5);
         }
       }
     `,
@@ -119,15 +113,17 @@ return {
       padding: 3vh;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       height: 100%;
+      min-height: 0;
       overflow: hidden;
+      box-sizing: border-box;
     `,
     glassPanel: css`
       width: 100%;
       height: 100%;
+      max-height: 100%;
       max-width: 1100px;
-      max-height: 80vh;
       background: rgba(90, 167, 152, 0.4);
       backdrop-filter: blur(5px);
       border-radius: 24px;
@@ -135,7 +131,9 @@ return {
       display: flex;
       flex-direction: column;
       gap: 2vh;
-      overflow-y: auto; 
+      overflow-y: auto;
+      min-height: 0;
+      box-sizing: border-box;
     `,
     sectionCard: css`
       background: #D9D9D9;
@@ -154,7 +152,7 @@ return {
       gap: 12px;
     `,
     statBox: css`
-      height: 10vh; /* Scaled down */
+      height: 10vh;
       background: #514B4B;
       border-radius: 12px;
       display: flex;
