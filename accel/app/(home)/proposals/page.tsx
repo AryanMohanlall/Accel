@@ -32,8 +32,6 @@ const CURRENCY_OPTIONS = [
   { value: 'GBP', label: 'GBP' },
 ];
 
-const LEFT = 'left' as const;
-
 const formatCurrency = (value: number, currency: string) =>
   new Intl.NumberFormat('en-US', { style: 'currency', currency, maximumFractionDigits: 0 }).format(value);
 
@@ -47,7 +45,7 @@ const ProposalsPage = () => {
   const { opportunities } = useOpportunityState();
   const { fetchOpportunities } = useOpportunityActions();
 
-  const [search, setSearch]               = useState('');
+  const [search, setSearch] = useState('');
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -69,19 +67,23 @@ const ProposalsPage = () => {
     setSelected(selected?.id === record.id ? null : record);
 
   // --- Create ---
-    const handleCreate = async (values: any) => {
-      try {
-        await createProposal({
-          ...values,
-          validUntil: values.validUntil?.format('YYYY-MM-DD'), // date-only, not full ISO
-        });
-        message.success('Proposal created');
-        setCreateModalOpen(false);
-        createForm.resetFields();
-      } catch (error: any) {
-        message.error(error.response?.data?.detail || error.response?.data?.title || 'Failed to create proposal');
-      }
-    };
+  const handleCreate = async (values: any) => {
+    try {
+      await createProposal({
+        opportunityId: values.opportunityId,
+        title:         values.title,
+        description:   values.description,
+        currency:      values.currency,
+        validUntil:    values.validUntil?.format('YYYY-MM-DD'),
+        lineItems:     values.lineItems ?? [],
+      });
+      message.success('Proposal created');
+      setCreateModalOpen(false);
+      createForm.resetFields();
+    } catch (error: any) {
+      message.error(error.response?.data?.detail || error.response?.data?.title || 'Failed to create proposal');
+    }
+  };
 
   // --- Update ---
   const handleOpenUpdate = () => {
@@ -103,8 +105,10 @@ const ProposalsPage = () => {
     if (!selected) return;
     try {
       await updateProposal(selected.id, {
-        ...values,
-        validUntil: values.validUntil?.toISOString(),
+        title:       values.title,
+        description: values.description,
+        currency:    values.currency,
+        validUntil:  values.validUntil?.format('YYYY-MM-DD'),
       });
       message.success('Proposal updated');
       setUpdateModalOpen(false);
@@ -230,7 +234,14 @@ const ProposalsPage = () => {
 
       {/* ACTION BAR */}
       <div className={styles.actionBar}>
-        <Button icon={<PlusOutlined />} className={styles.btnCreate} onClick={() => setCreateModalOpen(true)}>
+        <Button
+          icon={<PlusOutlined />}
+          className={styles.btnCreate}
+          onClick={() => {
+            fetchOpportunities(); // always re-fetch so dropdown is fresh
+            setCreateModalOpen(true);
+          }}
+        >
           Create
         </Button>
         <Button
@@ -271,25 +282,21 @@ const ProposalsPage = () => {
         okButtonProps={{ style: { background: '#00b86e', borderColor: '#00b86e' } }}
         width={680}
       >
-        <Form form={createForm} layout="vertical" onFinish={handleCreate}
-          initialValues={{ currency: 'ZAR', lineItems: [{}] }}>
-
+        <Form
+          form={createForm}
+          layout="vertical"
+          onFinish={handleCreate}
+          initialValues={{ currency: 'ZAR', lineItems: [{}] }}
+        >
           <Form.Item name="opportunityId" label="Opportunity" rules={[{ required: true, message: 'Required' }]}>
             <Select
               showSearch
               placeholder="Select opportunity"
               options={opportunityOptions}
-              filterOption={(input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
-              onChange={(val) => {
-                const opp = opportunities.find(o => o.id === val);
-                if (opp?.clientId) createForm.setFieldValue('clientId', opp.clientId);
-              }}
+              filterOption={(input, option) =>
+                (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+              }
             />
-          </Form.Item>
-
-          {/* auto-populated from selected opportunity, not shown to user */}
-          <Form.Item name="clientId" hidden rules={[{ required: true, message: 'Required' }]}>
-            <Input />
           </Form.Item>
 
           <Form.Item name="title" label="Title" rules={[{ required: true, message: 'Required' }]}>
@@ -308,45 +315,81 @@ const ProposalsPage = () => {
             <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />
           </Form.Item>
 
-
-          {/* hidden — auto-populated from opportunity */}
-          <Form.Item name="clientId" hidden>
-            <Input />
-          </Form.Item>
-
           {/* LINE ITEMS */}
-          <Divider titlePlacement="left" style={{ fontSize: '0.8rem', color: '#888' }}>Line Items</Divider>
+          <Divider titlePlacement="left" style={{ fontSize: '0.8rem', color: '#888' }}>
+            Line Items
+          </Divider>
           <Form.List name="lineItems">
             {(fields, { add, remove }) => (
               <>
                 {fields.map(({ key, name, ...restField }) => (
-                  <div key={key} style={{ background: '#f9f9f9', borderRadius: 8, padding: '10px 12px', marginBottom: 10, position: 'relative' }}>
-                    <Form.Item {...restField} name={[name, 'productServiceName']} label="Product / Service"
-                      rules={[{ required: true, message: 'Required' }]}>
+                  <div
+                    key={key}
+                    style={{
+                      background: '#f9f9f9',
+                      borderRadius: 8,
+                      padding: '10px 12px',
+                      marginBottom: 10,
+                      position: 'relative',
+                    }}
+                  >
+                    <Form.Item
+                      {...restField}
+                      name={[name, 'productServiceName']}
+                      label="Product / Service"
+                      rules={[{ required: true, message: 'Required' }]}
+                    >
                       <Input placeholder="e.g. Consulting" />
                     </Form.Item>
                     <Form.Item {...restField} name={[name, 'description']} label="Description">
                       <Input placeholder="Line item description" />
                     </Form.Item>
                     <Space style={{ width: '100%' }} size={8}>
-                      <Form.Item {...restField} name={[name, 'quantity']} label="Qty" style={{ flex: 1, marginBottom: 0 }}
-                        rules={[{ required: true, message: 'Required' }]}>
+                      <Form.Item
+                        {...restField}
+                        name={[name, 'quantity']}
+                        label="Qty"
+                        style={{ flex: 1, marginBottom: 0 }}
+                        rules={[{ required: true, message: 'Required' }]}
+                      >
                         <InputNumber style={{ width: '100%' }} min={0} placeholder="1" />
                       </Form.Item>
-                      <Form.Item {...restField} name={[name, 'unitPrice']} label="Unit Price" style={{ flex: 2, marginBottom: 0 }}
-                        rules={[{ required: true, message: 'Required' }]}>
+                      <Form.Item
+                        {...restField}
+                        name={[name, 'unitPrice']}
+                        label="Unit Price"
+                        style={{ flex: 2, marginBottom: 0 }}
+                        rules={[{ required: true, message: 'Required' }]}
+                      >
                         <InputNumber style={{ width: '100%' }} min={0} placeholder="0.00" />
                       </Form.Item>
-                      <Form.Item {...restField} name={[name, 'discount']} label="Discount %" style={{ flex: 1, marginBottom: 0 }}>
+                      <Form.Item
+                        {...restField}
+                        name={[name, 'discount']}
+                        label="Discount %"
+                        style={{ flex: 1, marginBottom: 0 }}
+                      >
                         <InputNumber style={{ width: '100%' }} min={0} max={100} placeholder="0" />
                       </Form.Item>
-                      <Form.Item {...restField} name={[name, 'taxRate']} label="Tax %" style={{ flex: 1, marginBottom: 0 }}>
+                      <Form.Item
+                        {...restField}
+                        name={[name, 'taxRate']}
+                        label="Tax %"
+                        style={{ flex: 1, marginBottom: 0 }}
+                      >
                         <InputNumber style={{ width: '100%' }} min={0} max={100} placeholder="0" />
                       </Form.Item>
                     </Space>
                     <MinusCircleOutlined
                       onClick={() => remove(name)}
-                      style={{ position: 'absolute', top: 10, right: 10, color: '#ff4d4f', fontSize: '1rem', cursor: 'pointer' }}
+                      style={{
+                        position: 'absolute',
+                        top: 10,
+                        right: 10,
+                        color: '#ff4d4f',
+                        fontSize: '1rem',
+                        cursor: 'pointer',
+                      }}
                     />
                   </div>
                 ))}
@@ -359,7 +402,7 @@ const ProposalsPage = () => {
         </Form>
       </Modal>
 
-      {/* UPDATE MODAL — only title, description, currency, validUntil (API restriction) */}
+      {/* UPDATE MODAL */}
       <Modal
         title={`Update — ${selected?.title ?? ''}`}
         open={updateModalOpen}
