@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, Row, Col, Typography, Statistic, Flex, Spin } from 'antd';
 import useStyles from './style';
 import { getAxiosInstance } from '@/app/utils/axiosInstance';
+import withAuth from '@/app/hoc/withAuth';
 
 const { Title, Text } = Typography;
 
@@ -192,4 +193,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default withAuth(Dashboard);

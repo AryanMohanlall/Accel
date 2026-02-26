@@ -16,6 +16,7 @@ import { useOpportunityState, useOpportunityActions } from '../../providers/oppo
 import { useUserState } from '../../providers/userProvider';
 import { Contract } from '../../providers/contractsProvider/context';
 import ContractCard from '@/app/components/contracts/contracts';
+import withAuth from '@/app/hoc/withAuth';
 
 const { TextArea } = Input;
 
@@ -391,4 +392,4 @@ const ContractsPage = () => {
   );
 };
 
-export default ContractsPage;
+export default withAuth(ContractsPage);

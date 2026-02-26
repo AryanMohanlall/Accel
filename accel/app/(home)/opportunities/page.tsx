@@ -14,6 +14,7 @@ import useStyles from './style';
 import { useOpportunityState, useOpportunityActions } from '../../providers/opportunitiesProvider';
 import { useClientState, useClientActions } from '../../providers/clientsProvider';
 import { useContactState, useContactActions } from '../../providers/contactsProvider';
+import withAuth from '@/app/hoc/withAuth';
 
 const { Text, Title } = Typography;
 
@@ -448,4 +449,4 @@ const handleDelete = async () => {
   );
 };
 
-export default OpportunitiesPage;
+export default withAuth(OpportunitiesPage);

@@ -17,6 +17,7 @@ import useStyles from './style';
 import { useActivityState, useActivityActions } from '../../providers/activitiesProvider';
 import { useUserState } from '../../providers/userProvider';
 import { Activity } from '../../providers/activitiesProvider/context';
+import withAuth from '@/app/hoc/withAuth';
 
 const { Text, Title } = Typography;
 const { TextArea } = Input;
@@ -539,4 +540,4 @@ const ActivitiesPage = () => {
   );
 };
 
-export default ActivitiesPage;
+export default withAuth(ActivitiesPage);

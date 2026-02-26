@@ -15,6 +15,7 @@ import useStyles from './style';
 import { useProposalState, useProposalActions } from '../../providers/proposalsProvider';
 import { useOpportunityState, useOpportunityActions } from '../../providers/opportunitiesProvider';
 import { Proposal } from '../../providers/proposalsProvider/context';
+import withAuth from '@/app/hoc/withAuth';
 
 const { TextArea } = Input;
 
@@ -445,4 +446,4 @@ const ProposalsPage = () => {
   );
 };
 
-export default ProposalsPage;
+export default withAuth(ProposalsPage);
