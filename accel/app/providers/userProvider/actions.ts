@@ -1,24 +1,19 @@
 import { createAction } from "redux-actions";
 import { IUser, IUserStateContext } from "./context";
 
-// Enum defining the type of actions for Authentication
 export enum UserActionEnums {
-  loginPending = "LOGIN_PENDING",
-  loginSuccess = "LOGIN_SUCCESS",
-  loginError = "LOGIN_ERROR",
-
+  loginPending    = "LOGIN_PENDING",
+  loginSuccess    = "LOGIN_SUCCESS",
+  loginError      = "LOGIN_ERROR",
   registerPending = "REGISTER_PENDING",
   registerSuccess = "REGISTER_SUCCESS",
-  registerError = "REGISTER_ERROR",
-
-  logout = "LOGOUT",
+  registerError   = "REGISTER_ERROR",
+  logout          = "LOGOUT",
 }
-
-// --- Login Actions ---
 
 export const loginPending = createAction<IUserStateContext>(
   UserActionEnums.loginPending,
-  () => ({ isPending: true, isSuccess: false, isError: false, isAuthenticated: false })
+  () => ({ isPending: true, isSuccess: false, isError: false, isAuthenticated: false, user: null })
 );
 
 export const loginSuccess = createAction<IUserStateContext, IUser>(
@@ -34,32 +29,29 @@ export const loginSuccess = createAction<IUserStateContext, IUser>(
 
 export const loginError = createAction<IUserStateContext>(
   UserActionEnums.loginError,
-  () => ({ isPending: false, isSuccess: false, isError: true, isAuthenticated: false })
+  () => ({ isPending: false, isSuccess: false, isError: true, isAuthenticated: false, user: null })
 );
-
-// --- Register Actions ---
 
 export const registerPending = createAction<IUserStateContext>(
   UserActionEnums.registerPending,
-  () => ({ isPending: true, isSuccess: false, isError: false, isAuthenticated: false })
+  () => ({ isPending: true, isSuccess: false, isError: false, isAuthenticated: false, user: null })
 );
 
-export const registerSuccess = createAction<IUserStateContext>(
+export const registerSuccess = createAction<IUserStateContext, IUser>(
   UserActionEnums.registerSuccess,
-  () => ({
+  (user: IUser) => ({
     isPending: false,
     isSuccess: true,
     isError: false,
-    isAuthenticated: false, // Registration doesn't usually auto-login in this flow
+    user,
+    isAuthenticated: true,
   })
 );
 
 export const registerError = createAction<IUserStateContext>(
   UserActionEnums.registerError,
-  () => ({ isPending: false, isSuccess: false, isError: true, isAuthenticated: false })
+  () => ({ isPending: false, isSuccess: false, isError: true, isAuthenticated: false, user: null })
 );
-
-// --- Logout Action ---
 
 export const logoutAction = createAction<IUserStateContext>(
   UserActionEnums.logout,

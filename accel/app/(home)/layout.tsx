@@ -42,7 +42,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           {/* SHARED HEADER */}
           <header className={styles.header}>
             <div className={styles.welcomeText}>
-              Welcome<br />{user?.firstName || 'User'}
+              Welcome<br />{user?.firstName || 'User'} {user?.roles ? `|` : ``} {user?.roles || ''}
             </div>
             <h1 className={styles.logo}>Accel</h1>
           </header>
