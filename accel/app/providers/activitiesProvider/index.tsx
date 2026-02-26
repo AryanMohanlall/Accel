@@ -10,19 +10,27 @@ import {
 } from "./context";
 import { ActivityReducer } from "./reducers";
 import {
-  fetchPending, fetchSuccess, fetchError,
-  mutatePending, mutateSuccess, mutateError,
+  fetchPending,
+  fetchSuccess,
+  fetchError,
+  mutatePending,
+  mutateSuccess,
+  mutateError,
   setSelectedAction,
 } from "./actions";
 
-export const ActivityProvider = ({ children }: { children: React.ReactNode }): React.ReactElement => {
+export const ActivityProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}): React.ReactElement => {
   const [state, dispatch] = useReducer(ActivityReducer, INITIAL_ACTIVITY_STATE);
   const instance = getAxiosInstance();
 
   const fetchActivities = async () => {
     dispatch(fetchPending());
     try {
-      const res = await instance.get('/api/Activities');
+      const res = await instance.get("/api/Activities");
       const items = Array.isArray(res.data)
         ? res.data
         : Array.isArray(res.data.items)
@@ -43,7 +51,7 @@ export const ActivityProvider = ({ children }: { children: React.ReactNode }): R
   const createActivity = async (payload: any) => {
     dispatch(mutatePending());
     try {
-      await instance.post('/api/Activities', payload);
+      await instance.post("/api/Activities", payload);
       dispatch(mutateSuccess());
       await fetchActivities();
     } catch (error) {
@@ -126,12 +134,16 @@ export const ActivityProvider = ({ children }: { children: React.ReactNode }): R
 
 export const useActivityState = () => {
   const context = useContext(ActivityStateContext);
-  if (context === undefined) throw new Error("useActivityState must be used within an ActivityProvider");
+  if (context === undefined)
+    throw new Error("useActivityState must be used within an ActivityProvider");
   return context;
 };
 
 export const useActivityActions = () => {
   const context = useContext(ActivityActionContext);
-  if (context === undefined) throw new Error("useActivityActions must be used within an ActivityProvider");
+  if (context === undefined)
+    throw new Error(
+      "useActivityActions must be used within an ActivityProvider",
+    );
   return context;
 };

@@ -10,20 +10,28 @@ import {
 } from "./context";
 import { ProposalReducer } from "./reducers";
 import {
-  fetchPending, fetchSuccess, fetchError,
-  mutatePending, mutateSuccess, mutateError,
+  fetchPending,
+  fetchSuccess,
+  fetchError,
+  mutatePending,
+  mutateSuccess,
+  mutateError,
   setSelectedAction,
 } from "./actions";
 
-export const ProposalProvider = ({ children }: { children: React.ReactNode }): React.ReactElement => {
+export const ProposalProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}): React.ReactElement => {
   const [state, dispatch] = useReducer(ProposalReducer, INITIAL_PROPOSAL_STATE);
   const instance = getAxiosInstance();
 
   const fetchProposals = async () => {
     dispatch(fetchPending());
     try {
-      const res = await instance.get('/api/Proposals');
-      console.log('Proposals response:', res.data);
+      const res = await instance.get("/api/Proposals");
+      console.log("Proposals response:", res.data);
 
       // Handle both array response and paginated { items: [] } response
       const items = Array.isArray(res.data)
@@ -47,7 +55,7 @@ export const ProposalProvider = ({ children }: { children: React.ReactNode }): R
   const createProposal = async (payload: any) => {
     dispatch(mutatePending());
     try {
-      await instance.post('/api/Proposals', payload);
+      await instance.post("/api/Proposals", payload);
       dispatch(mutateSuccess());
       await fetchProposals();
     } catch (error) {
@@ -97,19 +105,23 @@ export const ProposalProvider = ({ children }: { children: React.ReactNode }): R
     React.createElement(
       ProposalActionContext.Provider,
       { value: actions },
-      children
-    )
+      children,
+    ),
   );
 };
 
 export const useProposalState = () => {
   const context = useContext(ProposalStateContext);
-  if (context === undefined) throw new Error("useProposalState must be used within a ProposalProvider");
+  if (context === undefined)
+    throw new Error("useProposalState must be used within a ProposalProvider");
   return context;
 };
 
 export const useProposalActions = () => {
   const context = useContext(ProposalActionContext);
-  if (context === undefined) throw new Error("useProposalActions must be used within a ProposalProvider");
+  if (context === undefined)
+    throw new Error(
+      "useProposalActions must be used within a ProposalProvider",
+    );
   return context;
 };

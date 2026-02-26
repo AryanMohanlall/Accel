@@ -3,16 +3,16 @@
 import { createStyles } from "antd-style";
 
 const useStyles = createStyles(({ token, css }) => {
-return {
+  return {
     container: css`
       font-family: var(--font-inter-mono), monospace !important;
       height: 100vh;
       width: 100vw;
-      overflow: hidden; 
+      overflow: hidden;
       display: grid;
       grid-template-columns: 240px 1fr;
       grid-template-rows: 10vh 1fr;
-      background: url('/auth.jpg');
+      background: url("/auth.jpg");
       background-size: cover;
 
       * {
@@ -59,7 +59,7 @@ return {
     navButton: css`
       width: 200px;
       height: 6.5vh;
-      background: #D9D9D9;
+      background: #d9d9d9;
       border: 1px solid #000000;
       border-radius: 12px;
       display: flex;
@@ -69,7 +69,7 @@ return {
       color: #000000;
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      
+
       &:hover {
         background: #eeeeee;
         transform: translateY(-3px);
@@ -79,7 +79,7 @@ return {
       &.active {
         background: #000000;
         border-color: #005010;
-        color: #00B86E;
+        color: #00b86e;
         box-shadow: 0 0 15px rgba(0, 184, 110, 0.3);
         &:hover {
           background: #111111;
@@ -93,9 +93,9 @@ return {
       width: 180px;
       height: 5vh;
       background: #000000;
-      border: 1px solid #FFFFFF;
+      border: 1px solid #ffffff;
       border-radius: 12px;
-      color: #FFFFFF;
+      color: #ffffff;
       font-size: 1rem;
       display: flex;
       align-items: center;
@@ -136,7 +136,7 @@ return {
       box-sizing: border-box;
     `,
     sectionCard: css`
-      background: #D9D9D9;
+      background: #d9d9d9;
       border-radius: 15px;
       padding: 1.5vh;
     `,
@@ -153,7 +153,7 @@ return {
     `,
     statBox: css`
       height: 10vh;
-      background: #514B4B;
+      background: #514b4b;
       border-radius: 12px;
       display: flex;
       flex-direction: column;
@@ -171,7 +171,7 @@ return {
       align-items: center;
       justify-content: center;
       font-size: 0.8rem;
-    `
+    `,
   };
 });
 

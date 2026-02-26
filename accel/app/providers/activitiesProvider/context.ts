@@ -43,7 +43,7 @@ export interface IActivityActionContext {
   createActivity: (payload: any) => Promise<void>;
   updateActivity: (id: string, payload: any) => Promise<void>;
   completeActivity: (id: string, outcome: string) => Promise<void>; // add
-  cancelActivity: (id: string) => Promise<void>;                    // add
+  cancelActivity: (id: string) => Promise<void>; // add
   deleteActivity: (id: string) => Promise<void>;
 }
 
@@ -55,8 +55,10 @@ export const INITIAL_ACTIVITY_STATE: IActivityStateContext = {
   selected: null,
 };
 
-export const ActivityStateContext =
-  createContext<IActivityStateContext>(INITIAL_ACTIVITY_STATE);
+export const ActivityStateContext = createContext<IActivityStateContext>(
+  INITIAL_ACTIVITY_STATE,
+);
 
-export const ActivityActionContext =
-  createContext<IActivityActionContext | undefined>(undefined);
+export const ActivityActionContext = createContext<
+  IActivityActionContext | undefined
+>(undefined);

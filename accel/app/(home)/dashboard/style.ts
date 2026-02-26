@@ -20,7 +20,7 @@ const useStyles = createStyles(({ css }) => {
       background: #d9d9d9 !important;
       border-radius: 20px !important;
       .ant-card-body {
-        padding: 1vh 20px !important;
+        padding: 1.5vh 20px !important;
       }
     `,
 
@@ -32,7 +32,7 @@ const useStyles = createStyles(({ css }) => {
     statBox: css`
       background: #514b4b;
       border-radius: 15px;
-      height: 9vh;
+      height: 12vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -63,7 +63,7 @@ const useStyles = createStyles(({ css }) => {
     revenueBox: css`
       background: #838769;
       border-radius: 12px;
-      height: 5.5vh;
+      height: 8vh;
       .ant-statistic-content {
         display: flex;
         align-items: center;
@@ -104,29 +104,33 @@ const useStyles = createStyles(({ css }) => {
       }
     `,
 
-    summaryTileHighlight: css`
-      background: #000000;
-      border: 2px solid #00b86e;
-      color : #00b86e;
-      border-radius: 20px;
-      height: 14vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      .ant-statistic-title {
-        font-size: 0.8rem;
-        color: #00b86e;
-        opacity: 0.8;
-        text-align: center;
-      }
-      .ant-statistic-content {
-        font-size: 2.2rem;
-        font-weight: 700;
-        text-align: center;
-        color: #00b86e;
-      }
-    `,
+summaryTileHighlight: css`
+  background: #000000;
+  border: 2px solid #00b86e;
+  border-radius: 20px;
+  height: 14vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  .ant-statistic-title {
+    font-size: 0.8rem;
+    color: #00b86e !important;
+    text-align: center;
+  }
+  .ant-statistic-content {
+    font-size: 2.2rem;
+    font-weight: 700;
+    text-align: center;
+    color: #00b86e !important;
+  }
+  .ant-statistic-content-value {
+    color: #00b86e !important;
+  }
+  .ant-statistic-content-suffix {
+    color: #00b86e !important;
+  }
+`,
 
     centered: css`
       justify-content: center;

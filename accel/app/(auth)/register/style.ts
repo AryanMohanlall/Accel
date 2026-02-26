@@ -5,19 +5,21 @@ import { createStyles } from "antd-style";
 const useStyles = createStyles(({ token, css }) => {
   return {
     container: css`
-      min-height: 100vh;
+      height: 100vh;
       width: 100vw;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: url('/auth.jpg');
+      background: url("/auth.jpg");
       background-size: cover;
       background-position: center;
       padding: 24px 0;
+      box-sizing: border-box;
     `,
     logo: css`
-      font-family: 'Inter', sans-serif;
+      font-family: "Inter", sans-serif;
       font-size: clamp(40px, 6vh, 80px);
       color: #ffffff;
       margin-bottom: 5px;
@@ -37,17 +39,22 @@ const useStyles = createStyles(({ token, css }) => {
       box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
       overflow-y: auto;
       overflow-x: hidden;
-      &::-webkit-scrollbar { width: 4px; }
-      &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 2px; }
+      &::-webkit-scrollbar {
+        width: 4px;
+      }
+      &::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 2px;
+      }
     `,
     title: css`
-      font-family: 'Inter', sans-serif;
+      font-family: "Inter", sans-serif;
       font-size: clamp(24px, 4vh, 48px);
       color: #ffffff;
       margin-bottom: 1.5vh;
     `,
     label: css`
-      font-family: 'Inter', sans-serif;
+      font-family: "Inter", sans-serif;
       font-size: 16px;
       color: #ffffff;
       margin-bottom: 2px;
@@ -86,7 +93,7 @@ const useStyles = createStyles(({ token, css }) => {
         position: absolute;
         bottom: -15px;
       }
-    `
+    `,
   };
 });
 

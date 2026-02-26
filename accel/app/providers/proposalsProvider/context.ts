@@ -60,8 +60,10 @@ export const INITIAL_PROPOSAL_STATE: IProposalStateContext = {
   selected: null,
 };
 
-export const ProposalStateContext =
-  createContext<IProposalStateContext>(INITIAL_PROPOSAL_STATE);
+export const ProposalStateContext = createContext<IProposalStateContext>(
+  INITIAL_PROPOSAL_STATE,
+);
 
-export const ProposalActionContext =
-  createContext<IProposalActionContext | undefined>(undefined);
+export const ProposalActionContext = createContext<
+  IProposalActionContext | undefined
+>(undefined);

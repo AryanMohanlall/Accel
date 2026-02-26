@@ -2,7 +2,6 @@
 import { createStyles } from "antd-style";
 
 const useStyles = createStyles(({ css }) => ({
-
   wrapper: css`
     width: 100%;
     height: 100%;
@@ -20,8 +19,13 @@ const useStyles = createStyles(({ css }) => ({
     overflow-y: auto;
     padding: 16px;
     background: #000;
-    &::-webkit-scrollbar { width: 4px; }
-    &::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 2px;
+    }
   `,
 
   spinWrapper: css`
@@ -50,7 +54,7 @@ const useStyles = createStyles(({ css }) => ({
     gap: 8px;
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(255,255,255,0.1);
+      box-shadow: 0 6px 20px rgba(255, 255, 255, 0.1);
     }
   `,
 
@@ -124,8 +128,8 @@ const useStyles = createStyles(({ css }) => ({
     flex-direction: column;
     gap: 2px;
     padding: 6px 0;
-    border-top: 1px solid rgba(0,0,0,0.1);
-    border-bottom: 1px solid rgba(0,0,0,0.1);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   `,
 
   metaValue: css`
@@ -194,7 +198,10 @@ const useStyles = createStyles(({ css }) => ({
     height: 34px !important;
     padding: 0 16px !important;
     font-size: 0.82rem !important;
-    &:hover { background: #00b86e !important; color: #fff !important; }
+    &:hover {
+      background: #00b86e !important;
+      color: #fff !important;
+    }
   `,
 
   btnAction: css`
@@ -206,7 +213,10 @@ const useStyles = createStyles(({ css }) => ({
     height: 34px !important;
     padding: 0 16px !important;
     font-size: 0.82rem !important;
-    &:hover { background: #333 !important; color: #fff !important; }
+    &:hover {
+      background: #333 !important;
+      color: #fff !important;
+    }
   `,
 
   btnDisabled: css`
@@ -220,9 +230,16 @@ const useStyles = createStyles(({ css }) => ({
     background: #222 !important;
     border: 1px solid #444 !important;
     height: 34px;
-    .ant-input { background: transparent !important; color: #fff !important; }
-    .ant-input::placeholder { color: #888 !important; }
-    .ant-input-clear-icon { color: #888 !important; }
+    .ant-input {
+      background: transparent !important;
+      color: #fff !important;
+    }
+    .ant-input::placeholder {
+      color: #888 !important;
+    }
+    .ant-input-clear-icon {
+      color: #888 !important;
+    }
   `,
 
   searchIcon: css`

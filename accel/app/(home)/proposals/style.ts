@@ -2,7 +2,6 @@
 import { createStyles } from "antd-style";
 
 const useStyles = createStyles(({ css }) => ({
-
   wrapper: css`
     width: 100%;
     height: 100%;
@@ -48,8 +47,13 @@ const useStyles = createStyles(({ css }) => ({
     .ant-table-body {
       flex: 1;
       overflow-y: auto !important;
-      &::-webkit-scrollbar { width: 4px; }
-      &::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+      &::-webkit-scrollbar {
+        width: 4px;
+      }
+      &::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 2px;
+      }
     }
     .ant-table-pagination {
       flex-shrink: 0;
@@ -67,7 +71,9 @@ const useStyles = createStyles(({ css }) => ({
       font-weight: 700;
       padding: 8px 12px !important;
       border-bottom: none !important;
-      &::before { background-color: #333 !important; }
+      &::before {
+        background-color: #333 !important;
+      }
     }
 
     .ant-table-tbody > tr > td {
@@ -176,7 +182,10 @@ const useStyles = createStyles(({ css }) => ({
     height: 34px !important;
     padding: 0 16px !important;
     font-size: 0.82rem !important;
-    &:hover { background: #00b86e !important; color: #fff !important; }
+    &:hover {
+      background: #00b86e !important;
+      color: #fff !important;
+    }
   `,
 
   btnAction: css`
@@ -188,7 +197,10 @@ const useStyles = createStyles(({ css }) => ({
     height: 34px !important;
     padding: 0 16px !important;
     font-size: 0.82rem !important;
-    &:hover { background: #333 !important; color: #fff !important; }
+    &:hover {
+      background: #333 !important;
+      color: #fff !important;
+    }
   `,
 
   btnDisabled: css`
@@ -202,9 +214,16 @@ const useStyles = createStyles(({ css }) => ({
     background: #222 !important;
     border: 1px solid #444 !important;
     height: 34px;
-    .ant-input { background: transparent !important; color: #fff !important; }
-    .ant-input::placeholder { color: #888 !important; }
-    .ant-input-clear-icon { color: #888 !important; }
+    .ant-input {
+      background: transparent !important;
+      color: #fff !important;
+    }
+    .ant-input::placeholder {
+      color: #888 !important;
+    }
+    .ant-input-clear-icon {
+      color: #888 !important;
+    }
   `,
 
   searchIcon: css`

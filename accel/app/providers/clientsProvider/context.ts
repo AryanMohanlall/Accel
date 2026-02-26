@@ -48,5 +48,6 @@ export const INITIAL_CLIENT_STATE: IClientStateContext = {
 export const ClientStateContext =
   createContext<IClientStateContext>(INITIAL_CLIENT_STATE);
 
-export const ClientActionContext =
-  createContext<IClientActionContext | undefined>(undefined);
+export const ClientActionContext = createContext<
+  IClientActionContext | undefined
+>(undefined);

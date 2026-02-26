@@ -1,28 +1,41 @@
-import { Contract } from '@/app/providers/contractsProvider/context';
-import useStyles from '../../(home)/contracts/style';
+import { Contract } from "@/app/providers/contractsProvider/context";
+import useStyles from "../../(home)/contracts/style";
 
-
-import React, { useEffect, useState } from 'react';
-import { Button, Input, Empty, Spin, Tag, Typography, Tooltip } from 'antd';
+import React, { useEffect, useState } from "react";
+import { Button, Input, Empty, Spin, Tag, Typography, Tooltip } from "antd";
 import {
-  PlusOutlined, EditOutlined, DeleteOutlined,
-  SearchOutlined, CheckCircleFilled, CloseCircleFilled,
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  SearchOutlined,
+  CheckCircleFilled,
+  CloseCircleFilled,
   FileProtectOutlined,
-} from '@ant-design/icons';
+} from "@ant-design/icons";
 
 const formatCurrency = (value: number, currency: string) =>
-  new Intl.NumberFormat('en-US', { style: 'currency', currency, maximumFractionDigits: 0 }).format(value);
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 0,
+  }).format(value);
 
 const formatDate = (dateStr: string | null) =>
-  dateStr ? new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+  dateStr
+    ? new Date(dateStr).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+    : "—";
 
 const { Text } = Typography;
 
 const STATUS_COLORS: Record<number, string> = {
-  1: 'blue',
-  2: 'green',
-  3: 'orange',
-  4: 'red',
+  1: "blue",
+  2: "green",
+  3: "orange",
+  4: "red",
 };
 
 const ContractCard = ({
@@ -37,12 +50,12 @@ const ContractCard = ({
   onClick: () => void;
 }) => (
   <div
-    className={`${styles.card} ${isSelected ? styles.cardSelected : ''} ${contract.isExpiringSoon ? styles.cardExpiring : ''}`}
+    className={`${styles.card} ${isSelected ? styles.cardSelected : ""} ${contract.isExpiringSoon ? styles.cardExpiring : ""}`}
     onClick={onClick}
   >
     <div className={styles.cardTop}>
       <Tag
-        color={STATUS_COLORS[contract.status] ?? 'default'}
+        color={STATUS_COLORS[contract.status] ?? "default"}
         className={styles.statusTag}
       >
         {contract.statusName}
@@ -71,19 +84,33 @@ const ContractCard = ({
     </div>
 
     <div className={styles.cardFooter}>
-      <Tooltip title={contract.isExpiringSoon ? `Expires in ${contract.daysUntilExpiry} days` : 'Not expiring soon'}>
+      <Tooltip
+        title={
+          contract.isExpiringSoon
+            ? `Expires in ${contract.daysUntilExpiry} days`
+            : "Not expiring soon"
+        }
+      >
         <div className={styles.indicator}>
           <CloseCircleFilled
-            className={contract.isExpiringSoon ? styles.iconDanger : styles.iconMuted}
+            className={
+              contract.isExpiringSoon ? styles.iconDanger : styles.iconMuted
+            }
           />
           <Text className={styles.indicatorLabel}>Expiring</Text>
         </div>
       </Tooltip>
 
-      <Tooltip title={contract.autoRenew ? 'Auto-renew enabled' : 'Auto-renew disabled'}>
+      <Tooltip
+        title={
+          contract.autoRenew ? "Auto-renew enabled" : "Auto-renew disabled"
+        }
+      >
         <div className={styles.indicator}>
           <CheckCircleFilled
-            className={contract.autoRenew ? styles.iconSuccess : styles.iconMuted}
+            className={
+              contract.autoRenew ? styles.iconSuccess : styles.iconMuted
+            }
           />
           <Text className={styles.indicatorLabel}>Auto-renew</Text>
         </div>

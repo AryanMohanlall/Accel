@@ -2,16 +2,35 @@
 
 import React, { useEffect, useState } from "react";
 import {
-  Button, Input, Empty, Spin, Modal, Form,
-  Select, Switch, message, Tabs, Badge,
+  Button,
+  Input,
+  Empty,
+  Spin,
+  Modal,
+  Form,
+  Select,
+  Switch,
+  message,
+  Tabs,
+  Badge,
 } from "antd";
 import {
-  PlusOutlined, EditOutlined, DeleteOutlined,
-  SearchOutlined, TeamOutlined, UserOutlined,
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  SearchOutlined,
+  TeamOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import useStyles from "./style";
-import { useClientState, useClientActions } from "../../providers/clientsProvider";
-import { useContactState, useContactActions } from "../../providers/contactsProvider";
+import {
+  useClientState,
+  useClientActions,
+} from "../../providers/clientsProvider";
+import {
+  useContactState,
+  useContactActions,
+} from "../../providers/contactsProvider";
 import { Client } from "../../providers/clientsProvider/context";
 import { Contact } from "../../providers/contactsProvider/context";
 import ClientCard from "../../components/ClientCard";
@@ -28,11 +47,11 @@ const CLIENT_TYPE_OPTIONS = [
 ];
 
 const COMPANY_SIZE_OPTIONS = [
-  { value: "1-10",    label: "1–10 employees" },
-  { value: "11-50",   label: "11–50 employees" },
-  { value: "51-200",  label: "51–200 employees" },
+  { value: "1-10", label: "1–10 employees" },
+  { value: "11-50", label: "11–50 employees" },
+  { value: "51-200", label: "51–200 employees" },
   { value: "201-500", label: "201–500 employees" },
-  { value: "500+",    label: "500+ employees" },
+  { value: "500+", label: "500+ employees" },
 ];
 
 // ── Main Page ──────────────────────────────────────────────
@@ -40,19 +59,43 @@ const ClientsContactsPage = () => {
   const { styles } = useStyles();
 
   // Clients
-  const { clients, isPending: clientsPending, selected: selectedClient } = useClientState();
-  const { fetchClients, setSelected: setSelectedClient, createClient, updateClient, deleteClient } = useClientActions();
+  const {
+    clients,
+    isPending: clientsPending,
+    selected: selectedClient,
+  } = useClientState();
+  const {
+    fetchClients,
+    setSelected: setSelectedClient,
+    createClient,
+    updateClient,
+    deleteClient,
+  } = useClientActions();
 
   // Contacts
-  const { contacts, isPending: contactsPending, selected: selectedContact } = useContactState();
-  const { fetchContacts, setSelected: setSelectedContact, createContact, updateContact, deleteContact } = useContactActions();
+  const {
+    contacts,
+    isPending: contactsPending,
+    selected: selectedContact,
+  } = useContactState();
+  const {
+    fetchContacts,
+    setSelected: setSelectedContact,
+    createContact,
+    updateContact,
+    deleteContact,
+  } = useContactActions();
 
-  const [activeTab, setActiveTab]             = useState("clients");
-  const [clientSearch, setClientSearch]       = useState("");
-  const [contactSearch, setContactSearch]     = useState("");
-  const [clientModal, setClientModal]         = useState<"create" | "update" | "delete" | null>(null);
-  const [contactModal, setContactModal]       = useState<"create" | "update" | "delete" | null>(null);
-  const [clientForm]  = Form.useForm();
+  const [activeTab, setActiveTab] = useState("clients");
+  const [clientSearch, setClientSearch] = useState("");
+  const [contactSearch, setContactSearch] = useState("");
+  const [clientModal, setClientModal] = useState<
+    "create" | "update" | "delete" | null
+  >(null);
+  const [contactModal, setContactModal] = useState<
+    "create" | "update" | "delete" | null
+  >(null);
+  const [clientForm] = Form.useForm();
   const [contactForm] = Form.useForm();
 
   useEffect(() => {
@@ -61,16 +104,18 @@ const ClientsContactsPage = () => {
   }, []);
 
   // ── Filtered lists ──
-  const filteredClients = clients.filter(c =>
-    c.name?.toLowerCase().includes(clientSearch.toLowerCase()) ||
-    c.industry?.toLowerCase().includes(clientSearch.toLowerCase())
+  const filteredClients = clients.filter(
+    (c) =>
+      c.name?.toLowerCase().includes(clientSearch.toLowerCase()) ||
+      c.industry?.toLowerCase().includes(clientSearch.toLowerCase()),
   );
 
-  const filteredContacts = contacts.filter(c =>
-    c.fullName?.toLowerCase().includes(contactSearch.toLowerCase()) ||
-    c.clientName?.toLowerCase().includes(contactSearch.toLowerCase()) ||
-    c.email?.toLowerCase().includes(contactSearch.toLowerCase()) ||
-    c.position?.toLowerCase().includes(contactSearch.toLowerCase())
+  const filteredContacts = contacts.filter(
+    (c) =>
+      c.fullName?.toLowerCase().includes(contactSearch.toLowerCase()) ||
+      c.clientName?.toLowerCase().includes(contactSearch.toLowerCase()) ||
+      c.email?.toLowerCase().includes(contactSearch.toLowerCase()) ||
+      c.position?.toLowerCase().includes(contactSearch.toLowerCase()),
   );
 
   // ── Client handlers ──
@@ -94,13 +139,13 @@ const ClientsContactsPage = () => {
   const handleOpenUpdateClient = () => {
     if (!selectedClient) return;
     clientForm.setFieldsValue({
-      name:           selectedClient.name,
-      industry:       selectedClient.industry,
-      companySize:    selectedClient.companySize,
-      website:        selectedClient.website,
+      name: selectedClient.name,
+      industry: selectedClient.industry,
+      companySize: selectedClient.companySize,
+      website: selectedClient.website,
       billingAddress: selectedClient.billingAddress,
-      taxNumber:      selectedClient.taxNumber,
-      clientType:     selectedClient.clientType,
+      taxNumber: selectedClient.taxNumber,
+      clientType: selectedClient.clientType,
     });
     setClientModal("update");
   };
@@ -147,12 +192,12 @@ const ClientsContactsPage = () => {
   const handleOpenUpdateContact = () => {
     if (!selectedContact) return;
     contactForm.setFieldsValue({
-      clientId:         selectedContact.clientId,
-      firstName:        selectedContact.firstName,
-      lastName:         selectedContact.lastName,
-      email:            selectedContact.email,
-      phoneNumber:      selectedContact.phoneNumber,
-      position:         selectedContact.position,
+      clientId: selectedContact.clientId,
+      firstName: selectedContact.firstName,
+      lastName: selectedContact.lastName,
+      email: selectedContact.email,
+      phoneNumber: selectedContact.phoneNumber,
+      position: selectedContact.position,
       isPrimaryContact: selectedContact.isPrimaryContact,
     });
     setContactModal("update");
@@ -182,10 +227,9 @@ const ClientsContactsPage = () => {
     }
   };
 
-  const clientOptions = clients.map(c => ({ value: c.id, label: c.name }));
+  const clientOptions = clients.map((c) => ({ value: c.id, label: c.name }));
 
-    const {user} = useUserState();
-
+  const { user } = useUserState();
 
   // ── Tab items ──
   const tabItems = [
@@ -202,12 +246,16 @@ const ClientsContactsPage = () => {
           {/* Client list */}
           <div className={styles.listWrapper}>
             {clientsPending && clients.length === 0 ? (
-              <div className={styles.centered}><Spin size="large" /></div>
+              <div className={styles.centered}>
+                <Spin size="large" />
+              </div>
             ) : filteredClients.length === 0 ? (
-              <div className={styles.centered}><Empty description="No clients found" /></div>
+              <div className={styles.centered}>
+                <Empty description="No clients found" />
+              </div>
             ) : (
               <div className={styles.clientGrid}>
-                {filteredClients.map(client => (
+                {filteredClients.map((client) => (
                   <ClientCard
                     key={client.id}
                     client={client}
@@ -222,7 +270,11 @@ const ClientsContactsPage = () => {
 
           {/* Client action bar */}
           <div className={styles.actionBar}>
-            <Button icon={<PlusOutlined />} className={styles.btnCreate} onClick={() => setClientModal("create")}>
+            <Button
+              icon={<PlusOutlined />}
+              className={styles.btnCreate}
+              onClick={() => setClientModal("create")}
+            >
               Create
             </Button>
             <Button
@@ -233,24 +285,23 @@ const ClientsContactsPage = () => {
             >
               Update
             </Button>
-            {
-              user?.roles.includes('Admin') &&
-            <Button
-              icon={<DeleteOutlined />}
-              className={`${styles.btnAction} ${!selectedClient ? styles.btnDisabled : ""}`}
-              disabled={!selectedClient}
-              loading={clientsPending}
-              onClick={() => setClientModal("delete")}
-            >
-              Delete
-            </Button>
-            }
+            {user?.roles.includes("Admin") && (
+              <Button
+                icon={<DeleteOutlined />}
+                className={`${styles.btnAction} ${!selectedClient ? styles.btnDisabled : ""}`}
+                disabled={!selectedClient}
+                loading={clientsPending}
+                onClick={() => setClientModal("delete")}
+              >
+                Delete
+              </Button>
+            )}
             <Input
               placeholder="Search clients..."
               prefix={<SearchOutlined className={styles.searchIcon} />}
               className={styles.searchInput}
               value={clientSearch}
-              onChange={e => setClientSearch(e.target.value)}
+              onChange={(e) => setClientSearch(e.target.value)}
               allowClear
             />
           </div>
@@ -270,12 +321,16 @@ const ClientsContactsPage = () => {
           {/* Contact list */}
           <div className={styles.listWrapper}>
             {contactsPending && contacts.length === 0 ? (
-              <div className={styles.centered}><Spin size="large" /></div>
+              <div className={styles.centered}>
+                <Spin size="large" />
+              </div>
             ) : filteredContacts.length === 0 ? (
-              <div className={styles.centered}><Empty description="No contacts found" /></div>
+              <div className={styles.centered}>
+                <Empty description="No contacts found" />
+              </div>
             ) : (
               <div className={styles.contactList}>
-                {filteredContacts.map(contact => (
+                {filteredContacts.map((contact) => (
                   <ContactRow
                     key={contact.id}
                     contact={contact}
@@ -290,7 +345,11 @@ const ClientsContactsPage = () => {
 
           {/* Contact action bar */}
           <div className={styles.actionBar}>
-            <Button icon={<PlusOutlined />} className={styles.btnCreate} onClick={() => setContactModal("create")}>
+            <Button
+              icon={<PlusOutlined />}
+              className={styles.btnCreate}
+              onClick={() => setContactModal("create")}
+            >
               Create
             </Button>
             <Button
@@ -301,24 +360,23 @@ const ClientsContactsPage = () => {
             >
               Update
             </Button>
-            {
-              user?.roles.includes('Admin') &&
-            <Button
-              icon={<DeleteOutlined />}
-              className={`${styles.btnAction} ${!selectedContact ? styles.btnDisabled : ""}`}
-              disabled={!selectedContact}
-              loading={contactsPending}
-              onClick={() => setContactModal("delete")}
-            >
-              Delete
-            </Button>
-            }
+            {user?.roles.includes("Admin") && (
+              <Button
+                icon={<DeleteOutlined />}
+                className={`${styles.btnAction} ${!selectedContact ? styles.btnDisabled : ""}`}
+                disabled={!selectedContact}
+                loading={contactsPending}
+                onClick={() => setContactModal("delete")}
+              >
+                Delete
+              </Button>
+            )}
             <Input
               placeholder="Search contacts..."
               prefix={<SearchOutlined className={styles.searchIcon} />}
               className={styles.searchInput}
               value={contactSearch}
-              onChange={e => setContactSearch(e.target.value)}
+              onChange={(e) => setContactSearch(e.target.value)}
               allowClear
             />
           </div>
@@ -340,16 +398,29 @@ const ClientsContactsPage = () => {
       <Modal
         title="Create Client"
         open={clientModal === "create"}
-        onCancel={() => { setClientModal(null); clientForm.resetFields(); }}
+        onCancel={() => {
+          setClientModal(null);
+          clientForm.resetFields();
+        }}
         onOk={() => clientForm.submit()}
         okText="Create"
         confirmLoading={clientsPending}
-        okButtonProps={{ style: { background: "#00b86e", borderColor: "#00b86e" } }}
+        okButtonProps={{
+          style: { background: "#00b86e", borderColor: "#00b86e" },
+        }}
         width={560}
       >
-        <Form form={clientForm} layout="vertical" onFinish={handleCreateClient}
-          initialValues={{ clientType: 1 }}>
-          <Form.Item name="name" label="Name" rules={[{ required: true, message: "Required" }]}>
+        <Form
+          form={clientForm}
+          layout="vertical"
+          onFinish={handleCreateClient}
+          initialValues={{ clientType: 1 }}
+        >
+          <Form.Item
+            name="name"
+            label="Name"
+            rules={[{ required: true, message: "Required" }]}
+          >
             <Input placeholder="Company name" />
           </Form.Item>
           <Form.Item name="industry" label="Industry">
@@ -377,15 +448,24 @@ const ClientsContactsPage = () => {
       <Modal
         title={`Update — ${selectedClient?.name ?? ""}`}
         open={clientModal === "update"}
-        onCancel={() => { setClientModal(null); clientForm.resetFields(); }}
+        onCancel={() => {
+          setClientModal(null);
+          clientForm.resetFields();
+        }}
         onOk={() => clientForm.submit()}
         okText="Save"
         confirmLoading={clientsPending}
-        okButtonProps={{ style: { background: "#00b86e", borderColor: "#00b86e" } }}
+        okButtonProps={{
+          style: { background: "#00b86e", borderColor: "#00b86e" },
+        }}
         width={560}
       >
         <Form form={clientForm} layout="vertical" onFinish={handleUpdateClient}>
-          <Form.Item name="name" label="Name" rules={[{ required: true, message: "Required" }]}>
+          <Form.Item
+            name="name"
+            label="Name"
+            rules={[{ required: true, message: "Required" }]}
+          >
             <Input />
           </Form.Item>
           <Form.Item name="industry" label="Industry">
@@ -419,37 +499,65 @@ const ClientsContactsPage = () => {
         okButtonProps={{ danger: true, loading: clientsPending }}
         cancelText="Cancel"
       >
-        <p>Are you sure you want to delete <strong>"{selectedClient?.name}"</strong>?</p>
-        <p style={{ color: "#888", fontSize: "0.85rem" }}>This action cannot be undone.</p>
+        <p>
+          Are you sure you want to delete{" "}
+          <strong>"{selectedClient?.name}"</strong>?
+        </p>
+        <p style={{ color: "#888", fontSize: "0.85rem" }}>
+          This action cannot be undone.
+        </p>
       </Modal>
 
       {/* ── CONTACT CREATE MODAL ── */}
       <Modal
         title="Create Contact"
         open={contactModal === "create"}
-        onCancel={() => { setContactModal(null); contactForm.resetFields(); }}
+        onCancel={() => {
+          setContactModal(null);
+          contactForm.resetFields();
+        }}
         onOk={() => contactForm.submit()}
         okText="Create"
         confirmLoading={contactsPending}
-        okButtonProps={{ style: { background: "#00b86e", borderColor: "#00b86e" } }}
+        okButtonProps={{
+          style: { background: "#00b86e", borderColor: "#00b86e" },
+        }}
         width={520}
       >
-        <Form form={contactForm} layout="vertical" onFinish={handleCreateContact}
-          initialValues={{ isPrimaryContact: false }}>
-          <Form.Item name="clientId" label="Client" rules={[{ required: true, message: "Required" }]}>
+        <Form
+          form={contactForm}
+          layout="vertical"
+          onFinish={handleCreateContact}
+          initialValues={{ isPrimaryContact: false }}
+        >
+          <Form.Item
+            name="clientId"
+            label="Client"
+            rules={[{ required: true, message: "Required" }]}
+          >
             <Select
               showSearch
               placeholder="Select client"
               options={clientOptions}
               filterOption={(input, option) =>
-                (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+                (option?.label ?? "")
+                  .toLowerCase()
+                  .includes(input.toLowerCase())
               }
             />
           </Form.Item>
-          <Form.Item name="firstName" label="First Name" rules={[{ required: true, message: "Required" }]}>
+          <Form.Item
+            name="firstName"
+            label="First Name"
+            rules={[{ required: true, message: "Required" }]}
+          >
             <Input placeholder="First name" />
           </Form.Item>
-          <Form.Item name="lastName" label="Last Name" rules={[{ required: true, message: "Required" }]}>
+          <Form.Item
+            name="lastName"
+            label="Last Name"
+            rules={[{ required: true, message: "Required" }]}
+          >
             <Input placeholder="Last name" />
           </Form.Item>
           <Form.Item name="email" label="Email">
@@ -461,7 +569,11 @@ const ClientsContactsPage = () => {
           <Form.Item name="position" label="Position">
             <Input placeholder="e.g. Procurement Manager" />
           </Form.Item>
-          <Form.Item name="isPrimaryContact" label="Primary Contact" valuePropName="checked">
+          <Form.Item
+            name="isPrimaryContact"
+            label="Primary Contact"
+            valuePropName="checked"
+          >
             <Switch />
           </Form.Item>
         </Form>
@@ -471,25 +583,50 @@ const ClientsContactsPage = () => {
       <Modal
         title={`Update — ${selectedContact?.fullName ?? ""}`}
         open={contactModal === "update"}
-        onCancel={() => { setContactModal(null); contactForm.resetFields(); }}
+        onCancel={() => {
+          setContactModal(null);
+          contactForm.resetFields();
+        }}
         onOk={() => contactForm.submit()}
         okText="Save"
         confirmLoading={contactsPending}
-        okButtonProps={{ style: { background: "#00b86e", borderColor: "#00b86e" } }}
+        okButtonProps={{
+          style: { background: "#00b86e", borderColor: "#00b86e" },
+        }}
         width={520}
       >
-        <Form form={contactForm} layout="vertical" onFinish={handleUpdateContact}>
-          <Form.Item name="clientId" label="Client" rules={[{ required: true, message: "Required" }]}>
-            <Select showSearch options={clientOptions}
+        <Form
+          form={contactForm}
+          layout="vertical"
+          onFinish={handleUpdateContact}
+        >
+          <Form.Item
+            name="clientId"
+            label="Client"
+            rules={[{ required: true, message: "Required" }]}
+          >
+            <Select
+              showSearch
+              options={clientOptions}
               filterOption={(input, option) =>
-                (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+                (option?.label ?? "")
+                  .toLowerCase()
+                  .includes(input.toLowerCase())
               }
             />
           </Form.Item>
-          <Form.Item name="firstName" label="First Name" rules={[{ required: true, message: "Required" }]}>
+          <Form.Item
+            name="firstName"
+            label="First Name"
+            rules={[{ required: true, message: "Required" }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name="lastName" label="Last Name" rules={[{ required: true, message: "Required" }]}>
+          <Form.Item
+            name="lastName"
+            label="Last Name"
+            rules={[{ required: true, message: "Required" }]}
+          >
             <Input />
           </Form.Item>
           <Form.Item name="email" label="Email">
@@ -501,7 +638,11 @@ const ClientsContactsPage = () => {
           <Form.Item name="position" label="Position">
             <Input />
           </Form.Item>
-          <Form.Item name="isPrimaryContact" label="Primary Contact" valuePropName="checked">
+          <Form.Item
+            name="isPrimaryContact"
+            label="Primary Contact"
+            valuePropName="checked"
+          >
             <Switch />
           </Form.Item>
         </Form>
@@ -517,8 +658,13 @@ const ClientsContactsPage = () => {
         okButtonProps={{ danger: true, loading: contactsPending }}
         cancelText="Cancel"
       >
-        <p>Are you sure you want to delete <strong>"{selectedContact?.fullName}"</strong>?</p>
-        <p style={{ color: "#888", fontSize: "0.85rem" }}>This action cannot be undone.</p>
+        <p>
+          Are you sure you want to delete{" "}
+          <strong>"{selectedContact?.fullName}"</strong>?
+        </p>
+        <p style={{ color: "#888", fontSize: "0.85rem" }}>
+          This action cannot be undone.
+        </p>
       </Modal>
     </div>
   );

@@ -10,12 +10,20 @@ import {
 } from "./context";
 import { ContactReducer } from "./reducers";
 import {
-  fetchPending, fetchSuccess, fetchError,
-  mutatePending, mutateSuccess, mutateError,
+  fetchPending,
+  fetchSuccess,
+  fetchError,
+  mutatePending,
+  mutateSuccess,
+  mutateError,
   setSelectedAction,
 } from "./actions";
 
-export const ContactProvider = ({ children }: { children: React.ReactNode }) => {
+export const ContactProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [state, dispatch] = useReducer(ContactReducer, INITIAL_CONTACT_STATE);
   const instance = getAxiosInstance();
 
@@ -27,7 +35,12 @@ export const ContactProvider = ({ children }: { children: React.ReactNode }) => 
         ? `/api/Contacts?clientId=${clientId}`
         : `/api/Contacts`;
       const res = await instance.get(url);
-      dispatch(fetchSuccess({ items: res.data.items, totalCount: res.data.totalCount }));
+      dispatch(
+        fetchSuccess({
+          items: res.data.items,
+          totalCount: res.data.totalCount,
+        }),
+      );
     } catch (error) {
       console.error("Failed to fetch contacts:", error);
       dispatch(fetchError());
@@ -42,7 +55,7 @@ export const ContactProvider = ({ children }: { children: React.ReactNode }) => 
   const createContact = async (payload: any) => {
     dispatch(mutatePending());
     try {
-      await instance.post('/api/Contacts', payload);
+      await instance.post("/api/Contacts", payload);
       dispatch(mutateSuccess());
       await fetchContacts(payload.clientId);
     } catch (error) {
@@ -97,12 +110,14 @@ export const ContactProvider = ({ children }: { children: React.ReactNode }) => 
 
 export const useContactState = () => {
   const context = useContext(ContactStateContext);
-  if (context === undefined) throw new Error("useContactState must be used within a ContactProvider");
+  if (context === undefined)
+    throw new Error("useContactState must be used within a ContactProvider");
   return context;
 };
 
 export const useContactActions = () => {
   const context = useContext(ContactActionContext);
-  if (context === undefined) throw new Error("useContactActions must be used within a ContactProvider");
+  if (context === undefined)
+    throw new Error("useContactActions must be used within a ContactProvider");
   return context;
 };

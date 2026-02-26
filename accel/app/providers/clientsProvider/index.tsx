@@ -10,8 +10,12 @@ import {
 } from "./context";
 import { ClientReducer } from "./reducers";
 import {
-  fetchPending, fetchSuccess, fetchError,
-  mutatePending, mutateSuccess, mutateError,
+  fetchPending,
+  fetchSuccess,
+  fetchError,
+  mutatePending,
+  mutateSuccess,
+  mutateError,
   setSelectedAction,
 } from "./actions";
 
@@ -22,8 +26,13 @@ export const ClientProvider = ({ children }: { children: React.ReactNode }) => {
   const fetchClients = async () => {
     dispatch(fetchPending());
     try {
-      const res = await instance.get('/api/Clients');
-      dispatch(fetchSuccess({ items: res.data.items, totalCount: res.data.totalCount }));
+      const res = await instance.get("/api/Clients");
+      dispatch(
+        fetchSuccess({
+          items: res.data.items,
+          totalCount: res.data.totalCount,
+        }),
+      );
     } catch (error) {
       console.error("Failed to fetch clients:", error);
       dispatch(fetchError());
@@ -38,7 +47,7 @@ export const ClientProvider = ({ children }: { children: React.ReactNode }) => {
   const createClient = async (payload: any) => {
     dispatch(mutatePending());
     try {
-      await instance.post('/api/Clients', payload);
+      await instance.post("/api/Clients", payload);
       dispatch(mutateSuccess());
       await fetchClients();
     } catch (error) {
@@ -93,12 +102,14 @@ export const ClientProvider = ({ children }: { children: React.ReactNode }) => {
 
 export const useClientState = () => {
   const context = useContext(ClientStateContext);
-  if (context === undefined) throw new Error("useClientState must be used within a ClientProvider");
+  if (context === undefined)
+    throw new Error("useClientState must be used within a ClientProvider");
   return context;
 };
 
 export const useClientActions = () => {
   const context = useContext(ClientActionContext);
-  if (context === undefined) throw new Error("useClientActions must be used within a ClientProvider");
+  if (context === undefined)
+    throw new Error("useClientActions must be used within a ClientProvider");
   return context;
 };

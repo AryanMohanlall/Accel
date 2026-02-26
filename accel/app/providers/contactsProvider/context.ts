@@ -42,8 +42,10 @@ export const INITIAL_CONTACT_STATE: IContactStateContext = {
   totalCount: 0,
 };
 
-export const ContactStateContext =
-  createContext<IContactStateContext>(INITIAL_CONTACT_STATE);
+export const ContactStateContext = createContext<IContactStateContext>(
+  INITIAL_CONTACT_STATE,
+);
 
-export const ContactActionContext =
-  createContext<IContactActionContext | undefined>(undefined);
+export const ContactActionContext = createContext<
+  IContactActionContext | undefined
+>(undefined);

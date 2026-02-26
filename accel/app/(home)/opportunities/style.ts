@@ -2,7 +2,6 @@
 import { createStyles } from "antd-style";
 
 const useStyles = createStyles(({ css }) => ({
-
   wrapper: css`
     width: 100%;
     height: 100%;
@@ -39,7 +38,9 @@ const useStyles = createStyles(({ css }) => ({
     overflow: hidden;
     min-height: 0;
     max-height: 100%;
-    &:last-child { border-right: none; }
+    &:last-child {
+      border-right: none;
+    }
   `,
 
   columnHeader: css`
@@ -85,8 +86,13 @@ const useStyles = createStyles(({ css }) => ({
     gap: 6px;
     background: #e8eaed;
     min-height: 0;
-    &::-webkit-scrollbar { width: 3px; }
-    &::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+    &::-webkit-scrollbar {
+      width: 3px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 2px;
+    }
   `,
 
   empty: css`
@@ -107,9 +113,9 @@ const useStyles = createStyles(({ css }) => ({
     cursor: pointer;
     border: 2px solid transparent;
     transition: all 0.2s ease;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     &:hover {
-      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
       transform: translateY(-1px);
     }
   `,
@@ -203,7 +209,7 @@ const useStyles = createStyles(({ css }) => ({
     display: flex;
     align-items: center;
     gap: 10px;
-    padding:  16px;
+    padding: 16px;
     background: #000;
     flex-shrink: 0;
     height: 80px;
@@ -218,7 +224,10 @@ const useStyles = createStyles(({ css }) => ({
     height: 34px !important;
     padding: 0 16px !important;
     font-size: 0.82rem !important;
-    &:hover { background: #00b86e !important; color: #fff !important; }
+    &:hover {
+      background: #00b86e !important;
+      color: #fff !important;
+    }
   `,
 
   btnAction: css`
@@ -230,7 +239,10 @@ const useStyles = createStyles(({ css }) => ({
     height: 34px !important;
     padding: 0 16px !important;
     font-size: 0.82rem !important;
-    &:hover { background: #333 !important; color: #fff !important; }
+    &:hover {
+      background: #333 !important;
+      color: #fff !important;
+    }
   `,
 
   btnDisabled: css`
@@ -245,18 +257,27 @@ const useStyles = createStyles(({ css }) => ({
     border: 1px solid #444 !important;
     color: #fff !important;
     height: 34px;
-    .ant-input { background: transparent !important; color: #fff !important; }
-    .ant-input::placeholder { color: #888 !important; }
-    .ant-input-clear-icon { color: #888 !important; }
+    .ant-input {
+      background: transparent !important;
+      color: #fff !important;
+    }
+    .ant-input::placeholder {
+      color: #888 !important;
+    }
+    .ant-input-clear-icon {
+      color: #888 !important;
+    }
   `,
 
   searchIcon: css`
     color: #667;
   `,
   columnDragOver: css`
-  background: rgba(0, 184, 110, 0.06);
-  .ant-empty { opacity: 0.6; }
-`,
+    background: rgba(0, 184, 110, 0.06);
+    .ant-empty {
+      opacity: 0.6;
+    }
+  `,
 }));
 
 export default useStyles;
