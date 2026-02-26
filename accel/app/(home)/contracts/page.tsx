@@ -183,6 +183,7 @@ const ContractsPage = () => {
   const isDraft     = selected?.statusName === 'Draft';
   const isActive    = selected?.statusName === 'Active';
   const isCancelled = selected?.statusName === 'Cancelled';
+  
 
   return (
     <div className={styles.wrapper}>
@@ -252,6 +253,8 @@ const ContractsPage = () => {
           Cancel
         </Button>
 
+{
+  user?.roles.includes('Admin') &&
         <Button
           icon={<DeleteOutlined />}
           className={`${styles.btnAction} ${!selected ? styles.btnDisabled : ''}`}
@@ -261,6 +264,7 @@ const ContractsPage = () => {
         >
           Delete
         </Button>
+}
 
         <Input
           placeholder="Search..."

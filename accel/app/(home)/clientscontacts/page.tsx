@@ -16,6 +16,7 @@ import { Client } from "../../providers/clientsProvider/context";
 import { Contact } from "../../providers/contactsProvider/context";
 import ClientCard from "../../components/ClientCard";
 import ContactRow from "../../components/ContactRow";
+import { useUserState } from "@/app/providers/userProvider";
 
 const { TextArea } = Input;
 
@@ -183,6 +184,9 @@ const ClientsContactsPage = () => {
 
   const clientOptions = clients.map(c => ({ value: c.id, label: c.name }));
 
+    const {user} = useUserState();
+
+
   // ── Tab items ──
   const tabItems = [
     {
@@ -229,6 +233,8 @@ const ClientsContactsPage = () => {
             >
               Update
             </Button>
+            {
+              user?.roles.includes('Admin') &&
             <Button
               icon={<DeleteOutlined />}
               className={`${styles.btnAction} ${!selectedClient ? styles.btnDisabled : ""}`}
@@ -238,6 +244,7 @@ const ClientsContactsPage = () => {
             >
               Delete
             </Button>
+            }
             <Input
               placeholder="Search clients..."
               prefix={<SearchOutlined className={styles.searchIcon} />}
@@ -294,6 +301,8 @@ const ClientsContactsPage = () => {
             >
               Update
             </Button>
+            {
+              user?.roles.includes('Admin') &&
             <Button
               icon={<DeleteOutlined />}
               className={`${styles.btnAction} ${!selectedContact ? styles.btnDisabled : ""}`}
@@ -303,6 +312,7 @@ const ClientsContactsPage = () => {
             >
               Delete
             </Button>
+            }
             <Input
               placeholder="Search contacts..."
               prefix={<SearchOutlined className={styles.searchIcon} />}

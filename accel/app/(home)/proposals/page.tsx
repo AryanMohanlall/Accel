@@ -16,6 +16,8 @@ import { useProposalState, useProposalActions } from '../../providers/proposalsP
 import { useOpportunityState, useOpportunityActions } from '../../providers/opportunitiesProvider';
 import { Proposal } from '../../providers/proposalsProvider/context';
 import withAuth from '@/app/hoc/withAuth';
+import { useUserState } from '@/app/providers/userProvider';
+
 
 const { TextArea } = Input;
 
@@ -214,6 +216,8 @@ const ProposalsPage = () => {
     },
   ];
 
+  const {user} = useUserState();
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.tableWrapper}>
@@ -253,6 +257,8 @@ const ProposalsPage = () => {
         >
           Update
         </Button>
+        {
+          user?.roles.includes('Admin') &&
         <Button
           icon={<DeleteOutlined />}
           className={`${styles.btnAction} ${!selected ? styles.btnDisabled : ''}`}
@@ -262,6 +268,7 @@ const ProposalsPage = () => {
         >
           Delete
         </Button>
+        }
         <Input
           placeholder="Search..."
           prefix={<SearchOutlined className={styles.searchIcon} />}

@@ -397,6 +397,8 @@ const ActivitiesPage = () => {
         >
           Cancel
         </Button>
+{
+  user?.roles.includes('Admin') &&
         <Button
           icon={<DeleteOutlined />}
           className={`${styles.btnAction} ${!selected ? styles.btnDisabled : ''}`}
@@ -406,6 +408,8 @@ const ActivitiesPage = () => {
         >
           Delete
         </Button>
+}
+
         <Input
           placeholder="Search..."
           prefix={<SearchOutlined className={styles.searchIcon} />}

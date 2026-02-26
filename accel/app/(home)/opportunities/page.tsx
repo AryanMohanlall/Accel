@@ -15,8 +15,11 @@ import { useOpportunityState, useOpportunityActions } from '../../providers/oppo
 import { useClientState, useClientActions } from '../../providers/clientsProvider';
 import { useContactState, useContactActions } from '../../providers/contactsProvider';
 import withAuth from '@/app/hoc/withAuth';
+import { useUserState } from '@/app/providers/userProvider';
+
 
 const { Text, Title } = Typography;
+
 
 const STAGES = ['Lead', 'Qualified', 'Proposal', 'Negotiation'];
 const STAGE_NUMBERS: Record<string, number> = {
@@ -256,6 +259,9 @@ const handleDelete = async () => {
     </>
   );
 
+
+  const {user} = useUserState();
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.board}>
@@ -324,15 +330,19 @@ const handleDelete = async () => {
         <Button icon={<PlusOutlined />} className={styles.btnCreate} onClick={() => setCreateModalOpen(true)}>Create</Button>
         <Button icon={<EditOutlined />} className={`${styles.btnAction} ${!selected ? styles.btnDisabled : ''}`}
           disabled={!selected} onClick={handleOpenUpdate}>Update</Button>
-        <Button
-  icon={<DeleteOutlined />}
-  className={`${styles.btnAction} ${!selected ? styles.btnDisabled : ''}`}
-  disabled={!selected}
-  loading={isPending}
-  onClick={() => setDeleteModalOpen(true)}
->
-  Delete
-</Button>
+        
+        {
+          user?.roles.includes('Admin') &&
+          <Button
+          icon={<DeleteOutlined />}
+          className={`${styles.btnAction} ${!selected ? styles.btnDisabled : ''}`}
+          disabled={!selected}
+          loading={isPending}
+          onClick={() => setDeleteModalOpen(true)}
+        >
+          Delete
+        </Button>
+        }
         {/* <Input placeholder="Search..." prefix={<SearchOutlined className={styles.searchIcon} />}
           className={styles.searchInput} value={search} onChange={e => setSearch(e.target.value)} allowClear /> */}
       </div>
