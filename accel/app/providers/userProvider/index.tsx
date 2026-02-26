@@ -11,8 +11,12 @@ import {
 } from "./context";
 import { UserReducer } from "./reducers";
 import {
-  loginPending, loginSuccess, loginError,
-  registerPending, registerSuccess, registerError,
+  loginPending,
+  loginSuccess,
+  loginError,
+  registerPending,
+  registerSuccess,
+  registerError,
   logoutAction,
 } from "./actions";
 
@@ -80,7 +84,9 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <UserStateContext.Provider value={state}>
-      <UserActionContext.Provider value={{ login, register, logout, checkAuth }}>
+      <UserActionContext.Provider
+        value={{ login, register, logout, checkAuth }}
+      >
         {children}
       </UserActionContext.Provider>
     </UserStateContext.Provider>
@@ -89,12 +95,14 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
 export const useUserState = () => {
   const context = useContext(UserStateContext);
-  if (context === undefined) throw new Error("useUserState must be used within a UserProvider");
+  if (context === undefined)
+    throw new Error("useUserState must be used within a UserProvider");
   return context;
 };
 
 export const useUserActions = () => {
   const context = useContext(UserActionContext);
-  if (context === undefined) throw new Error("useUserActions must be used within a UserProvider");
+  if (context === undefined)
+    throw new Error("useUserActions must be used within a UserProvider");
   return context;
 };

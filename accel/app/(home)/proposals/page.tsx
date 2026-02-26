@@ -1,54 +1,89 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
-  Table, Button, Input, Tag, Modal, Form,
-  Select, DatePicker, InputNumber, message, Divider, Space,
-} from 'antd';
-import type { ColumnsType } from 'antd/es/table';
+  Table,
+  Button,
+  Input,
+  Tag,
+  Modal,
+  Form,
+  Select,
+  DatePicker,
+  InputNumber,
+  message,
+  Divider,
+  Space,
+} from "antd";
+import type { ColumnsType } from "antd/es/table";
 import {
-  PlusOutlined, EditOutlined, DeleteOutlined,
-  SearchOutlined, FileTextOutlined, MinusCircleOutlined,
-} from '@ant-design/icons';
-import dayjs from 'dayjs';
-import useStyles from './style';
-import { useProposalState, useProposalActions } from '../../providers/proposalsProvider';
-import { useOpportunityState, useOpportunityActions } from '../../providers/opportunitiesProvider';
-import { Proposal } from '../../providers/proposalsProvider/context';
-import withAuth from '@/app/hoc/withAuth';
-import { useUserState } from '@/app/providers/userProvider';
-
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  SearchOutlined,
+  FileTextOutlined,
+  MinusCircleOutlined,
+} from "@ant-design/icons";
+import dayjs from "dayjs";
+import useStyles from "./style";
+import {
+  useProposalState,
+  useProposalActions,
+} from "../../providers/proposalsProvider";
+import {
+  useOpportunityState,
+  useOpportunityActions,
+} from "../../providers/opportunitiesProvider";
+import { Proposal } from "../../providers/proposalsProvider/context";
+import withAuth from "@/app/hoc/withAuth";
+import { useUserState } from "@/app/providers/userProvider";
 
 const { TextArea } = Input;
 
 const STATUS_COLORS: Record<number, string> = {
-  1: 'blue',
-  2: 'orange',
-  3: 'green',
-  4: 'red',
+  1: "blue",
+  2: "orange",
+  3: "green",
+  4: "red",
 };
 
 const CURRENCY_OPTIONS = [
-  { value: 'ZAR', label: 'ZAR' },
-  { value: 'USD', label: 'USD' },
-  { value: 'EUR', label: 'EUR' },
-  { value: 'GBP', label: 'GBP' },
+  { value: "ZAR", label: "ZAR" },
+  { value: "USD", label: "USD" },
+  { value: "EUR", label: "EUR" },
+  { value: "GBP", label: "GBP" },
 ];
 
 const formatCurrency = (value: number, currency: string) =>
-  new Intl.NumberFormat('en-US', { style: 'currency', currency, maximumFractionDigits: 0 }).format(value);
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 0,
+  }).format(value);
 
 const formatDate = (dateStr: string | null) =>
-  dateStr ? new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+  dateStr
+    ? new Date(dateStr).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+    : "—";
 
 const ProposalsPage = () => {
   const { styles } = useStyles();
   const { proposals, isPending, selected } = useProposalState();
-  const { fetchProposals, setSelected, createProposal, updateProposal, deleteProposal } = useProposalActions();
+  const {
+    fetchProposals,
+    setSelected,
+    createProposal,
+    updateProposal,
+    deleteProposal,
+  } = useProposalActions();
   const { opportunities } = useOpportunityState();
   const { fetchOpportunities } = useOpportunityActions();
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -60,10 +95,11 @@ const ProposalsPage = () => {
     fetchOpportunities();
   }, []);
 
-  const filtered = proposals.filter(p =>
-    p.title?.toLowerCase().includes(search.toLowerCase()) ||
-    p.clientName?.toLowerCase().includes(search.toLowerCase()) ||
-    p.proposalNumber?.toLowerCase().includes(search.toLowerCase())
+  const filtered = proposals.filter(
+    (p) =>
+      p.title?.toLowerCase().includes(search.toLowerCase()) ||
+      p.clientName?.toLowerCase().includes(search.toLowerCase()) ||
+      p.proposalNumber?.toLowerCase().includes(search.toLowerCase()),
   );
 
   const handleSelect = (record: Proposal) =>
@@ -74,17 +110,21 @@ const ProposalsPage = () => {
     try {
       await createProposal({
         opportunityId: values.opportunityId,
-        title:         values.title,
-        description:   values.description,
-        currency:      values.currency,
-        validUntil:    values.validUntil?.format('YYYY-MM-DD'),
-        lineItems:     values.lineItems ?? [],
+        title: values.title,
+        description: values.description,
+        currency: values.currency,
+        validUntil: values.validUntil?.format("YYYY-MM-DD"),
+        lineItems: values.lineItems ?? [],
       });
-      message.success('Proposal created');
+      message.success("Proposal created");
       setCreateModalOpen(false);
       createForm.resetFields();
     } catch (error: any) {
-      message.error(error.response?.data?.detail || error.response?.data?.title || 'Failed to create proposal');
+      message.error(
+        error.response?.data?.detail ||
+          error.response?.data?.title ||
+          "Failed to create proposal",
+      );
     }
   };
 
@@ -92,14 +132,14 @@ const ProposalsPage = () => {
   const handleOpenUpdate = () => {
     if (!selected) return;
     if (selected.status !== 1) {
-      message.warning('Only Draft proposals can be updated');
+      message.warning("Only Draft proposals can be updated");
       return;
     }
     updateForm.setFieldsValue({
-      title:       selected.title,
+      title: selected.title,
       description: selected.description,
-      currency:    selected.currency,
-      validUntil:  selected.validUntil ? dayjs(selected.validUntil) : undefined,
+      currency: selected.currency,
+      validUntil: selected.validUntil ? dayjs(selected.validUntil) : undefined,
     });
     setUpdateModalOpen(true);
   };
@@ -108,16 +148,20 @@ const ProposalsPage = () => {
     if (!selected) return;
     try {
       await updateProposal(selected.id, {
-        title:       values.title,
+        title: values.title,
         description: values.description,
-        currency:    values.currency,
-        validUntil:  values.validUntil?.format('YYYY-MM-DD'),
+        currency: values.currency,
+        validUntil: values.validUntil?.format("YYYY-MM-DD"),
       });
-      message.success('Proposal updated');
+      message.success("Proposal updated");
       setUpdateModalOpen(false);
       updateForm.resetFields();
     } catch (error: any) {
-      message.error(error.response?.data?.detail || error.response?.data?.title || 'Failed to update proposal');
+      message.error(
+        error.response?.data?.detail ||
+          error.response?.data?.title ||
+          "Failed to update proposal",
+      );
     }
   };
 
@@ -130,17 +174,24 @@ const ProposalsPage = () => {
       setSelected(null);
       setDeleteModalOpen(false);
     } catch (error: any) {
-      message.error(error.response?.data?.detail || error.response?.data?.title || 'Failed to delete proposal');
+      message.error(
+        error.response?.data?.detail ||
+          error.response?.data?.title ||
+          "Failed to delete proposal",
+      );
     }
   };
 
-  const opportunityOptions = opportunities.map(o => ({ value: o.id, label: o.title }));
+  const opportunityOptions = opportunities.map((o) => ({
+    value: o.id,
+    label: o.title,
+  }));
 
   const columns: ColumnsType<Proposal> = [
     {
-      title: '#',
-      dataIndex: 'proposalNumber',
-      key: 'proposalNumber',
+      title: "#",
+      dataIndex: "proposalNumber",
+      key: "proposalNumber",
       width: 110,
       render: (val: string) => (
         <span className={styles.proposalNumber}>
@@ -149,74 +200,83 @@ const ProposalsPage = () => {
       ),
     },
     {
-      title: 'Title',
-      dataIndex: 'title',
-      key: 'title',
+      title: "Title",
+      dataIndex: "title",
+      key: "title",
       render: (val: string) => <span className={styles.titleCell}>{val}</span>,
     },
     {
-      title: 'Client',
-      dataIndex: 'clientName',
-      key: 'clientName',
+      title: "Client",
+      dataIndex: "clientName",
+      key: "clientName",
       render: (val: string) => <span className={styles.clientCell}>{val}</span>,
     },
     {
-      title: 'Opportunity',
-      dataIndex: 'opportunityTitle',
-      key: 'opportunityTitle',
+      title: "Opportunity",
+      dataIndex: "opportunityTitle",
+      key: "opportunityTitle",
       render: (val: string) => <span className={styles.mutedCell}>{val}</span>,
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
       width: 110,
       render: (_: any, record: Proposal) => (
-        <Tag color={STATUS_COLORS[record.status] ?? 'default'} className={styles.statusTag}>
+        <Tag
+          color={STATUS_COLORS[record.status] ?? "default"}
+          className={styles.statusTag}
+        >
           {record.statusName}
         </Tag>
       ),
     },
     {
-      title: 'Amount',
-      dataIndex: 'totalAmount',
-      key: 'totalAmount',
+      title: "Amount",
+      dataIndex: "totalAmount",
+      key: "totalAmount",
       width: 130,
       render: (val: number, record: Proposal) => (
-        <span className={styles.amountCell}>{formatCurrency(val, record.currency)}</span>
+        <span className={styles.amountCell}>
+          {formatCurrency(val, record.currency)}
+        </span>
       ),
     },
     {
-      title: 'Line Items',
-      dataIndex: 'lineItemsCount',
-      key: 'lineItemsCount',
+      title: "Line Items",
+      dataIndex: "lineItemsCount",
+      key: "lineItemsCount",
       width: 90,
-      align: 'center',
+      align: "center",
       render: (val: number) => <span className={styles.badgeCell}>{val}</span>,
     },
     {
-      title: 'Valid Until',
-      dataIndex: 'validUntil',
-      key: 'validUntil',
+      title: "Valid Until",
+      dataIndex: "validUntil",
+      key: "validUntil",
       width: 120,
-      render: (val: string) => <span className={styles.dateCell}>{formatDate(val)}</span>,
+      render: (val: string) => (
+        <span className={styles.dateCell}>{formatDate(val)}</span>
+      ),
     },
     {
-      title: 'Submitted',
-      dataIndex: 'submittedDate',
-      key: 'submittedDate',
+      title: "Submitted",
+      dataIndex: "submittedDate",
+      key: "submittedDate",
       width: 120,
-      render: (val: string) => <span className={styles.dateCell}>{formatDate(val)}</span>,
+      render: (val: string) => (
+        <span className={styles.dateCell}>{formatDate(val)}</span>
+      ),
     },
     {
-      title: 'Created By',
-      dataIndex: 'createdByName',
-      key: 'createdByName',
+      title: "Created By",
+      dataIndex: "createdByName",
+      key: "createdByName",
       render: (val: string) => <span className={styles.mutedCell}>{val}</span>,
     },
   ];
 
-  const {user} = useUserState();
+  const { user } = useUserState();
 
   return (
     <div className={styles.wrapper}>
@@ -226,14 +286,14 @@ const ProposalsPage = () => {
           columns={columns}
           dataSource={filtered}
           loading={isPending}
-          pagination={{ pageSize: 10, size: 'small' }}
+          pagination={{ pageSize: 10, size: "small" }}
           size="small"
           className={styles.table}
           rowClassName={(record) =>
             record.id === selected?.id ? styles.rowSelected : styles.row
           }
           onRow={(record) => ({ onClick: () => handleSelect(record) })}
-          scroll={{ y: 'calc(100% - 40px)' }}
+          scroll={{ y: "calc(100% - 40px)" }}
         />
       </div>
 
@@ -251,30 +311,29 @@ const ProposalsPage = () => {
         </Button>
         <Button
           icon={<EditOutlined />}
-          className={`${styles.btnAction} ${!selected ? styles.btnDisabled : ''}`}
+          className={`${styles.btnAction} ${!selected ? styles.btnDisabled : ""}`}
           disabled={!selected}
           onClick={handleOpenUpdate}
         >
           Update
         </Button>
-        {
-          user?.roles.includes('Admin') &&
-        <Button
-          icon={<DeleteOutlined />}
-          className={`${styles.btnAction} ${!selected ? styles.btnDisabled : ''}`}
-          disabled={!selected}
-          loading={isPending}
-          onClick={() => setDeleteModalOpen(true)}
-        >
-          Delete
-        </Button>
-        }
+        {user?.roles.includes("Admin") && (
+          <Button
+            icon={<DeleteOutlined />}
+            className={`${styles.btnAction} ${!selected ? styles.btnDisabled : ""}`}
+            disabled={!selected}
+            loading={isPending}
+            onClick={() => setDeleteModalOpen(true)}
+          >
+            Delete
+          </Button>
+        )}
         <Input
           placeholder="Search..."
           prefix={<SearchOutlined className={styles.searchIcon} />}
           className={styles.searchInput}
           value={search}
-          onChange={e => setSearch(e.target.value)}
+          onChange={(e) => setSearch(e.target.value)}
           allowClear
         />
       </div>
@@ -283,31 +342,46 @@ const ProposalsPage = () => {
       <Modal
         title="Create Proposal"
         open={createModalOpen}
-        onCancel={() => { setCreateModalOpen(false); createForm.resetFields(); }}
+        onCancel={() => {
+          setCreateModalOpen(false);
+          createForm.resetFields();
+        }}
         onOk={() => createForm.submit()}
         okText="Create"
         confirmLoading={isPending}
-        okButtonProps={{ style: { background: '#00b86e', borderColor: '#00b86e' } }}
+        okButtonProps={{
+          style: { background: "#00b86e", borderColor: "#00b86e" },
+        }}
         width={680}
       >
         <Form
           form={createForm}
           layout="vertical"
           onFinish={handleCreate}
-          initialValues={{ currency: 'ZAR', lineItems: [{}] }}
+          initialValues={{ currency: "ZAR", lineItems: [{}] }}
         >
-          <Form.Item name="opportunityId" label="Opportunity" rules={[{ required: true, message: 'Required' }]}>
+          <Form.Item
+            name="opportunityId"
+            label="Opportunity"
+            rules={[{ required: true, message: "Required" }]}
+          >
             <Select
               showSearch
               placeholder="Select opportunity"
               options={opportunityOptions}
               filterOption={(input, option) =>
-                (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                (option?.label ?? "")
+                  .toLowerCase()
+                  .includes(input.toLowerCase())
               }
             />
           </Form.Item>
 
-          <Form.Item name="title" label="Title" rules={[{ required: true, message: 'Required' }]}>
+          <Form.Item
+            name="title"
+            label="Title"
+            rules={[{ required: true, message: "Required" }]}
+          >
             <Input placeholder="Proposal title" />
           </Form.Item>
 
@@ -320,11 +394,14 @@ const ProposalsPage = () => {
           </Form.Item>
 
           <Form.Item name="validUntil" label="Valid Until">
-            <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />
+            <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
           </Form.Item>
 
           {/* LINE ITEMS */}
-          <Divider titlePlacement="left" style={{ fontSize: '0.8rem', color: '#888' }}>
+          <Divider
+            titlePlacement="left"
+            style={{ fontSize: "0.8rem", color: "#888" }}
+          >
             Line Items
           </Divider>
           <Form.List name="lineItems">
@@ -334,74 +411,101 @@ const ProposalsPage = () => {
                   <div
                     key={key}
                     style={{
-                      background: '#f9f9f9',
+                      background: "#f9f9f9",
                       borderRadius: 8,
-                      padding: '10px 12px',
+                      padding: "10px 12px",
                       marginBottom: 10,
-                      position: 'relative',
+                      position: "relative",
                     }}
                   >
                     <Form.Item
                       {...restField}
-                      name={[name, 'productServiceName']}
+                      name={[name, "productServiceName"]}
                       label="Product / Service"
-                      rules={[{ required: true, message: 'Required' }]}
+                      rules={[{ required: true, message: "Required" }]}
                     >
                       <Input placeholder="e.g. Consulting" />
                     </Form.Item>
-                    <Form.Item {...restField} name={[name, 'description']} label="Description">
+                    <Form.Item
+                      {...restField}
+                      name={[name, "description"]}
+                      label="Description"
+                    >
                       <Input placeholder="Line item description" />
                     </Form.Item>
-                    <Space style={{ width: '100%' }} size={8}>
+                    <Space style={{ width: "100%" }} size={8}>
                       <Form.Item
                         {...restField}
-                        name={[name, 'quantity']}
+                        name={[name, "quantity"]}
                         label="Qty"
                         style={{ flex: 1, marginBottom: 0 }}
-                        rules={[{ required: true, message: 'Required' }]}
+                        rules={[{ required: true, message: "Required" }]}
                       >
-                        <InputNumber style={{ width: '100%' }} min={0} placeholder="1" />
+                        <InputNumber
+                          style={{ width: "100%" }}
+                          min={0}
+                          placeholder="1"
+                        />
                       </Form.Item>
                       <Form.Item
                         {...restField}
-                        name={[name, 'unitPrice']}
+                        name={[name, "unitPrice"]}
                         label="Unit Price"
                         style={{ flex: 2, marginBottom: 0 }}
-                        rules={[{ required: true, message: 'Required' }]}
+                        rules={[{ required: true, message: "Required" }]}
                       >
-                        <InputNumber style={{ width: '100%' }} min={0} placeholder="0.00" />
+                        <InputNumber
+                          style={{ width: "100%" }}
+                          min={0}
+                          placeholder="0.00"
+                        />
                       </Form.Item>
                       <Form.Item
                         {...restField}
-                        name={[name, 'discount']}
+                        name={[name, "discount"]}
                         label="Discount %"
                         style={{ flex: 1, marginBottom: 0 }}
                       >
-                        <InputNumber style={{ width: '100%' }} min={0} max={100} placeholder="0" />
+                        <InputNumber
+                          style={{ width: "100%" }}
+                          min={0}
+                          max={100}
+                          placeholder="0"
+                        />
                       </Form.Item>
                       <Form.Item
                         {...restField}
-                        name={[name, 'taxRate']}
+                        name={[name, "taxRate"]}
                         label="Tax %"
                         style={{ flex: 1, marginBottom: 0 }}
                       >
-                        <InputNumber style={{ width: '100%' }} min={0} max={100} placeholder="0" />
+                        <InputNumber
+                          style={{ width: "100%" }}
+                          min={0}
+                          max={100}
+                          placeholder="0"
+                        />
                       </Form.Item>
                     </Space>
                     <MinusCircleOutlined
                       onClick={() => remove(name)}
                       style={{
-                        position: 'absolute',
+                        position: "absolute",
                         top: 10,
                         right: 10,
-                        color: '#ff4d4f',
-                        fontSize: '1rem',
-                        cursor: 'pointer',
+                        color: "#ff4d4f",
+                        fontSize: "1rem",
+                        cursor: "pointer",
                       }}
                     />
                   </div>
                 ))}
-                <Button type="dashed" onClick={() => add()} icon={<PlusOutlined />} style={{ width: '100%' }}>
+                <Button
+                  type="dashed"
+                  onClick={() => add()}
+                  icon={<PlusOutlined />}
+                  style={{ width: "100%" }}
+                >
                   Add Line Item
                 </Button>
               </>
@@ -412,16 +516,25 @@ const ProposalsPage = () => {
 
       {/* UPDATE MODAL */}
       <Modal
-        title={`Update — ${selected?.title ?? ''}`}
+        title={`Update — ${selected?.title ?? ""}`}
         open={updateModalOpen}
-        onCancel={() => { setUpdateModalOpen(false); updateForm.resetFields(); }}
+        onCancel={() => {
+          setUpdateModalOpen(false);
+          updateForm.resetFields();
+        }}
         onOk={() => updateForm.submit()}
         okText="Save"
         confirmLoading={isPending}
-        okButtonProps={{ style: { background: '#00b86e', borderColor: '#00b86e' } }}
+        okButtonProps={{
+          style: { background: "#00b86e", borderColor: "#00b86e" },
+        }}
       >
         <Form form={updateForm} layout="vertical" onFinish={handleUpdate}>
-          <Form.Item name="title" label="Title" rules={[{ required: true, message: 'Required' }]}>
+          <Form.Item
+            name="title"
+            label="Title"
+            rules={[{ required: true, message: "Required" }]}
+          >
             <Input />
           </Form.Item>
           <Form.Item name="description" label="Description">
@@ -431,7 +544,7 @@ const ProposalsPage = () => {
             <Select options={CURRENCY_OPTIONS} />
           </Form.Item>
           <Form.Item name="validUntil" label="Valid Until">
-            <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />
+            <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
           </Form.Item>
         </Form>
       </Modal>
@@ -446,8 +559,12 @@ const ProposalsPage = () => {
         okButtonProps={{ danger: true, loading: isPending }}
         cancelText="Cancel"
       >
-        <p>Are you sure you want to delete <strong>"{selected?.title}"</strong>?</p>
-        <p style={{ color: '#888', fontSize: '0.85rem' }}>This action cannot be undone.</p>
+        <p>
+          Are you sure you want to delete <strong>"{selected?.title}"</strong>?
+        </p>
+        <p style={{ color: "#888", fontSize: "0.85rem" }}>
+          This action cannot be undone.
+        </p>
       </Modal>
     </div>
   );

@@ -3,7 +3,7 @@ import { createContext } from "react";
 export interface Opportunity {
   id: string;
   title: string;
-  clientId: string;      
+  clientId: string;
   clientName: string;
   contactId: string | null;
   contactName: string | null;
@@ -11,7 +11,7 @@ export interface Opportunity {
   estimatedValue: number;
   currency: string;
   probability: number;
-  source: number;         
+  source: number;
   stage: number;
   stageName: string;
   expectedCloseDate: string;
@@ -33,7 +33,12 @@ export interface IOpportunityActionContext {
   setSelected: (opportunity: Opportunity | null) => void;
   createOpportunity: (payload: any) => Promise<void>;
   updateOpportunity: (id: string, payload: any) => Promise<void>;
-  moveOpportunityStage: (id: string, newStage: number, notes?: string, lossReason?: string) => Promise<void>;
+  moveOpportunityStage: (
+    id: string,
+    newStage: number,
+    notes?: string,
+    lossReason?: string,
+  ) => Promise<void>;
   deleteOpportunity: (id: string) => Promise<void>;
 }
 
@@ -46,8 +51,10 @@ export const INITIAL_OPPORTUNITY_STATE: IOpportunityStateContext = {
   totalCount: 0,
 };
 
-export const OpportunityStateContext =
-  createContext<IOpportunityStateContext>(INITIAL_OPPORTUNITY_STATE);
+export const OpportunityStateContext = createContext<IOpportunityStateContext>(
+  INITIAL_OPPORTUNITY_STATE,
+);
 
-export const OpportunityActionContext =
-  createContext<IOpportunityActionContext | undefined>(undefined);
+export const OpportunityActionContext = createContext<
+  IOpportunityActionContext | undefined
+>(undefined);

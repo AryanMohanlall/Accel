@@ -2,7 +2,6 @@
 import { createStyles } from "antd-style";
 
 const useStyles = createStyles(({ css }) => ({
-
   wrapper: css`
     width: 100%;
     height: 100%;
@@ -77,8 +76,13 @@ const useStyles = createStyles(({ css }) => ({
     min-height: 0;
     overflow-y: auto;
     padding: 20px 24px;
-    &::-webkit-scrollbar { width: 4px; }
-    &::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 2px;
+    }
   `,
 
   centered: css`
@@ -115,7 +119,7 @@ const useStyles = createStyles(({ css }) => ({
   clientCardSelected: css`
     border-color: #00b86e !important;
     background: #0a1f15 !important;
-    box-shadow: 0 0 0 1px rgba(0,184,110,0.2);
+    box-shadow: 0 0 0 1px rgba(0, 184, 110, 0.2);
   `,
 
   clientCardHeader: css`
@@ -179,7 +183,10 @@ const useStyles = createStyles(({ css }) => ({
     padding: 2px 8px;
     font-size: 0.72rem;
     color: #888;
-    .anticon { font-size: 0.68rem; color: #555; }
+    .anticon {
+      font-size: 0.68rem;
+      color: #555;
+    }
   `,
 
   websiteText: css`
@@ -283,9 +290,18 @@ const useStyles = createStyles(({ css }) => ({
     color: #666 !important;
     text-decoration: none !important;
     transition: color 0.2s;
-    .anticon { font-size: 0.68rem; }
-    span { max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    &:hover { color: #00b86e !important; }
+    .anticon {
+      font-size: 0.68rem;
+    }
+    span {
+      max-width: 160px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    &:hover {
+      color: #00b86e !important;
+    }
   `,
 
   clientTag: css`
@@ -319,7 +335,10 @@ const useStyles = createStyles(({ css }) => ({
     height: 34px !important;
     padding: 0 16px !important;
     font-size: 0.82rem !important;
-    &:hover { background: #00b86e !important; color: #fff !important; }
+    &:hover {
+      background: #00b86e !important;
+      color: #fff !important;
+    }
   `,
 
   btnAction: css`
@@ -331,7 +350,10 @@ const useStyles = createStyles(({ css }) => ({
     height: 34px !important;
     padding: 0 16px !important;
     font-size: 0.82rem !important;
-    &:hover { background: #333 !important; color: #fff !important; }
+    &:hover {
+      background: #333 !important;
+      color: #fff !important;
+    }
   `,
 
   btnDisabled: css`
@@ -345,9 +367,16 @@ const useStyles = createStyles(({ css }) => ({
     background: #222 !important;
     border: 1px solid #444 !important;
     height: 34px;
-    .ant-input { background: transparent !important; color: #fff !important; }
-    .ant-input::placeholder { color: #888 !important; }
-    .ant-input-clear-icon { color: #888 !important; }
+    .ant-input {
+      background: transparent !important;
+      color: #fff !important;
+    }
+    .ant-input::placeholder {
+      color: #888 !important;
+    }
+    .ant-input-clear-icon {
+      color: #888 !important;
+    }
   `,
 
   searchIcon: css`

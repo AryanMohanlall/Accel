@@ -2,18 +2,24 @@ import { createAction } from "redux-actions";
 import { IUser, IUserStateContext } from "./context";
 
 export enum UserActionEnums {
-  loginPending    = "LOGIN_PENDING",
-  loginSuccess    = "LOGIN_SUCCESS",
-  loginError      = "LOGIN_ERROR",
+  loginPending = "LOGIN_PENDING",
+  loginSuccess = "LOGIN_SUCCESS",
+  loginError = "LOGIN_ERROR",
   registerPending = "REGISTER_PENDING",
   registerSuccess = "REGISTER_SUCCESS",
-  registerError   = "REGISTER_ERROR",
-  logout          = "LOGOUT",
+  registerError = "REGISTER_ERROR",
+  logout = "LOGOUT",
 }
 
 export const loginPending = createAction<IUserStateContext>(
   UserActionEnums.loginPending,
-  () => ({ isPending: true, isSuccess: false, isError: false, isAuthenticated: false, user: null })
+  () => ({
+    isPending: true,
+    isSuccess: false,
+    isError: false,
+    isAuthenticated: false,
+    user: null,
+  }),
 );
 
 export const loginSuccess = createAction<IUserStateContext, IUser>(
@@ -24,17 +30,29 @@ export const loginSuccess = createAction<IUserStateContext, IUser>(
     isError: false,
     user,
     isAuthenticated: true,
-  })
+  }),
 );
 
 export const loginError = createAction<IUserStateContext>(
   UserActionEnums.loginError,
-  () => ({ isPending: false, isSuccess: false, isError: true, isAuthenticated: false, user: null })
+  () => ({
+    isPending: false,
+    isSuccess: false,
+    isError: true,
+    isAuthenticated: false,
+    user: null,
+  }),
 );
 
 export const registerPending = createAction<IUserStateContext>(
   UserActionEnums.registerPending,
-  () => ({ isPending: true, isSuccess: false, isError: false, isAuthenticated: false, user: null })
+  () => ({
+    isPending: true,
+    isSuccess: false,
+    isError: false,
+    isAuthenticated: false,
+    user: null,
+  }),
 );
 
 export const registerSuccess = createAction<IUserStateContext, IUser>(
@@ -45,12 +63,18 @@ export const registerSuccess = createAction<IUserStateContext, IUser>(
     isError: false,
     user,
     isAuthenticated: true,
-  })
+  }),
 );
 
 export const registerError = createAction<IUserStateContext>(
   UserActionEnums.registerError,
-  () => ({ isPending: false, isSuccess: false, isError: true, isAuthenticated: false, user: null })
+  () => ({
+    isPending: false,
+    isSuccess: false,
+    isError: true,
+    isAuthenticated: false,
+    user: null,
+  }),
 );
 
 export const logoutAction = createAction<IUserStateContext>(
@@ -61,5 +85,5 @@ export const logoutAction = createAction<IUserStateContext>(
     isError: false,
     user: null,
     isAuthenticated: false,
-  })
+  }),
 );

@@ -14,7 +14,12 @@ interface ContactRowProps {
   onClick: () => void;
 }
 
-const ContactRow: React.FC<ContactRowProps> = ({ contact, styles, isSelected, onClick }) => (
+const ContactRow: React.FC<ContactRowProps> = ({
+  contact,
+  styles,
+  isSelected,
+  onClick,
+}) => (
   <div
     className={`${styles.contactRow} ${isSelected ? styles.contactRowSelected : ""}`}
     onClick={onClick}
@@ -38,14 +43,22 @@ const ContactRow: React.FC<ContactRowProps> = ({ contact, styles, isSelected, on
     <div className={styles.contactDetails}>
       {contact.email && (
         <Tooltip title={contact.email}>
-          <a href={`mailto:${contact.email}`} className={styles.contactLink} onClick={e => e.stopPropagation()}>
+          <a
+            href={`mailto:${contact.email}`}
+            className={styles.contactLink}
+            onClick={(e) => e.stopPropagation()}
+          >
             <MailOutlined /> <span>{contact.email}</span>
           </a>
         </Tooltip>
       )}
       {contact.phoneNumber && (
         <Tooltip title={contact.phoneNumber}>
-          <a href={`tel:${contact.phoneNumber}`} className={styles.contactLink} onClick={e => e.stopPropagation()}>
+          <a
+            href={`tel:${contact.phoneNumber}`}
+            className={styles.contactLink}
+            onClick={(e) => e.stopPropagation()}
+          >
             <PhoneOutlined /> <span>{contact.phoneNumber}</span>
           </a>
         </Tooltip>

@@ -2,7 +2,6 @@
 import { createStyles } from "antd-style";
 
 const useStyles = createStyles(({ css }) => ({
-
   wrapper: css`
     width: 100%;
     height: 100%;
@@ -65,8 +64,13 @@ const useStyles = createStyles(({ css }) => ({
     min-height: 0;
     overflow-y: auto;
     padding: 24px 32px;
-    &::-webkit-scrollbar { width: 4px; }
-    &::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 2px;
+    }
   `,
 
   centered: css`
@@ -273,7 +277,10 @@ const useStyles = createStyles(({ css }) => ({
     height: 34px !important;
     padding: 0 16px !important;
     font-size: 0.82rem !important;
-    &:hover { background: #00b86e !important; color: #fff !important; }
+    &:hover {
+      background: #00b86e !important;
+      color: #fff !important;
+    }
   `,
 
   btnAction: css`
@@ -285,7 +292,10 @@ const useStyles = createStyles(({ css }) => ({
     height: 34px !important;
     padding: 0 16px !important;
     font-size: 0.82rem !important;
-    &:hover { background: #333 !important; color: #fff !important; }
+    &:hover {
+      background: #333 !important;
+      color: #fff !important;
+    }
   `,
 
   btnDisabled: css`
@@ -299,15 +309,21 @@ const useStyles = createStyles(({ css }) => ({
     background: #222 !important;
     border: 1px solid #444 !important;
     height: 34px;
-    .ant-input { background: transparent !important; color: #fff !important; }
-    .ant-input::placeholder { color: #888 !important; }
-    .ant-input-clear-icon { color: #888 !important; }
+    .ant-input {
+      background: transparent !important;
+      color: #fff !important;
+    }
+    .ant-input::placeholder {
+      color: #888 !important;
+    }
+    .ant-input-clear-icon {
+      color: #888 !important;
+    }
   `,
 
   searchIcon: css`
     color: #667;
   `,
-
 }));
 
 export default useStyles;

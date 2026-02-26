@@ -63,18 +63,81 @@ The application focuses on:
 * **Deployment:** Vercel
 * **Design:** Figma
 
-## Project Structure (High Level)
+## Project Structure
 
 ```
-/app
-  /dashboard
-  /opportunities
-  /proposals
-  /contracts
-  /activities
-
-/components
-/utils
+accel/
+├── app/
+│   ├── globals.css
+│   ├── layout.tsx
+│   ├── page.tsx
+│   ├── (auth)/
+│   │   ├── login/
+│   │   │   ├── page.tsx
+│   │   │   └── style.ts
+│   │   └── register/
+│   │       ├── page.tsx
+│   │       └── style.ts
+│   ├── (home)/
+│   │   ├── layout.tsx
+│   │   ├── style.ts
+│   │   ├── activities/
+│   │   │   ├── page.tsx
+│   │   │   └── style.ts
+│   │   ├── ai-assistant/
+│   │   │   ├── page.tsx
+│   │   │   └── style.ts
+│   │   ├── clientscontacts/
+│   │   │   ├── page.tsx
+│   │   │   └── style.ts
+│   │   ├── contracts/
+│   │   │   ├── page.tsx
+│   │   │   └── style.ts
+│   │   ├── dashboard/
+│   │   │   ├── page.tsx
+│   │   │   └── style.ts
+│   │   ├── opportunities/
+│   │   │   ├── page.tsx
+│   │   │   └── style.ts
+│   │   └── proposals/
+│   │       ├── page.tsx
+│   │       └── style.ts
+│   ├── api/
+│   │   └── gemini/
+│   │       └── messages/
+│   ├── components/
+│   │   ├── ClientCard.tsx
+│   │   ├── ContactRow.tsx
+│   │   ├── ShareTenantButton.tsx
+│   │   └── contracts/
+│   │       └── contracts.tsx
+│   ├── hoc/
+│   │   └── withAuth.tsx
+│   ├── providers/
+│   │   ├── activitiesProvider/
+│   │   │   ├── actions.ts
+│   │   │   ├── context.ts
+│   │   │   ├── index.tsx
+│   │   │   └── reducers.ts
+│   │   ├── clientsProvider/
+│   │   ├── contactsProvider/
+│   │   ├── contractsProvider/
+│   │   ├── opportunitiesProvider/
+│   │   ├── proposalsProvider/
+│   │   └── userProvider/
+│   └── utils/
+│       └── axiosInstance.ts
+├── public/
+├── .env
+├── .env.local
+├── .gitignore
+├── eslint.config.mjs
+├── next-env.d.ts
+├── next.config.ts
+├── package.json
+├── postcss.config.mjs
+├── tsconfig.json
+└── README.md
 ```
 
 ## Installation
@@ -97,17 +160,30 @@ Install dependencies
 npm install
 ```
 
+### Environment Variables
+
+Before running the application, set up your environment variables:
+
+**Create a `.env` file in the root directory and add:**
+
+```
+NEXT_API_URL=your_api_url_here
+```
+
+**Create a `.env.local` file in the root directory and add:**
+
+```
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+You can obtain your Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
+
 Run the development server
 
 ```bash
 npm run dev
 ```
 
-The application will run at:
-
-```
-http://localhost:3000
-```
 
 ## Deployment
 

@@ -54,8 +54,10 @@ export const INITIAL_CONTRACT_STATE: IContractStateContext = {
   selected: null,
 };
 
-export const ContractStateContext =
-  createContext<IContractStateContext>(INITIAL_CONTRACT_STATE);
+export const ContractStateContext = createContext<IContractStateContext>(
+  INITIAL_CONTRACT_STATE,
+);
 
-export const ContractActionContext =
-  createContext<IContractActionContext | undefined>(undefined);
+export const ContractActionContext = createContext<
+  IContractActionContext | undefined
+>(undefined);

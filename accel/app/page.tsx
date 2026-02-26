@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createStyles, keyframes } from "antd-style";
 import { Button, ConfigProvider, theme } from "antd";
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname } from "next/navigation";
 
 // ── Keyframes ──────────────────────────────────────────────
 const fadeUp = keyframes`
@@ -37,7 +37,7 @@ const useStyles = createStyles(({ css, token }) => ({
     min-height: 100vh;
     background: #080808;
     color: #f0f0f0;
-    font-family: 'Syne', 'DM Sans', sans-serif;
+    font-family: "Syne", "DM Sans", sans-serif;
     overflow-x: hidden;
     position: relative;
   `,
@@ -48,8 +48,8 @@ const useStyles = createStyles(({ css, token }) => ({
     inset: 0;
     z-index: 0;
     background-image:
-      linear-gradient(rgba(0,184,110,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,184,110,0.04) 1px, transparent 1px);
+      linear-gradient(rgba(0, 184, 110, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 184, 110, 0.04) 1px, transparent 1px);
     background-size: 60px 60px;
     animation: ${gridMove} 8s linear infinite;
     pointer-events: none;
@@ -63,11 +63,17 @@ const useStyles = createStyles(({ css, token }) => ({
     pointer-events: none;
     overflow: hidden;
     &::after {
-      content: '';
+      content: "";
       position: absolute;
-      left: 0; right: 0;
+      left: 0;
+      right: 0;
       height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(0,184,110,0.15), transparent);
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(0, 184, 110, 0.15),
+        transparent
+      );
       animation: ${scanline} 6s linear infinite;
     }
   `,
@@ -94,11 +100,11 @@ const useStyles = createStyles(({ css, token }) => ({
     align-items: center;
     justify-content: space-between;
     padding: 28px 64px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     position: sticky;
     top: 0;
     z-index: 50;
-    background: rgba(8,8,8,0.88);
+    background: rgba(8, 8, 8, 0.88);
     backdrop-filter: blur(16px);
     animation: ${fadeIn} 0.6s ease both;
   `,
@@ -108,16 +114,19 @@ const useStyles = createStyles(({ css, token }) => ({
     font-weight: 800;
     letter-spacing: -0.3px;
     color: #f0f0f0;
-    span { color: #00B86E; }
+    span {
+      color: #00b86e;
+    }
   `,
 
   navLinks: css`
     display: flex;
     gap: 40px;
     list-style: none;
-    margin: 0; padding: 0;
+    margin: 0;
+    padding: 0;
     a {
-      font-family: 'DM Mono', monospace;
+      font-family: "DM Mono", monospace;
       font-size: 11px;
       font-weight: 400;
       letter-spacing: 0.12em;
@@ -125,17 +134,19 @@ const useStyles = createStyles(({ css, token }) => ({
       color: #666;
       text-decoration: none;
       transition: color 0.2s;
-      &:hover { color: #00B86E; }
+      &:hover {
+        color: #00b86e;
+      }
     }
   `,
 
   navCta: css`
-    font-family: 'DM Mono', monospace !important;
+    font-family: "DM Mono", monospace !important;
     font-size: 11px !important;
     letter-spacing: 0.08em !important;
     text-transform: uppercase !important;
-    background: #00B86E !important;
-    border-color: #00B86E !important;
+    background: #00b86e !important;
+    border-color: #00b86e !important;
     color: #080808 !important;
     font-weight: 600 !important;
     height: 38px !important;
@@ -165,7 +176,11 @@ const useStyles = createStyles(({ css, token }) => ({
     right: -5%;
     width: 600px;
     height: 600px;
-    background: radial-gradient(ellipse at center, rgba(0,184,110,0.12) 0%, transparent 65%);
+    background: radial-gradient(
+      ellipse at center,
+      rgba(0, 184, 110, 0.12) 0%,
+      transparent 65%
+    );
     pointer-events: none;
     animation: ${pulse} 5s ease-in-out infinite;
   `,
@@ -176,7 +191,11 @@ const useStyles = createStyles(({ css, token }) => ({
     left: -10%;
     width: 500px;
     height: 500px;
-    background: radial-gradient(ellipse at center, rgba(0,80,16,0.15) 0%, transparent 65%);
+    background: radial-gradient(
+      ellipse at center,
+      rgba(0, 80, 16, 0.15) 0%,
+      transparent 65%
+    );
     pointer-events: none;
     animation: ${pulse} 7s ease-in-out infinite reverse;
   `,
@@ -185,8 +204,8 @@ const useStyles = createStyles(({ css, token }) => ({
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(0,184,110,0.08);
-    border: 1px solid rgba(0,184,110,0.25);
+    background: rgba(0, 184, 110, 0.08);
+    border: 1px solid rgba(0, 184, 110, 0.25);
     border-radius: 2px;
     padding: 6px 14px;
     margin-bottom: 32px;
@@ -194,19 +213,20 @@ const useStyles = createStyles(({ css, token }) => ({
     animation: ${fadeUp} 0.7s ease 0.1s both;
 
     span {
-      font-family: 'DM Mono', monospace;
+      font-family: "DM Mono", monospace;
       font-size: 11px;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: #00B86E;
+      color: #00b86e;
     }
 
     &::before {
-      content: '';
-      width: 6px; height: 6px;
+      content: "";
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
-      background: #00B86E;
-      box-shadow: 0 0 8px #00B86E;
+      background: #00b86e;
+      box-shadow: 0 0 8px #00b86e;
       animation: ${pulse} 2s ease-in-out infinite;
     }
   `,
@@ -222,11 +242,11 @@ const useStyles = createStyles(({ css, token }) => ({
 
     .accent {
       color: transparent;
-      -webkit-text-stroke: 1.5px rgba(0,184,110,0.6);
+      -webkit-text-stroke: 1.5px rgba(0, 184, 110, 0.6);
     }
 
     .solid {
-      color: #00B86E;
+      color: #00b86e;
     }
   `,
 
@@ -248,12 +268,12 @@ const useStyles = createStyles(({ css, token }) => ({
   `,
 
   btnPrimary: css`
-    font-family: 'DM Mono', monospace !important;
+    font-family: "DM Mono", monospace !important;
     font-size: 12px !important;
     letter-spacing: 0.08em !important;
     text-transform: uppercase !important;
-    background: #00B86E !important;
-    border-color: #00B86E !important;
+    background: #00b86e !important;
+    border-color: #00b86e !important;
     color: #080808 !important;
     font-weight: 600 !important;
     height: 48px !important;
@@ -265,25 +285,25 @@ const useStyles = createStyles(({ css, token }) => ({
       border-color: #005010 !important;
       color: #f0f0f0 !important;
       transform: translateY(-1px);
-      box-shadow: 0 8px 32px rgba(0,184,110,0.25) !important;
+      box-shadow: 0 8px 32px rgba(0, 184, 110, 0.25) !important;
     }
   `,
 
   btnSecondary: css`
-    font-family: 'DM Mono', monospace !important;
+    font-family: "DM Mono", monospace !important;
     font-size: 12px !important;
     letter-spacing: 0.08em !important;
     text-transform: uppercase !important;
     background: transparent !important;
-    border: 1px solid rgba(255,255,255,0.12) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
     color: #888 !important;
     height: 48px !important;
     padding: 0 32px !important;
     border-radius: 2px !important;
     transition: all 0.2s !important;
     &:hover {
-      border-color: rgba(0,184,110,0.4) !important;
-      color: #00B86E !important;
+      border-color: rgba(0, 184, 110, 0.4) !important;
+      color: #00b86e !important;
     }
   `,
 
@@ -292,7 +312,7 @@ const useStyles = createStyles(({ css, token }) => ({
     gap: 48px;
     margin-top: 72px;
     padding-top: 48px;
-    border-top: 1px solid rgba(255,255,255,0.05);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
     animation: ${fadeUp} 0.7s ease 0.5s both;
   `,
 
@@ -302,10 +322,12 @@ const useStyles = createStyles(({ css, token }) => ({
       font-weight: 800;
       color: #f0f0f0;
       letter-spacing: -1px;
-      span { color: #00B86E; }
+      span {
+        color: #00b86e;
+      }
     }
     .label {
-      font-family: 'DM Mono', monospace;
+      font-family: "DM Mono", monospace;
       font-size: 11px;
       letter-spacing: 0.1em;
       text-transform: uppercase;
@@ -321,19 +343,20 @@ const useStyles = createStyles(({ css, token }) => ({
   `,
 
   sectionLabel: css`
-    font-family: 'DM Mono', monospace;
+    font-family: "DM Mono", monospace;
     font-size: 11px;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: #00B86E;
+    color: #00b86e;
     margin-bottom: 16px;
     display: flex;
     align-items: center;
     gap: 12px;
     &::before {
-      content: '';
-      width: 24px; height: 1px;
-      background: #00B86E;
+      content: "";
+      width: 24px;
+      height: 1px;
+      background: #00b86e;
     }
   `,
 
@@ -350,8 +373,8 @@ const useStyles = createStyles(({ css, token }) => ({
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 2px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.05);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
   `,
 
   featureCard: css`
@@ -364,22 +387,35 @@ const useStyles = createStyles(({ css, token }) => ({
 
     &:hover {
       background: #111;
-      .featureIcon { color: #00B86E; border-color: rgba(0,184,110,0.4); background: rgba(0,184,110,0.08); }
-      .featureGlow { opacity: 1; }
+      .featureIcon {
+        color: #00b86e;
+        border-color: rgba(0, 184, 110, 0.4);
+        background: rgba(0, 184, 110, 0.08);
+      }
+      .featureGlow {
+        opacity: 1;
+      }
     }
   `,
 
   featureGlow: css`
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: radial-gradient(ellipse at top left, rgba(0,184,110,0.05) 0%, transparent 60%);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+      ellipse at top left,
+      rgba(0, 184, 110, 0.05) 0%,
+      transparent 60%
+    );
     opacity: 0;
     transition: opacity 0.4s;
     pointer-events: none;
   `,
 
   featureNumber: css`
-    font-family: 'DM Mono', monospace;
+    font-family: "DM Mono", monospace;
     font-size: 11px;
     letter-spacing: 0.1em;
     color: #333;
@@ -387,8 +423,9 @@ const useStyles = createStyles(({ css, token }) => ({
   `,
 
   featureIcon: css`
-    width: 48px; height: 48px;
-    border: 1px solid rgba(255,255,255,0.08);
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 4px;
     display: flex;
     align-items: center;
@@ -397,7 +434,7 @@ const useStyles = createStyles(({ css, token }) => ({
     color: #555;
     margin-bottom: 24px;
     transition: all 0.3s;
-    background: rgba(255,255,255,0.02);
+    background: rgba(255, 255, 255, 0.02);
   `,
 
   featureTitle: css`
@@ -418,13 +455,13 @@ const useStyles = createStyles(({ css, token }) => ({
   featureTag: css`
     display: inline-block;
     margin-top: 24px;
-    font-family: 'DM Mono', monospace;
+    font-family: "DM Mono", monospace;
     font-size: 10px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: #00B86E;
-    background: rgba(0,184,110,0.08);
-    border: 1px solid rgba(0,184,110,0.2);
+    color: #00b86e;
+    background: rgba(0, 184, 110, 0.08);
+    border: 1px solid rgba(0, 184, 110, 0.2);
     padding: 4px 10px;
     border-radius: 2px;
   `,
@@ -432,10 +469,10 @@ const useStyles = createStyles(({ css, token }) => ({
   // ── MARQUEE STRIP ──
   marqueeSection: css`
     padding: 32px 0;
-    border-top: 1px solid rgba(255,255,255,0.04);
-    border-bottom: 1px solid rgba(255,255,255,0.04);
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     overflow: hidden;
-    background: rgba(0,184,110,0.02);
+    background: rgba(0, 184, 110, 0.02);
   `,
 
   marqueeTrack: css`
@@ -444,13 +481,17 @@ const useStyles = createStyles(({ css, token }) => ({
     animation: marquee 20s linear infinite;
     white-space: nowrap;
     @keyframes marquee {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(-50%);
+      }
     }
   `,
 
   marqueeItem: css`
-    font-family: 'DM Mono', monospace;
+    font-family: "DM Mono", monospace;
     font-size: 12px;
     letter-spacing: 0.15em;
     text-transform: uppercase;
@@ -459,8 +500,8 @@ const useStyles = createStyles(({ css, token }) => ({
     align-items: center;
     gap: 64px;
     &::after {
-      content: '◆';
-      color: rgba(0,184,110,0.3);
+      content: "◆";
+      color: rgba(0, 184, 110, 0.3);
       font-size: 8px;
     }
   `,
@@ -473,35 +514,69 @@ const useStyles = createStyles(({ css, token }) => ({
   `,
 
   ctaInner: css`
-    border: 1px solid rgba(0,184,110,0.2);
-    background: linear-gradient(135deg, rgba(0,184,110,0.05) 0%, rgba(0,80,16,0.08) 100%);
+    border: 1px solid rgba(0, 184, 110, 0.2);
+    background: linear-gradient(
+      135deg,
+      rgba(0, 184, 110, 0.05) 0%,
+      rgba(0, 80, 16, 0.08) 100%
+    );
     padding: 80px;
     position: relative;
     overflow: hidden;
 
     &::before {
-      content: '';
+      content: "";
       position: absolute;
-      top: -1px; left: 60px; right: 60px; height: 1px;
-      background: linear-gradient(90deg, transparent, #00B86E, transparent);
+      top: -1px;
+      left: 60px;
+      right: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #00b86e, transparent);
     }
   `,
 
   ctaCorner: css`
     position: absolute;
-    width: 60px; height: 60px;
-    &.tl { top: -1px; left: -1px; border-top: 2px solid #00B86E; border-left: 2px solid #00B86E; }
-    &.tr { top: -1px; right: -1px; border-top: 2px solid #00B86E; border-right: 2px solid #00B86E; }
-    &.bl { bottom: -1px; left: -1px; border-bottom: 2px solid #00B86E; border-left: 2px solid #00B86E; }
-    &.br { bottom: -1px; right: -1px; border-bottom: 2px solid #00B86E; border-right: 2px solid #00B86E; }
+    width: 60px;
+    height: 60px;
+    &.tl {
+      top: -1px;
+      left: -1px;
+      border-top: 2px solid #00b86e;
+      border-left: 2px solid #00b86e;
+    }
+    &.tr {
+      top: -1px;
+      right: -1px;
+      border-top: 2px solid #00b86e;
+      border-right: 2px solid #00b86e;
+    }
+    &.bl {
+      bottom: -1px;
+      left: -1px;
+      border-bottom: 2px solid #00b86e;
+      border-left: 2px solid #00b86e;
+    }
+    &.br {
+      bottom: -1px;
+      right: -1px;
+      border-bottom: 2px solid #00b86e;
+      border-right: 2px solid #00b86e;
+    }
   `,
 
   ctaGlow: css`
     position: absolute;
-    top: 50%; left: 50%;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
-    width: 400px; height: 200px;
-    background: radial-gradient(ellipse, rgba(0,184,110,0.08) 0%, transparent 70%);
+    width: 400px;
+    height: 200px;
+    background: radial-gradient(
+      ellipse,
+      rgba(0, 184, 110, 0.08) 0%,
+      transparent 70%
+    );
     pointer-events: none;
   `,
 
@@ -512,7 +587,9 @@ const useStyles = createStyles(({ css, token }) => ({
     color: #f0f0f0;
     line-height: 1;
     margin-bottom: 20px;
-    span { color: #00B86E; }
+    span {
+      color: #00b86e;
+    }
   `,
 
   ctaSub: css`
@@ -526,7 +603,7 @@ const useStyles = createStyles(({ css, token }) => ({
   // ── FOOTER ──
   footer: css`
     padding: 40px 64px;
-    border-top: 1px solid rgba(255,255,255,0.05);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -536,11 +613,14 @@ const useStyles = createStyles(({ css, token }) => ({
     font-size: 16px;
     font-weight: 800;
     color: #333;
-    span { color: #00B86E; opacity: 0.6; }
+    span {
+      color: #00b86e;
+      opacity: 0.6;
+    }
   `,
 
   footerMeta: css`
-    font-family: 'DM Mono', monospace;
+    font-family: "DM Mono", monospace;
     font-size: 11px;
     letter-spacing: 0.08em;
     color: #2a2a2a;
@@ -580,18 +660,25 @@ const features = [
 ];
 
 const marqueeItems = [
-  "Pipeline Automation", "Smart Proposals", "Contract Management",
-  "Activity Tracking", "CRM Integration", "Revenue Intelligence",
-  "Pipeline Automation", "Smart Proposals", "Contract Management",
-  "Activity Tracking", "CRM Integration", "Revenue Intelligence",
+  "Pipeline Automation",
+  "Smart Proposals",
+  "Contract Management",
+  "Activity Tracking",
+  "CRM Integration",
+  "Revenue Intelligence",
+  "Pipeline Automation",
+  "Smart Proposals",
+  "Contract Management",
+  "Activity Tracking",
+  "CRM Integration",
+  "Revenue Intelligence",
 ];
 
 // ── Component ──────────────────────────────────────────────
 const LandingPage: React.FC = () => {
   const { styles, cx } = useStyles();
-  
-    const router = useRouter();
 
+  const router = useRouter();
 
   return (
     <ConfigProvider
@@ -614,14 +701,20 @@ const LandingPage: React.FC = () => {
         <div className={styles.noise} />
 
         <div className={styles.content}>
-
           {/* ── NAV ── */}
           <nav className={styles.nav}>
             <div className={styles.navLogo}>
               Acc<span>e</span>l
             </div>
-          
-            <Button className={styles.navCta} onClick={()=>{router.replace('/login')}}>Get Started</Button>
+
+            <Button
+              className={styles.navCta}
+              onClick={() => {
+                router.replace("/login");
+              }}
+            >
+              Get Started
+            </Button>
           </nav>
 
           {/* ── HERO ── */}
@@ -634,14 +727,17 @@ const LandingPage: React.FC = () => {
             </div>
 
             <h1 className={styles.heroTitle}>
-              Close more.<br />
-              <span className="accent">Work less.</span><br />
+              Close more.
+              <br />
+              <span className="accent">Work less.</span>
+              <br />
               <span className="solid">Sell smarter.</span>
             </h1>
 
             <p className={styles.heroSub}>
-              A strategic technology layer that integrates with your CRM to eliminate
-              repetitive manual work — allowing your team to focus on high-value closing activities.
+              A strategic technology layer that integrates with your CRM to
+              eliminate repetitive manual work — allowing your team to focus on
+              high-value closing activities.
             </p>
 
             <div className={styles.heroStats}>
@@ -665,7 +761,9 @@ const LandingPage: React.FC = () => {
           <div className={styles.marqueeSection}>
             <div className={styles.marqueeTrack}>
               {marqueeItems.map((item, i) => (
-                <span className={styles.marqueeItem} key={i}>{item}</span>
+                <span className={styles.marqueeItem} key={i}>
+                  {item}
+                </span>
               ))}
             </div>
           </div>
@@ -674,7 +772,9 @@ const LandingPage: React.FC = () => {
           <section className={styles.section} id="features">
             <div className={styles.sectionLabel}>Core Modules</div>
             <h2 className={styles.sectionTitle}>
-              Everything your team needs.<br />Nothing they don't.
+              Everything your team needs.
+              <br />
+              Nothing they don't.
             </h2>
 
             <div className={styles.featureGrid}>
@@ -682,7 +782,9 @@ const LandingPage: React.FC = () => {
                 <div className={styles.featureCard} key={i}>
                   <div className={`${styles.featureGlow} featureGlow`} />
                   <div className={styles.featureNumber}>{f.num}</div>
-                  <div className={`${styles.featureIcon} featureIcon`}>{f.icon}</div>
+                  <div className={`${styles.featureIcon} featureIcon`}>
+                    {f.icon}
+                  </div>
                   <div className={styles.featureTitle}>{f.title}</div>
                   <p className={styles.featureDesc}>{f.desc}</p>
                   <span className={styles.featureTag}>{f.tag}</span>
@@ -690,7 +792,6 @@ const LandingPage: React.FC = () => {
               ))}
             </div>
           </section>
-
 
           {/* ── FOOTER ── */}
           <footer className={styles.footer}>
@@ -701,7 +802,6 @@ const LandingPage: React.FC = () => {
               © {new Date().getFullYear()} Accel · Sales Automation System
             </div>
           </footer>
-
         </div>
       </div>
     </ConfigProvider>

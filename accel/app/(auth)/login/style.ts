@@ -12,13 +12,14 @@ const useStyles = createStyles(({ token, css }) => {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: url('/auth.jpg');
+      background: url("/auth.jpg");
       background-size: cover;
       background-position: center;
       padding: 20px; /* Reduced padding */
+      box-sizing: border-box;
     `,
     logo: css`
-      font-family: 'Inter', sans-serif;
+      font-family: "Inter", sans-serif;
       font-size: clamp(60px, 8vh, 100px); /* Scales based on screen height */
       color: #ffffff;
       margin-bottom: 10px; /* Reduced margin */
@@ -39,13 +40,13 @@ const useStyles = createStyles(({ token, css }) => {
       overflow-y: auto; /* Just in case it's viewed on a very small laptop */
     `,
     title: css`
-      font-family: 'Inter', sans-serif;
+      font-family: "Inter", sans-serif;
       font-size: clamp(32px, 5vh, 64px); /* Responsive font size */
       color: #ffffff;
       margin-bottom: 20px;
     `,
     label: css`
-      font-family: 'Inter', sans-serif;
+      font-family: "Inter", sans-serif;
       font-size: 18px; /* Slightly smaller to save vertical space */
       color: #ffffff;
       margin-bottom: 4px;
@@ -74,8 +75,8 @@ const useStyles = createStyles(({ token, css }) => {
     `,
     /* Added to tighten up the Ant Design Form spacing */
     formItem: css`
-      margin-bottom: 12px !important; 
-    `
+      margin-bottom: 12px !important;
+    `,
   };
 });
 

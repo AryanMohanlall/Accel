@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { Spin } from "antd";
 import { useUserState } from "../providers/userProvider";
 
-const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
+const withAuth = <P extends object>(
+  WrappedComponent: React.ComponentType<P>,
+) => {
   const ProtectedComponent = (props: P) => {
     const { user, isPending } = useUserState();
     const router = useRouter();
@@ -18,13 +20,15 @@ const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) =>
 
     if (isPending) {
       return (
-        <div style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-          background: "#080808",
-        }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+            background: "#080808",
+          }}
+        >
           <Spin size="large" />
         </div>
       );

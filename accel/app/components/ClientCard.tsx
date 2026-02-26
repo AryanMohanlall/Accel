@@ -3,8 +3,11 @@
 import React from "react";
 import { Tag, Typography, Avatar } from "antd";
 import {
-  GlobalOutlined, TeamOutlined, FileTextOutlined,
-  ApartmentOutlined, TrophyOutlined,
+  GlobalOutlined,
+  TeamOutlined,
+  FileTextOutlined,
+  ApartmentOutlined,
+  TrophyOutlined,
 } from "@ant-design/icons";
 import { Client } from "../providers/clientsProvider/context";
 
@@ -31,7 +34,12 @@ interface ClientCardProps {
   onClick: () => void;
 }
 
-const ClientCard: React.FC<ClientCardProps> = ({ client, styles, isSelected, onClick }) => (
+const ClientCard: React.FC<ClientCardProps> = ({
+  client,
+  styles,
+  isSelected,
+  onClick,
+}) => (
   <div
     className={`${styles.clientCard} ${isSelected ? styles.clientCardSelected : ""}`}
     onClick={onClick}
@@ -73,7 +81,10 @@ const ClientCard: React.FC<ClientCardProps> = ({ client, styles, isSelected, onC
       <div className={styles.clientCardFooter}>
         <ApartmentOutlined style={{ fontSize: 11, color: "#555" }} />
         <Text className={styles.clientFooterText}>{client.companySize}</Text>
-        <Text className={styles.clientFooterText} style={{ marginLeft: "auto" }}>
+        <Text
+          className={styles.clientFooterText}
+          style={{ marginLeft: "auto" }}
+        >
           {client.createdByName}
         </Text>
       </div>

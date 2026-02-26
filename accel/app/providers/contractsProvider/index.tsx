@@ -10,19 +10,27 @@ import {
 } from "./context";
 import { ContractReducer } from "./reducers";
 import {
-  fetchPending, fetchSuccess, fetchError,
-  mutatePending, mutateSuccess, mutateError,
+  fetchPending,
+  fetchSuccess,
+  fetchError,
+  mutatePending,
+  mutateSuccess,
+  mutateError,
   setSelectedAction,
 } from "./actions";
 
-export const ContractProvider = ({ children }: { children: React.ReactNode }): React.ReactElement => {
+export const ContractProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}): React.ReactElement => {
   const [state, dispatch] = useReducer(ContractReducer, INITIAL_CONTRACT_STATE);
   const instance = getAxiosInstance();
 
   const fetchContracts = async () => {
     dispatch(fetchPending());
     try {
-      const res = await instance.get('/api/Contracts');
+      const res = await instance.get("/api/Contracts");
       const items = Array.isArray(res.data)
         ? res.data
         : Array.isArray(res.data.items)
@@ -43,8 +51,8 @@ export const ContractProvider = ({ children }: { children: React.ReactNode }): R
   const createContract = async (payload: any) => {
     dispatch(mutatePending());
     try {
-      console.log('createContract payload:', JSON.stringify(payload, null, 2));
-      await instance.post('/api/Contracts', payload);
+      console.log("createContract payload:", JSON.stringify(payload, null, 2));
+      await instance.post("/api/Contracts", payload);
       dispatch(mutateSuccess());
       await fetchContracts();
     } catch (error: any) {
@@ -127,12 +135,16 @@ export const ContractProvider = ({ children }: { children: React.ReactNode }): R
 
 export const useContractState = () => {
   const context = useContext(ContractStateContext);
-  if (context === undefined) throw new Error("useContractState must be used within a ContractProvider");
+  if (context === undefined)
+    throw new Error("useContractState must be used within a ContractProvider");
   return context;
 };
 
 export const useContractActions = () => {
   const context = useContext(ContractActionContext);
-  if (context === undefined) throw new Error("useContractActions must be used within a ContractProvider");
+  if (context === undefined)
+    throw new Error(
+      "useContractActions must be used within a ContractProvider",
+    );
   return context;
 };

@@ -1,23 +1,26 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, message, Select, Segmented } from 'antd';
-import useStyles from './style';
-import { useRouter } from 'next/navigation';
-import { useUserActions, useUserState } from '../../providers/userProvider';
+import React, { useEffect, useState } from "react";
+import { Form, Input, Button, message, Select, Segmented } from "antd";
+import useStyles from "./style";
+import { useRouter } from "next/navigation";
+import { useUserActions, useUserState } from "../../providers/userProvider";
 
 const ROLE_OPTIONS = [
-  { value: 'SalesRep',                  label: 'Sales Rep' },
-  { value: 'SalesManager',              label: 'Sales Manager' },
-  { value: 'BusinessDevelopmentManager', label: 'Business Development Manager' },
+  { value: "SalesRep", label: "Sales Rep" },
+  { value: "SalesManager", label: "Sales Manager" },
+  {
+    value: "BusinessDevelopmentManager",
+    label: "Business Development Manager",
+  },
 ];
 
-type Scenario = 'new' | 'join' | 'default';
+type Scenario = "new" | "join" | "default";
 
 const SCENARIO_OPTIONS = [
-  { label: 'New Organisation', value: 'new' },
-  { label: 'Join Organisation', value: 'join' },
-  { label: 'Default Tenant',   value: 'default' },
+  { label: "New Organisation", value: "new" },
+  { label: "Join Organisation", value: "join" },
+  { label: "Default Tenant", value: "default" },
 ];
 
 const Register = () => {
@@ -25,41 +28,41 @@ const Register = () => {
   const router = useRouter();
   const { register } = useUserActions();
   const { isPending, isSuccess, isError } = useUserState();
-  const [scenario, setScenario] = useState<Scenario>('new');
+  const [scenario, setScenario] = useState<Scenario>("new");
   const [form] = Form.useForm();
 
   useEffect(() => {
     if (isSuccess) {
-      message.success('Account created! Welcome to Accel.');
-      router.push('/dashboard');
+      message.success("Account created! Welcome to Accel.");
+      router.push("/dashboard");
     }
     if (isError) {
-      message.error('Registration failed. Please try again.');
+      message.error("Registration failed. Please try again.");
     }
   }, [isSuccess, isError, router]);
 
   // Clear scenario-specific fields when switching
   const handleScenarioChange = (val: any) => {
     setScenario(val as Scenario);
-    form.resetFields(['tenantName', 'tenantId', 'role']);
+    form.resetFields(["tenantName", "tenantId", "role"]);
   };
 
   const onFinish = async (values: any) => {
     try {
       const payload: any = {
-        email:       values.email,
-        password:    values.password,
-        firstName:   values.firstName,
-        lastName:    values.lastName,
+        email: values.email,
+        password: values.password,
+        firstName: values.firstName,
+        lastName: values.lastName,
         phoneNumber: values.phoneNumber,
       };
 
-      if (scenario === 'new') {
+      if (scenario === "new") {
         payload.tenantName = values.tenantName;
         // role is ignored by API when tenantName is provided
-      } else if (scenario === 'join') {
+      } else if (scenario === "join") {
         payload.tenantId = values.tenantId;
-        payload.role     = values.role;
+        payload.role = values.role;
       } else {
         // default — role optional
         if (values.role) payload.role = values.role;
@@ -68,7 +71,10 @@ const Register = () => {
       await register(payload);
     } catch (error: any) {
       const errorData = error.response?.data;
-      const msg = errorData?.detail || errorData?.title || 'Registration failed. Please try again.';
+      const msg =
+        errorData?.detail ||
+        errorData?.title ||
+        "Registration failed. Please try again.";
       message.error(msg);
     }
   };
@@ -85,7 +91,7 @@ const Register = () => {
           options={SCENARIO_OPTIONS}
           value={scenario}
           onChange={handleScenarioChange}
-          style={{ marginBottom: 24, width: '100%' }}
+          style={{ marginBottom: 24, width: "100%" }}
         />
 
         <Form
@@ -94,14 +100,19 @@ const Register = () => {
           onFinish={onFinish}
           requiredMark={false}
           autoComplete="off"
-          style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+          style={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
         >
           {/* ── Always shown ── */}
           <Form.Item
             className={styles.formItem}
             label={<span className={styles.label}>First Name</span>}
             name="firstName"
-            rules={[{ required: true, message: 'Required' }]}
+            rules={[{ required: true, message: "Required" }]}
           >
             <Input className={styles.input} placeholder="First Name" />
           </Form.Item>
@@ -110,7 +121,7 @@ const Register = () => {
             className={styles.formItem}
             label={<span className={styles.label}>Last Name</span>}
             name="lastName"
-            rules={[{ required: true, message: 'Required' }]}
+            rules={[{ required: true, message: "Required" }]}
           >
             <Input className={styles.input} placeholder="Last Name" />
           </Form.Item>
@@ -128,8 +139,8 @@ const Register = () => {
             label={<span className={styles.label}>Email</span>}
             name="email"
             rules={[
-              { required: true, message: 'Required' },
-              { type: 'email', message: 'Invalid email' },
+              { required: true, message: "Required" },
+              { type: "email", message: "Invalid email" },
             ]}
           >
             <Input className={styles.input} placeholder="Email Address" />
@@ -140,41 +151,44 @@ const Register = () => {
             label={<span className={styles.label}>Password</span>}
             name="password"
             rules={[
-              { required: true, message: 'Required' },
-              { min: 6, message: 'Minimum 6 characters' },
+              { required: true, message: "Required" },
+              { min: 6, message: "Minimum 6 characters" },
             ]}
           >
             <Input.Password className={styles.input} placeholder="Password" />
           </Form.Item>
 
           {/* ── Scenario A: New Organisation ── */}
-          {scenario === 'new' && (
+          {scenario === "new" && (
             <Form.Item
               className={styles.formItem}
               label={<span className={styles.label}>Organisation Name</span>}
               name="tenantName"
-              rules={[{ required: true, message: 'Required' }]}
+              rules={[{ required: true, message: "Required" }]}
             >
               <Input className={styles.input} placeholder="Your company name" />
             </Form.Item>
           )}
 
           {/* ── Scenario B: Join Organisation ── */}
-          {scenario === 'join' && (
+          {scenario === "join" && (
             <>
               <Form.Item
                 className={styles.formItem}
                 label={<span className={styles.label}>Tenant ID</span>}
                 name="tenantId"
-                rules={[{ required: true, message: 'Required' }]}
+                rules={[{ required: true, message: "Required" }]}
               >
-                <Input className={styles.input} placeholder="Organisation Tenant ID (UUID)" />
+                <Input
+                  className={styles.input}
+                  placeholder="Organisation Tenant ID (UUID)"
+                />
               </Form.Item>
               <Form.Item
                 className={styles.formItem}
                 label={<span className={styles.label}>Role</span>}
                 name="role"
-                rules={[{ required: true, message: 'Required' }]}
+                rules={[{ required: true, message: "Required" }]}
                 initialValue="SalesRep"
               >
                 <Select className={styles.input} options={ROLE_OPTIONS} />
@@ -183,7 +197,7 @@ const Register = () => {
           )}
 
           {/* ── Scenario C: Default Tenant ── */}
-          {scenario === 'default' && (
+          {scenario === "default" && (
             <Form.Item
               className={styles.formItem}
               label={<span className={styles.label}>Role (optional)</span>}
@@ -205,9 +219,11 @@ const Register = () => {
             </Button>
           </Form.Item>
 
-          <div style={{ marginTop: '10px', color: '#fff' }}>
-            Already have an account?{' '}
-            <a href="/login" style={{ color: '#52c41a' }}>Login here</a>
+          <div style={{ marginTop: "10px", color: "#fff" }}>
+            Already have an account?{" "}
+            <a href="/login" style={{ color: "#52c41a" }}>
+              Login here
+            </a>
           </div>
         </Form>
       </div>
