@@ -24,7 +24,7 @@ export const fetchSuccess = createAction(
     isPending: false,
     isSuccess: true,
     isError: false,
-    opportunities: items,
+    opportunities: items.filter(o => o.isActive !== false), // filter soft-deletes
     totalCount,
   })
 );

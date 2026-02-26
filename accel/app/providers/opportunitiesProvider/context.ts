@@ -3,15 +3,19 @@ import { createContext } from "react";
 export interface Opportunity {
   id: string;
   title: string;
+  clientId: string;      
   clientName: string;
+  contactId: string | null;
   contactName: string | null;
   ownerName: string;
   estimatedValue: number;
   currency: string;
   probability: number;
+  source: number;         
   stage: number;
   stageName: string;
   expectedCloseDate: string;
+  description: string | null;
   isActive: boolean;
 }
 
@@ -29,6 +33,7 @@ export interface IOpportunityActionContext {
   setSelected: (opportunity: Opportunity | null) => void;
   createOpportunity: (payload: any) => Promise<void>;
   updateOpportunity: (id: string, payload: any) => Promise<void>;
+  moveOpportunityStage: (id: string, newStage: number, notes?: string, lossReason?: string) => Promise<void>;
   deleteOpportunity: (id: string) => Promise<void>;
 }
 

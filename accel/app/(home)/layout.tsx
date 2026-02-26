@@ -8,6 +8,8 @@ import { OpportunityProvider } from '../providers/opportunitiesProvider';
 import { ProposalProvider } from '../providers/proposalsProvider';
 import { ContractProvider } from '../providers/contractsProvider';
 import { ActivityProvider } from '../providers/activitiesProvider';
+import { ClientProvider } from '../providers/clientsProvider';
+import { ContactProvider } from '../providers/contactsProvider';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const { styles } = useStyles();
@@ -33,6 +35,8 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   }, [user]);
 
   return (
+    <ContactProvider>
+    <ClientProvider>
     <ActivityProvider>
     <ContractProvider>
     <OpportunityProvider>
@@ -73,5 +77,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     </OpportunityProvider>
     </ContractProvider>
     </ActivityProvider>
+    </ClientProvider>
+    </ContactProvider>
   );
 }

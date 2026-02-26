@@ -125,7 +125,7 @@ const Dashboard = () => {
     <div className={styles.glassPanel}>
 
       {/* 1. PIPELINE */}
-      <Card className={styles.sectionCard} bordered={false}>
+      <Card className={styles.sectionCard} variant="borderless">
         <Title level={5} className={styles.sectionTitle}>Pipeline</Title>
         <Row gutter={[12, 0]}>
           {visibleStages.map((s) => (
@@ -134,7 +134,7 @@ const Dashboard = () => {
                 <Statistic
                   title={<Text className={styles.statBoxLabel}>{s.stageName}</Text>}
                   value={s.count}
-                  valueStyle={{ color: '#fff', fontSize: '1.4rem', fontWeight: 600 }}
+                  styles={{ content: { color: '#fff', fontSize: '1.4rem', fontWeight: 600 } }}
                 />
                 <Text className={styles.statBoxValue}>
                   {formatCurrency(s.totalValue)}
@@ -146,7 +146,7 @@ const Dashboard = () => {
       </Card>
 
       {/* 2. REVENUE */}
-      <Card className={styles.sectionCard} bordered={false}>
+      <Card className={styles.sectionCard} variant="borderless">
         <Title level={5} className={styles.sectionTitle}>Revenue</Title>
         <Row gutter={[12, 0]}>
           {revenueItems.map((item) => (
@@ -156,7 +156,7 @@ const Dashboard = () => {
                   title={<span className={styles.revenueLabel}>{item.label}:</span>}
                   value={item.value}
                   prefix="$"
-                  valueStyle={{ color: '#fff', fontSize: '0.9rem', fontWeight: 700, marginLeft: 4 }}
+                  styles={{ content: { color: '#fff', fontSize: '0.9rem', fontWeight: 700, marginLeft: 4 } }}
                 />
               </Flex>
             </Col>

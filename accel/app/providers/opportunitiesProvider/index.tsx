@@ -15,7 +15,7 @@ import {
   setSelectedAction,
 } from "./actions";
 
-export const OpportunityProvider = ({ children }: { children: React.ReactNode }) => {
+export const OpportunityProvider = ({ children }: { children: React.ReactNode }): React.ReactElement => {
   const [state, dispatch] = useReducer(OpportunityReducer, INITIAL_OPPORTUNITY_STATE);
   const instance = getAxiosInstance();
 
@@ -23,6 +23,7 @@ export const OpportunityProvider = ({ children }: { children: React.ReactNode })
     dispatch(fetchPending());
     try {
       const res = await instance.get('/api/Opportunities');
+      console.log('Opportunities response:', res.data); // check what comes back after delete
       dispatch(fetchSuccess({ items: res.data.items, totalCount: res.data.totalCount }));
     } catch (error) {
       console.error("Failed to fetch opportunities:", error);
@@ -40,7 +41,7 @@ export const OpportunityProvider = ({ children }: { children: React.ReactNode })
     try {
       await instance.post('/api/Opportunities', payload);
       dispatch(mutateSuccess());
-      await fetchOpportunities(); // refresh list
+      await fetchOpportunities();
     } catch (error) {
       console.error("Failed to create opportunity:", error);
       dispatch(mutateError());
@@ -61,6 +62,24 @@ export const OpportunityProvider = ({ children }: { children: React.ReactNode })
     }
   };
 
+  // Separate method for stage moves — hits the /stage endpoint
+const moveOpportunityStage = async (id: string, newStage: number, notes?: string, lossReason?: string) => {
+  dispatch(mutatePending());
+  try {
+    await instance.put(`/api/Opportunities/${id}/stage`, {
+      newStage,
+      notes: notes || '',
+      lossReason: lossReason || '',
+    });
+    dispatch(mutateSuccess());
+    await fetchOpportunities();
+  } catch (error) {
+    console.error("Failed to move opportunity stage:", error);
+    dispatch(mutateError());
+    throw error;
+  }
+};
+
   const deleteOpportunity = async (id: string) => {
     dispatch(mutatePending());
     try {
@@ -74,11 +93,18 @@ export const OpportunityProvider = ({ children }: { children: React.ReactNode })
     }
   };
 
+  const actions = {
+    fetchOpportunities,
+    setSelected,
+    createOpportunity,
+    updateOpportunity,
+    moveOpportunityStage,
+    deleteOpportunity,
+  };
+
   return (
     <OpportunityStateContext.Provider value={state}>
-      <OpportunityActionContext.Provider
-        value={{ fetchOpportunities, setSelected, createOpportunity, updateOpportunity, deleteOpportunity }}
-      >
+      <OpportunityActionContext.Provider value={actions}>
         {children}
       </OpportunityActionContext.Provider>
     </OpportunityStateContext.Provider>
