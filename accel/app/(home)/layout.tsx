@@ -8,6 +8,8 @@ import { OpportunityProvider } from '../providers/opportunitiesProvider';
 import { ProposalProvider } from '../providers/proposalsProvider';
 import { ContractProvider } from '../providers/contractsProvider';
 import { ActivityProvider } from '../providers/activitiesProvider';
+import { ClientProvider } from '../providers/clientsProvider';
+import { ContactProvider } from '../providers/contactsProvider';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const { styles } = useStyles();
@@ -33,6 +35,8 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   }, [user]);
 
   return (
+    <ContactProvider>
+    <ClientProvider>
     <ActivityProvider>
     <ContractProvider>
     <OpportunityProvider>
@@ -42,7 +46,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           {/* SHARED HEADER */}
           <header className={styles.header}>
             <div className={styles.welcomeText}>
-              Welcome<br />{user?.firstName || 'User'}
+              Welcome<br />{user?.firstName || 'User'} {user?.roles ? `|` : ``} {user?.roles || ''}
             </div>
             <h1 className={styles.logo}>Accel</h1>
           </header>
@@ -73,5 +77,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     </OpportunityProvider>
     </ContractProvider>
     </ActivityProvider>
+    </ClientProvider>
+    </ContactProvider>
   );
 }

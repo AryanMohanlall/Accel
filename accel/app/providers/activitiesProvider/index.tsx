@@ -23,7 +23,12 @@ export const ActivityProvider = ({ children }: { children: React.ReactNode }): R
     dispatch(fetchPending());
     try {
       const res = await instance.get('/api/Activities');
-      dispatch(fetchSuccess(res.data));
+      const items = Array.isArray(res.data)
+        ? res.data
+        : Array.isArray(res.data.items)
+          ? res.data.items
+          : [];
+      dispatch(fetchSuccess(items));
     } catch (error) {
       console.error("Failed to fetch activities:", error);
       dispatch(fetchError());
@@ -61,6 +66,32 @@ export const ActivityProvider = ({ children }: { children: React.ReactNode }): R
     }
   };
 
+  const completeActivity = async (id: string, outcome: string) => {
+    dispatch(mutatePending());
+    try {
+      await instance.put(`/api/Activities/${id}/complete`, { outcome });
+      dispatch(mutateSuccess());
+      await fetchActivities();
+    } catch (error) {
+      console.error("Failed to complete activity:", error);
+      dispatch(mutateError());
+      throw error;
+    }
+  };
+
+  const cancelActivity = async (id: string) => {
+    dispatch(mutatePending());
+    try {
+      await instance.put(`/api/Activities/${id}/cancel`);
+      dispatch(mutateSuccess());
+      await fetchActivities();
+    } catch (error) {
+      console.error("Failed to cancel activity:", error);
+      dispatch(mutateError());
+      throw error;
+    }
+  };
+
   const deleteActivity = async (id: string) => {
     dispatch(mutatePending());
     try {
@@ -79,17 +110,17 @@ export const ActivityProvider = ({ children }: { children: React.ReactNode }): R
     setSelected,
     createActivity,
     updateActivity,
+    completeActivity,
+    cancelActivity,
     deleteActivity,
   };
 
-  return React.createElement(
-    ActivityStateContext.Provider,
-    { value: state },
-    React.createElement(
-      ActivityActionContext.Provider,
-      { value: actions },
-      children
-    )
+  return (
+    <ActivityStateContext.Provider value={state}>
+      <ActivityActionContext.Provider value={actions}>
+        {children}
+      </ActivityActionContext.Provider>
+    </ActivityStateContext.Provider>
   );
 };
 

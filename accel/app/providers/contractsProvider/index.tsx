@@ -23,7 +23,12 @@ export const ContractProvider = ({ children }: { children: React.ReactNode }): R
     dispatch(fetchPending());
     try {
       const res = await instance.get('/api/Contracts');
-      dispatch(fetchSuccess(res.data));
+      const items = Array.isArray(res.data)
+        ? res.data
+        : Array.isArray(res.data.items)
+          ? res.data.items
+          : [];
+      dispatch(fetchSuccess(items));
     } catch (error) {
       console.error("Failed to fetch contracts:", error);
       dispatch(fetchError());
@@ -38,11 +43,12 @@ export const ContractProvider = ({ children }: { children: React.ReactNode }): R
   const createContract = async (payload: any) => {
     dispatch(mutatePending());
     try {
+      console.log('createContract payload:', JSON.stringify(payload, null, 2));
       await instance.post('/api/Contracts', payload);
       dispatch(mutateSuccess());
       await fetchContracts();
-    } catch (error) {
-      console.error("Failed to create contract:", error);
+    } catch (error: any) {
+      console.error("Failed to create contract:", error.response?.data);
       dispatch(mutateError());
       throw error;
     }
@@ -56,6 +62,32 @@ export const ContractProvider = ({ children }: { children: React.ReactNode }): R
       await fetchContracts();
     } catch (error) {
       console.error("Failed to update contract:", error);
+      dispatch(mutateError());
+      throw error;
+    }
+  };
+
+  const activateContract = async (id: string) => {
+    dispatch(mutatePending());
+    try {
+      await instance.put(`/api/Contracts/${id}/activate`);
+      dispatch(mutateSuccess());
+      await fetchContracts();
+    } catch (error) {
+      console.error("Failed to activate contract:", error);
+      dispatch(mutateError());
+      throw error;
+    }
+  };
+
+  const cancelContract = async (id: string) => {
+    dispatch(mutatePending());
+    try {
+      await instance.put(`/api/Contracts/${id}/cancel`);
+      dispatch(mutateSuccess());
+      await fetchContracts();
+    } catch (error) {
+      console.error("Failed to cancel contract:", error);
       dispatch(mutateError());
       throw error;
     }
@@ -79,17 +111,17 @@ export const ContractProvider = ({ children }: { children: React.ReactNode }): R
     setSelected,
     createContract,
     updateContract,
+    activateContract,
+    cancelContract,
     deleteContract,
   };
 
-  return React.createElement(
-    ContractStateContext.Provider,
-    { value: state },
-    React.createElement(
-      ContractActionContext.Provider,
-      { value: actions },
-      children
-    )
+  return (
+    <ContractStateContext.Provider value={state}>
+      <ContractActionContext.Provider value={actions}>
+        {children}
+      </ContractActionContext.Provider>
+    </ContractStateContext.Provider>
   );
 };
 

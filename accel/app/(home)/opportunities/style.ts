@@ -253,6 +253,10 @@ const useStyles = createStyles(({ css }) => ({
   searchIcon: css`
     color: #667;
   `,
+  columnDragOver: css`
+  background: rgba(0, 184, 110, 0.06);
+  .ant-empty { opacity: 0.6; }
+`,
 }));
 
 export default useStyles;

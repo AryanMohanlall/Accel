@@ -10,23 +10,27 @@ const Register = () => {
   const { styles } = useStyles();
   const router = useRouter();
   
-  // Access Provider State and Actions
   const { register } = useUserActions();
   const { isPending, isSuccess, isError } = useUserState();
 
-  // Unified Side Effects for Auth Status
   useEffect(() => {
     if (isSuccess) {
-      message.success('Registration successful! Please log in.');
-      router.push('/login');
+      message.success('Account created! Welcome to Accel.');
+      router.push('/dashboard');
     }
     if (isError) {
       message.error('Registration failed. Please try again.');
     }
   }, [isSuccess, isError, router]);
 
-  const onFinish = (values: any) => {
-    register(values);
+  const onFinish = async (values: any) => {
+    try {
+      await register(values);
+    } catch (error: any) {
+      const errorData = error.response?.data;
+      const msg = errorData?.detail || errorData?.title || 'Registration failed. Please try again.';
+      message.error(msg);
+    }
   };
 
   return (
@@ -45,7 +49,7 @@ const Register = () => {
         >
           <Form.Item
             className={styles.formItem}
-            label={<span className={styles.label}>Name</span>}
+            label={<span className={styles.label}>First Name</span>}
             name="firstName"
             rules={[{ required: true, message: 'Required' }]}
           >
@@ -54,19 +58,17 @@ const Register = () => {
 
           <Form.Item
             className={styles.formItem}
-            label={<span className={styles.label}>Surname</span>}
+            label={<span className={styles.label}>Last Name</span>}
             name="lastName"
             rules={[{ required: true, message: 'Required' }]}
           >
             <Input className={styles.input} placeholder="Last Name" />
           </Form.Item>
-          
-          {/* Add this after LastName and before Email */}
+
           <Form.Item
             className={styles.formItem}
             label={<span className={styles.label}>Phone Number</span>}
             name="phoneNumber"
-            rules={[{ required: true, message: 'Required' }]}
           >
             <Input className={styles.input} placeholder="0123456789" />
           </Form.Item>
@@ -87,21 +89,38 @@ const Register = () => {
             className={styles.formItem}
             label={<span className={styles.label}>Password</span>}
             name="password"
-            rules={[{ required: true, message: 'Required' }]}
+            rules={[
+              { required: true, message: 'Required' },
+              { min: 6, message: 'Minimum 6 characters' }
+            ]}
           >
             <Input.Password className={styles.input} placeholder="Password" />
           </Form.Item>
 
+          {/* Creates a new organisation — caller becomes Admin */}
+          <Form.Item
+            className={styles.formItem}
+            label={<span className={styles.label}>Organisation Name</span>}
+            name="tenantName"
+            rules={[{ required: true, message: 'Required' }]}
+          >
+            <Input className={styles.input} placeholder="Your company name" />
+          </Form.Item>
+
           <Form.Item style={{ marginBottom: 0 }}>
-            <Button 
-              type="primary" 
-              htmlType="submit" 
+            <Button
+              type="primary"
+              htmlType="submit"
               className={styles.button}
               loading={isPending}
             >
               SIGN UP
             </Button>
           </Form.Item>
+
+          <div style={{ marginTop: '10px', color: '#fff' }}>
+            Already have an account? <a href="/login" style={{ color: '#52c41a' }}>Login here</a>
+          </div>
         </Form>
       </div>
     </div>

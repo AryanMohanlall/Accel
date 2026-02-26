@@ -1,5 +1,17 @@
 import { createContext } from "react";
 
+export interface ProposalLineItem {
+  id: string;
+  proposalId: string;
+  productServiceName: string;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  discount: number;
+  taxRate: number;
+  totalPrice: number;
+  sortOrder: number;
+}
 export interface Proposal {
   id: string;
   proposalNumber: string;
@@ -13,14 +25,15 @@ export interface Proposal {
   statusName: string;
   totalAmount: number;
   currency: string;
-  validUntil: string;
-  submittedDate: string;
-  approvedDate: string;
+  validUntil: string | null;
+  submittedDate: string | null;
+  approvedDate: string | null;
   createdById: string;
   createdByName: string;
   createdAt: string;
   updatedAt: string;
   lineItemsCount: number;
+  lineItems: ProposalLineItem[];
 }
 
 export interface IProposalStateContext {

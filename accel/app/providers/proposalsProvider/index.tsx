@@ -23,7 +23,16 @@ export const ProposalProvider = ({ children }: { children: React.ReactNode }): R
     dispatch(fetchPending());
     try {
       const res = await instance.get('/api/Proposals');
-      dispatch(fetchSuccess(res.data));
+      console.log('Proposals response:', res.data);
+
+      // Handle both array response and paginated { items: [] } response
+      const items = Array.isArray(res.data)
+        ? res.data
+        : Array.isArray(res.data.items)
+          ? res.data.items
+          : [res.data]; // single object fallback
+
+      dispatch(fetchSuccess(items));
     } catch (error) {
       console.error("Failed to fetch proposals:", error);
       dispatch(fetchError());
