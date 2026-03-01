@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Input, Button, Spin, Tag, Typography } from "antd";
 import { SendOutlined, RobotOutlined, UserOutlined, ThunderboltOutlined } from "@ant-design/icons";
+import { createStyles } from "antd-style";
 import { useOpportunityActions, useOpportunityState } from "../../providers/opportunitiesProvider";
 import { useProposalActions, useProposalState } from "../../providers/proposalsProvider";
 import { useContractActions, useContractState } from "../../providers/contractsProvider";
@@ -11,7 +12,9 @@ import { useClientActions, useClientState } from "../../providers/clientsProvide
 import { useContactActions, useContactState } from "../../providers/contactsProvider";
 import { useUserState } from "../../providers/userProvider";
 import withAuth from "../../hoc/withAuth";
+import { getAxiosInstance } from "@/app/utils/axiosInstance";
 import ReactMarkdown from "react-markdown";
+import { usePricingRequestState, usePricingRequestActions } from "../../providers/pricingProvider";
 import useStyles from "./style";
 
 const { Text } = Typography;
@@ -154,6 +157,71 @@ const TOOLS = [
     description: "List all contacts",
     input_schema: { type: "object" },
   },
+  {
+    name: "list_pricing_requests",
+    description: "List all pricing requests",
+    input_schema: { type: "object" },
+  },
+  {
+    name: "list_my_pricing_requests",
+    description: "List pricing requests assigned to the current user",
+    input_schema: { type: "object" },
+  },
+  {
+    name: "list_pending_pricing_requests",
+    description: "List unassigned/pending pricing requests. Admin or SalesManager only.",
+    input_schema: { type: "object" },
+  },
+  {
+    name: "create_pricing_request",
+    description: "Create a new pricing request",
+    input_schema: {
+      type: "object",
+      properties: {
+        opportunityId:  { type: "string", description: "Opportunity UUID" },
+        title:          { type: "string", description: "Title of the pricing request" },
+        description:    { type: "string", description: "Details about the pricing request" },
+        priority:       { type: "number", description: "1=Low, 2=Medium, 3=High, 4=Urgent" },
+        requiredByDate: { type: "string", description: "YYYY-MM-DD" },
+        assignedToId:   { type: "string", description: "Optional user UUID to assign immediately" },
+      },
+      required: ["opportunityId", "title", "requiredByDate"],
+    },
+  },
+  {
+    name: "assign_pricing_request",
+    description: "Assign a pricing request to a user. Admin or SalesManager only.",
+    input_schema: {
+      type: "object",
+      properties: {
+        id:     { type: "string", description: "Pricing request UUID" },
+        userId: { type: "string", description: "User UUID to assign to" },
+      },
+      required: ["id", "userId"],
+    },
+  },
+  {
+    name: "complete_pricing_request",
+    description: "Mark a pricing request as completed",
+    input_schema: {
+      type: "object",
+      properties: {
+        id: { type: "string", description: "Pricing request UUID" },
+      },
+      required: ["id"],
+    },
+  },
+  {
+    name: "list_users",
+    description: "List users in the organisation, optionally filtered by role or search term",
+    input_schema: {
+      type: "object",
+      properties: {
+        role:       { type: "string", description: "Filter by role: Admin, SalesManager, BusinessDevelopmentManager, SalesRep" },
+        searchTerm: { type: "string", description: "Search by name or email" },
+      },
+    },
+  },
 ];
 
 const SUGGESTIONS = [
@@ -181,6 +249,15 @@ const AiAssistantPage = () => {
   const { fetchClients }                                             = useClientActions();
   const { contacts }                                                 = useContactState();
   const { fetchContacts }                                            = useContactActions();
+  const { pricingRequests }                                          = usePricingRequestState();
+  const {
+    fetchPricingRequests,
+    fetchMyRequests:    fetchMyPricingRequests,
+    fetchPendingRequests,
+    createPricingRequest,
+    assignPricingRequest,
+    completePricingRequest,
+  } = usePricingRequestActions();
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput]       = useState("");
@@ -194,6 +271,7 @@ const AiAssistantPage = () => {
     fetchActivities();
     fetchClients();
     fetchContacts();
+    fetchPricingRequests();
   }, []);
 
   useEffect(() => {
@@ -215,46 +293,95 @@ Guidelines:
 - If you need an ID to perform an action, first call the relevant list tool to find it`;
 
   const executeTool = async (toolName: string, toolInput: any): Promise<{ result: string; action?: string }> => {
+    const ax = getAxiosInstance();
     switch (toolName) {
-      case "list_opportunities":
-        await fetchOpportunities();
-        return { result: JSON.stringify(opportunities.slice(0, 20)) };
+
+      // ── List tools: fetch directly so AI always gets fresh IDs ──────────────
+      case "list_opportunities": {
+        const res = await ax.get("/api/Opportunities?pageSize=50");
+        fetchOpportunities(); // refresh UI in background
+        return { result: JSON.stringify(res.data.items ?? res.data) };
+      }
+      case "list_proposals": {
+        const res = await ax.get("/api/Proposals?pageSize=50");
+        fetchProposals();
+        return { result: JSON.stringify(res.data.items ?? res.data) };
+      }
+      case "list_contracts": {
+        const res = await ax.get("/api/Contracts?pageSize=50");
+        fetchContracts();
+        return { result: JSON.stringify(res.data.items ?? res.data) };
+      }
+      case "list_activities": {
+        const res = await ax.get("/api/Activities?pageSize=50");
+        fetchActivities();
+        return { result: JSON.stringify(res.data.items ?? res.data) };
+      }
+      case "list_clients": {
+        const res = await ax.get("/api/Clients?pageSize=50");
+        fetchClients();
+        return { result: JSON.stringify(res.data.items ?? res.data) };
+      }
+      case "list_contacts": {
+        const res = await ax.get("/api/Contacts?pageSize=50");
+        fetchContacts();
+        return { result: JSON.stringify(res.data.items ?? res.data) };
+      }
+      case "list_pricing_requests": {
+        const res = await ax.get("/api/pricingrequests?pageSize=50");
+        fetchPricingRequests();
+        return { result: JSON.stringify(res.data.items ?? res.data) };
+      }
+      case "list_my_pricing_requests": {
+        const res = await ax.get("/api/pricingrequests/my-requests?pageSize=50");
+        fetchMyPricingRequests();
+        return { result: JSON.stringify(res.data.items ?? res.data) };
+      }
+      case "list_pending_pricing_requests": {
+        const res = await ax.get("/api/pricingrequests/pending?pageSize=50");
+        fetchPendingRequests();
+        return { result: JSON.stringify(res.data.items ?? res.data) };
+      }
+      case "list_users": {
+        const params = new URLSearchParams({ pageSize: "50" });
+        if (toolInput.role)       params.append("role", toolInput.role);
+        if (toolInput.searchTerm) params.append("searchTerm", toolInput.searchTerm);
+        const res = await ax.get(`/api/users?${params.toString()}`);
+        return { result: JSON.stringify(res.data.items ?? []) };
+      }
+
+      // ── Mutation tools ───────────────────────────────────────────────────────
       case "create_opportunity":
         await createOpportunity(toolInput);
         return { result: `Opportunity "${toolInput.title}" created successfully.`, action: `Created opportunity: ${toolInput.title}` };
       case "delete_opportunity":
         await deleteOpportunity(toolInput.id);
         return { result: `Opportunity ${toolInput.id} deleted.`, action: `Deleted opportunity` };
-      case "list_proposals":
-        await fetchProposals();
-        return { result: JSON.stringify(proposals.slice(0, 20)) };
       case "create_proposal":
         await createProposal(toolInput);
         return { result: `Proposal "${toolInput.title}" created.`, action: `Created proposal: ${toolInput.title}` };
-      case "list_contracts":
-        await fetchContracts();
-        return { result: JSON.stringify(contracts.slice(0, 20)) };
       case "activate_contract":
         await activateContract(toolInput.id);
         return { result: `Contract ${toolInput.id} activated.`, action: `Activated contract` };
       case "cancel_contract":
         await cancelContract(toolInput.id);
         return { result: `Contract ${toolInput.id} cancelled.`, action: `Cancelled contract` };
-      case "list_activities":
-        await fetchActivities();
-        return { result: JSON.stringify(activities.slice(0, 20)) };
       case "create_activity":
         await createActivity({ ...toolInput, assignedToId: user?.userId });
         return { result: `Activity "${toolInput.subject}" created.`, action: `Created activity: ${toolInput.subject}` };
       case "complete_activity":
         await completeActivity(toolInput.id, toolInput.outcome);
         return { result: `Activity ${toolInput.id} marked complete.`, action: `Completed activity` };
-      case "list_clients":
-        await fetchClients();
-        return { result: JSON.stringify(clients.slice(0, 20)) };
-      case "list_contacts":
-        await fetchContacts();
-        return { result: JSON.stringify(contacts.slice(0, 20)) };
+      case "create_pricing_request":
+        await createPricingRequest(toolInput);
+        return { result: `Pricing request "${toolInput.title}" created successfully.`, action: `Created pricing request: ${toolInput.title}` };
+      case "assign_pricing_request":
+        await assignPricingRequest(toolInput.id, toolInput.userId);
+        return { result: `Pricing request ${toolInput.id} assigned to user ${toolInput.userId}.`, action: `Assigned pricing request` };
+      case "complete_pricing_request":
+        await completePricingRequest(toolInput.id);
+        return { result: `Pricing request ${toolInput.id} marked as completed.`, action: `Completed pricing request` };
+
       default:
         return { result: `Unknown tool: ${toolName}` };
     }
