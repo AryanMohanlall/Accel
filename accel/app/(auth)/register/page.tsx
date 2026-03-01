@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Form, Input, Button, message, Select } from "antd";
+import React, { Suspense, useEffect, useState } from "react";
+import { Form, Input, Button, message, Select, Spin } from "antd";
 import {
   PlusCircleOutlined,
   TeamOutlined,
@@ -26,7 +25,8 @@ const SCENARIOS: { value: Scenario; label: string; icon: React.ReactNode }[] = [
   { value: "default", label: "Default Tenant", icon: <AppstoreOutlined /> },
 ];
 
-const Register = () => {
+// ── Inner component that uses useSearchParams (must be inside Suspense) ──
+const RegisterForm = () => {
   const { styles } = useStyles();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -118,7 +118,6 @@ const Register = () => {
           autoComplete="off"
           className={styles.form}
         >
-          {/* ── Personal details — 2 column grid ── */}
           <div className={styles.grid}>
             <Form.Item
               className={styles.gridItem}
@@ -190,7 +189,6 @@ const Register = () => {
             </Form.Item>
           </div>
 
-          {/* ── Scenario A: New Organisation ── */}
           {scenario === "new" && (
             <Form.Item
               className={styles.fullItem}
@@ -202,7 +200,6 @@ const Register = () => {
             </Form.Item>
           )}
 
-          {/* ── Scenario B: Join Organisation ── */}
           {scenario === "join" && (
             <div className={styles.grid}>
               <Form.Item
@@ -225,7 +222,6 @@ const Register = () => {
             </div>
           )}
 
-          {/* ── Scenario C: Default Tenant ── */}
           {scenario === "default" && (
             <Form.Item
               className={styles.fullItem}
@@ -259,5 +255,12 @@ const Register = () => {
     </div>
   );
 };
+
+// ── Page export wraps RegisterForm in Suspense ──
+const Register = () => (
+  <Suspense fallback={<div style={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#0a0a0a" }}><Spin size="large" /></div>}>
+    <RegisterForm />
+  </Suspense>
+);
 
 export default Register;
