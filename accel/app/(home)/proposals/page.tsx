@@ -536,7 +536,11 @@ const ProposalsPage = () => {
                         style={{ flex: 1, marginBottom: 0 }}
                         rules={[{ required: true, message: "Required" }]}
                       >
-                        <InputNumber style={{ width: "100%" }} min={0} placeholder="1" />
+                        <InputNumber
+                          style={{ width: "100%" }}
+                          min={0}
+                          placeholder="1"
+                        />
                       </Form.Item>
                       <Form.Item
                         {...restField}
@@ -545,7 +549,11 @@ const ProposalsPage = () => {
                         style={{ flex: 2, marginBottom: 0 }}
                         rules={[{ required: true, message: "Required" }]}
                       >
-                        <InputNumber style={{ width: "100%" }} min={0} placeholder="0.00" />
+                        <InputNumber
+                          style={{ width: "100%" }}
+                          min={0}
+                          placeholder="0.00"
+                        />
                       </Form.Item>
                       <Form.Item
                         {...restField}
@@ -553,7 +561,12 @@ const ProposalsPage = () => {
                         label="Discount %"
                         style={{ flex: 1, marginBottom: 0 }}
                       >
-                        <InputNumber style={{ width: "100%" }} min={0} max={100} placeholder="0" />
+                        <InputNumber
+                          style={{ width: "100%" }}
+                          min={0}
+                          max={100}
+                          placeholder="0"
+                        />
                       </Form.Item>
                       <Form.Item
                         {...restField}
@@ -561,7 +574,12 @@ const ProposalsPage = () => {
                         label="Tax %"
                         style={{ flex: 1, marginBottom: 0 }}
                       >
-                        <InputNumber style={{ width: "100%" }} min={0} max={100} placeholder="0" />
+                        <InputNumber
+                          style={{ width: "100%" }}
+                          min={0}
+                          max={100}
+                          placeholder="0"
+                        />
                       </Form.Item>
                     </Space>
                     <MinusCircleOutlined

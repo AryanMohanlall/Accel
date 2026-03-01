@@ -1,22 +1,33 @@
 import { PricingRequest } from "./context";
 
 // ── Action types ──────────────────────────────────────────────────────────────
-export const FETCH_PENDING   = "FETCH_PENDING";
-export const FETCH_SUCCESS   = "FETCH_SUCCESS";
-export const FETCH_ERROR     = "FETCH_ERROR";
-export const MUTATE_PENDING  = "MUTATE_PENDING";
-export const MUTATE_SUCCESS  = "MUTATE_SUCCESS";
-export const MUTATE_ERROR    = "MUTATE_ERROR";
-export const SET_SELECTED    = "SET_SELECTED";
+export const FETCH_PENDING = "FETCH_PENDING";
+export const FETCH_SUCCESS = "FETCH_SUCCESS";
+export const FETCH_ERROR = "FETCH_ERROR";
+export const MUTATE_PENDING = "MUTATE_PENDING";
+export const MUTATE_SUCCESS = "MUTATE_SUCCESS";
+export const MUTATE_ERROR = "MUTATE_ERROR";
+export const SET_SELECTED = "SET_SELECTED";
 
 // ── Action creators ───────────────────────────────────────────────────────────
-export const fetchPending  = () => ({ type: FETCH_PENDING  as typeof FETCH_PENDING });
-export const fetchError    = () => ({ type: FETCH_ERROR    as typeof FETCH_ERROR });
-export const mutatePending = () => ({ type: MUTATE_PENDING as typeof MUTATE_PENDING });
-export const mutateSuccess = () => ({ type: MUTATE_SUCCESS as typeof MUTATE_SUCCESS });
-export const mutateError   = () => ({ type: MUTATE_ERROR   as typeof MUTATE_ERROR });
+export const fetchPending = () => ({
+  type: FETCH_PENDING as typeof FETCH_PENDING,
+});
+export const fetchError = () => ({ type: FETCH_ERROR as typeof FETCH_ERROR });
+export const mutatePending = () => ({
+  type: MUTATE_PENDING as typeof MUTATE_PENDING,
+});
+export const mutateSuccess = () => ({
+  type: MUTATE_SUCCESS as typeof MUTATE_SUCCESS,
+});
+export const mutateError = () => ({
+  type: MUTATE_ERROR as typeof MUTATE_ERROR,
+});
 
-export const fetchSuccess = (payload: { items: PricingRequest[]; totalCount: number }) => ({
+export const fetchSuccess = (payload: {
+  items: PricingRequest[];
+  totalCount: number;
+}) => ({
   type: FETCH_SUCCESS as typeof FETCH_SUCCESS,
   payload,
 });

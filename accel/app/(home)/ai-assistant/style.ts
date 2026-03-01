@@ -11,7 +11,7 @@ const useStyles = createStyles(({ css }) => ({
     border-radius: 24px;
     overflow: hidden;
     position: relative;
-    font-family: 'DM Mono', monospace;
+    font-family: "DM Mono", monospace;
     min-height: 0;
   `,
 
@@ -19,8 +19,8 @@ const useStyles = createStyles(({ css }) => ({
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(rgba(0,184,110,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,184,110,0.04) 1px, transparent 1px);
+      linear-gradient(rgba(0, 184, 110, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 184, 110, 0.04) 1px, transparent 1px);
     background-size: 40px 40px;
     pointer-events: none;
     z-index: 0;
@@ -34,7 +34,7 @@ const useStyles = createStyles(({ css }) => ({
     display: flex;
     align-items: center;
     gap: 10px;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(10px);
     flex-shrink: 0;
     height: 52px;
@@ -63,7 +63,7 @@ const useStyles = createStyles(({ css }) => ({
     font-size: 0.82rem !important;
     font-weight: 700 !important;
     color: #f0f0f0 !important;
-    font-family: 'DM Mono', monospace !important;
+    font-family: "DM Mono", monospace !important;
     letter-spacing: 0.05em;
     line-height: 1.2 !important;
   `,
@@ -71,7 +71,7 @@ const useStyles = createStyles(({ css }) => ({
   headerSub: css`
     font-size: 0.6rem !important;
     color: #3a3a3a !important;
-    font-family: 'DM Mono', monospace !important;
+    font-family: "DM Mono", monospace !important;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     line-height: 1.2 !important;
@@ -84,11 +84,16 @@ const useStyles = createStyles(({ css }) => ({
     background: #00b86e;
     margin-left: auto;
     flex-shrink: 0;
-    box-shadow: 0 0 6px rgba(0,184,110,0.8);
+    box-shadow: 0 0 6px rgba(0, 184, 110, 0.8);
     animation: pulse 2s infinite;
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.3; }
+      0%,
+      100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.3;
+      }
     }
   `,
 
@@ -103,9 +108,9 @@ const useStyles = createStyles(({ css }) => ({
 
   capTag: css`
     font-size: 0.58rem !important;
-    font-family: 'DM Mono', monospace !important;
-    background: rgba(0,184,110,0.07) !important;
-    border-color: rgba(0,184,110,0.18) !important;
+    font-family: "DM Mono", monospace !important;
+    background: rgba(0, 184, 110, 0.07) !important;
+    border-color: rgba(0, 184, 110, 0.18) !important;
     color: #00b86e !important;
     border-radius: 4px !important;
     padding: 0 5px !important;
@@ -123,8 +128,13 @@ const useStyles = createStyles(({ css }) => ({
     gap: 12px;
     position: relative;
     z-index: 1;
-    &::-webkit-scrollbar { width: 3px; }
-    &::-webkit-scrollbar-thumb { background: #1e1e1e; border-radius: 2px; }
+    &::-webkit-scrollbar {
+      width: 3px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #1e1e1e;
+      border-radius: 2px;
+    }
   `,
 
   emptyState: css`
@@ -144,7 +154,7 @@ const useStyles = createStyles(({ css }) => ({
   emptyTitle: css`
     font-size: 0.85rem !important;
     color: #acacac !important;
-    font-family: 'DM Mono', monospace !important;
+    font-family: "DM Mono", monospace !important;
     text-align: center;
     line-height: 1.6 !important;
   `,
@@ -163,14 +173,14 @@ const useStyles = createStyles(({ css }) => ({
     border-radius: 8px;
     padding: 5px 10px;
     font-size: 0.7rem;
-    font-family: 'DM Mono', monospace;
+    font-family: "DM Mono", monospace;
     color: #868282;
     cursor: pointer;
     transition: all 0.2s ease;
     &:hover {
-      border-color: rgba(0,184,110,0.3);
+      border-color: rgba(0, 184, 110, 0.3);
       color: #00b86e;
-      background: rgba(0,184,110,0.05);
+      background: rgba(0, 184, 110, 0.05);
     }
   `,
 
@@ -180,8 +190,14 @@ const useStyles = createStyles(({ css }) => ({
     align-items: flex-start;
     animation: fadeUp 0.2s ease;
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   `,
 
@@ -201,8 +217,8 @@ const useStyles = createStyles(({ css }) => ({
   `,
 
   avatarAi: css`
-    background: rgba(0,184,110,0.08);
-    border: 1px solid rgba(0,184,110,0.2);
+    background: rgba(0, 184, 110, 0.08);
+    border: 1px solid rgba(0, 184, 110, 0.2);
     color: #00b86e;
   `,
 
@@ -218,12 +234,26 @@ const useStyles = createStyles(({ css }) => ({
     border-radius: 10px;
     font-size: 0.8rem;
     line-height: 1.6;
-    font-family: 'DM Mono', monospace;
-    p:last-child { margin-bottom: 0; }
-    ul, ol       { margin: 4px 0; padding-left: 18px; }
-    li           { margin-bottom: 2px; }
-    pre          { margin: 6px 0; }
-    h1,h2,h3     { margin: 6px 0 4px; }
+    font-family: "DM Mono", monospace;
+    p:last-child {
+      margin-bottom: 0;
+    }
+    ul,
+    ol {
+      margin: 4px 0;
+      padding-left: 18px;
+    }
+    li {
+      margin-bottom: 2px;
+    }
+    pre {
+      margin: 6px 0;
+    }
+    h1,
+    h2,
+    h3 {
+      margin: 6px 0 4px;
+    }
   `,
 
   bubbleAi: css`
@@ -234,8 +264,8 @@ const useStyles = createStyles(({ css }) => ({
   `,
 
   bubbleUserMsg: css`
-    background: rgba(0,184,110,0.08);
-    border: 1px solid rgba(0,184,110,0.18);
+    background: rgba(0, 184, 110, 0.08);
+    border: 1px solid rgba(0, 184, 110, 0.18);
     color: #e0e0e0;
     border-top-right-radius: 2px;
   `,
@@ -244,14 +274,14 @@ const useStyles = createStyles(({ css }) => ({
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    background: rgba(0,184,110,0.1);
-    border: 1px solid rgba(0,184,110,0.2);
+    background: rgba(0, 184, 110, 0.1);
+    border: 1px solid rgba(0, 184, 110, 0.2);
     border-radius: 5px;
     padding: 1px 7px;
     font-size: 0.65rem;
     color: #00b86e;
     margin-bottom: 6px;
-    font-family: 'DM Mono', monospace;
+    font-family: "DM Mono", monospace;
   `,
 
   thinkingBubble: css`
@@ -262,7 +292,7 @@ const useStyles = createStyles(({ css }) => ({
     border-radius: 10px;
     border-top-left-radius: 2px;
     font-size: 0.75rem;
-    font-family: 'DM Mono', monospace;
+    font-family: "DM Mono", monospace;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -273,7 +303,7 @@ const useStyles = createStyles(({ css }) => ({
     z-index: 1;
     padding: 10px 14px;
     border-top: 1px solid #111;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(10px);
     display: flex;
     gap: 8px;
@@ -287,13 +317,15 @@ const useStyles = createStyles(({ css }) => ({
     border: 1px solid #1e1e1e !important;
     border-radius: 10px !important;
     color: #e0e0e0 !important;
-    font-family: 'DM Mono', monospace !important;
+    font-family: "DM Mono", monospace !important;
     font-size: 0.78rem !important;
     resize: none !important;
     padding: 8px 12px !important;
-    &::placeholder { color: #2a2a2a !important; }
+    &::placeholder {
+      color: #2a2a2a !important;
+    }
     &:focus {
-      border-color: rgba(0,184,110,0.3) !important;
+      border-color: rgba(0, 184, 110, 0.3) !important;
       box-shadow: none !important;
     }
   `,
@@ -311,8 +343,14 @@ const useStyles = createStyles(({ css }) => ({
     color: #000 !important;
     font-size: 0.9rem !important;
     transition: all 0.2s !important;
-    &:hover    { background: #00d47e !important; transform: scale(1.05); }
-    &:disabled { background: #111 !important; color: #2a2a2a !important; }
+    &:hover {
+      background: #00d47e !important;
+      transform: scale(1.05);
+    }
+    &:disabled {
+      background: #111 !important;
+      color: #2a2a2a !important;
+    }
   `,
 }));
 

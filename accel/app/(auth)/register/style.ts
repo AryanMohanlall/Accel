@@ -2,7 +2,7 @@
 
 import { createStyles } from "antd-style";
 
-const useStyles = createStyles(({ token, css }) => {
+const useStyles = createStyles(({ css }) => {
   return {
     container: css`
       height: 100vh;
@@ -15,84 +15,166 @@ const useStyles = createStyles(({ token, css }) => {
       background: url("/auth.jpg");
       background-size: cover;
       background-position: center;
-      padding: 24px 0;
       box-sizing: border-box;
     `,
+
     logo: css`
       font-family: "Inter", sans-serif;
-      font-size: clamp(40px, 6vh, 80px);
+      font-size: clamp(32px, 5vh, 64px);
       color: #ffffff;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
       font-weight: 400;
       line-height: 1;
     `,
+
     card: css`
-      width: min(700px, 90vw);
-      max-height: 88vh;
-      background: rgba(199, 255, 211, 0.29);
-      backdrop-filter: blur(10px);
+      width: min(620px, 92vw);
+      background: rgba(199, 255, 211, 0.22);
+      backdrop-filter: blur(12px);
       border-radius: 20px;
-      padding: 2vh 40px;
+      padding: 24px 36px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
       box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-      overflow-y: auto;
-      overflow-x: hidden;
-      &::-webkit-scrollbar {
-        width: 4px;
-      }
-      &::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.3);
-        border-radius: 2px;
-      }
+      overflow: hidden;
     `,
+
     title: css`
       font-family: "Inter", sans-serif;
-      font-size: clamp(24px, 4vh, 48px);
+      font-size: clamp(18px, 3vh, 28px);
       color: #ffffff;
-      margin-bottom: 1.5vh;
+      margin: 0 0 14px 0;
     `,
+
+    /* ── Custom scenario switcher ── */
+    scenarioSwitcher: css`
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      width: 100%;
+      margin-bottom: 16px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 14px;
+      padding: 5px;
+    `,
+
+    scenarioBtn: css`
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 8px 6px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: transparent;
+
+      .scenario-icon {
+        font-size: 18px;
+        line-height: 1;
+      }
+
+      .scenario-label {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: rgba(255, 255, 255, 0.5);
+        text-align: center;
+        line-height: 1.2;
+        white-space: nowrap;
+      }
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.08);
+        .scenario-label {
+          color: rgba(255, 255, 255, 0.8);
+        }
+      }
+    `,
+
+    scenarioBtnActive: css`
+      background: rgba(0, 184, 110, 0.25) !important;
+      border-color: rgba(0, 184, 110, 0.5) !important;
+      box-shadow: 0 2px 12px rgba(0, 184, 110, 0.2);
+
+      .scenario-label {
+        color: #fff !important;
+        font-weight: 700 !important;
+      }
+    `,
+
+    form: css`
+      width: 100%;
+    `,
+
+    grid: css`
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 16px;
+    `,
+
     label: css`
       font-family: "Inter", sans-serif;
-      font-size: 16px;
+      font-size: 13px;
       color: #ffffff;
-      margin-bottom: 2px;
       display: block;
-      text-align: center;
     `,
+
     input: css`
-      width: min(450px, 80vw) !important;
-      height: clamp(35px, 5vh, 45px) !important;
+      width: 100% !important;
+      height: 38px !important;
       background: #d9d9d9 !important;
-      border-radius: 12px !important;
+      border-radius: 10px !important;
       border: none !important;
-      font-size: 16px !important;
+      font-size: 14px !important;
+
       &:focus {
         background: #ffffff !important;
       }
     `,
+
+    fullItem: css`
+      margin-bottom: 8px !important;
+      width: 100%;
+
+      .ant-form-item-label label {
+        color: #fff;
+        font-size: 13px;
+      }
+    `,
+
+    gridItem: css`
+      margin-bottom: 8px !important;
+
+      .ant-form-item-label label {
+        color: #fff;
+        font-size: 13px;
+      }
+
+      .ant-form-item-explain {
+        font-size: 11px;
+      }
+    `,
+
     button: css`
-      width: min(450px, 80vw) !important;
-      height: clamp(45px, 6vh, 55px) !important;
-      border-radius: 12px !important;
-      margin-top: 1vh;
-      font-size: 18px !important;
+      width: 100% !important;
+      height: 42px !important;
+      border-radius: 10px !important;
+      margin-top: 6px;
+      font-size: 16px !important;
       background: #52c41a !important;
       border: none !important;
       font-weight: bold;
     `,
-    formItem: css`
-      margin-bottom: 1vh !important;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      .ant-form-item-explain {
-        font-size: 12px;
-        position: absolute;
-        bottom: -15px;
-      }
+
+    footer: css`
+      margin-top: 8px;
+      color: #fff;
+      font-size: 13px;
+      text-align: center;
     `,
   };
 });

@@ -30,7 +30,7 @@ export default function MainLayout({
   const navItems = [
     { label: "Dashboard", path: "/dashboard" },
     { label: "Opportunities", path: "/opportunities" },
-    {label: "Pricing Requests", path: "/pricing"},
+    { label: "Pricing Requests", path: "/pricing" },
     { label: "Proposals", path: "/proposals" },
     { label: "Contracts", path: "/contracts" },
     { label: "Activities", path: "/activities" },
@@ -56,57 +56,57 @@ export default function MainLayout({
 
   return (
     <ChatProvider>
-    <PricingRequestProvider>
-    <ContactProvider>
-      <ClientProvider>
-        <ActivityProvider>
-          <ContractProvider>
-            <OpportunityProvider>
-              <ProposalProvider>
-                <div className={styles.container}>
-                  {/* SHARED HEADER */}
-                  <header className={styles.header}>
-                    <div className={styles.welcomeText}>
-                      Welcome
-                      <br />
-                      {user?.firstName || "User"} {user?.roles ? `|` : ``}{" "}
-                      {user?.roles || ""}
+      <PricingRequestProvider>
+        <ContactProvider>
+          <ClientProvider>
+            <ActivityProvider>
+              <ContractProvider>
+                <OpportunityProvider>
+                  <ProposalProvider>
+                    <div className={styles.container}>
+                      {/* SHARED HEADER */}
+                      <header className={styles.header}>
+                        <div className={styles.welcomeText}>
+                          Welcome
+                          <br />
+                          {user?.firstName || "User"} {user?.roles ? `|` : ``}{" "}
+                          {user?.roles || ""}
+                        </div>
+
+                        <h1 className={styles.logo}>Accel</h1>
+
+                        {/* TENANT ID */}
+                        {!!(
+                          user?.tenantId && user?.roles?.includes("Admin")
+                        ) && <ShareTenantButton tenantId={user.tenantId} />}
+                      </header>
+
+                      {/* SHARED SIDEBAR */}
+                      <aside className={styles.sidebar}>
+                        {navItems.map((item) => (
+                          <div
+                            key={item.path}
+                            className={`${styles.navButton} ${pathname === item.path ? "active" : ""}`}
+                            onClick={() => router.push(item.path)}
+                          >
+                            {item.label}
+                          </div>
+                        ))}
+                        <div className={styles.logoutBtn} onClick={logout}>
+                          Logout
+                        </div>
+                      </aside>
+
+                      {/* PAGE CONTENT */}
+                      <main className={styles.mainContent}>{children}</main>
                     </div>
-
-                    <h1 className={styles.logo}>Accel</h1>
-
-                    {/* TENANT ID */}
-                    {!!(user?.tenantId && user?.roles?.includes("Admin")) && (
-                      <ShareTenantButton tenantId={user.tenantId} />
-                    )}
-                  </header>
-
-                  {/* SHARED SIDEBAR */}
-                  <aside className={styles.sidebar}>
-                    {navItems.map((item) => (
-                      <div
-                        key={item.path}
-                        className={`${styles.navButton} ${pathname === item.path ? "active" : ""}`}
-                        onClick={() => router.push(item.path)}
-                      >
-                        {item.label}
-                      </div>
-                    ))}
-                    <div className={styles.logoutBtn} onClick={logout}>
-                      Logout
-                    </div>
-                  </aside>
-
-                  {/* PAGE CONTENT */}
-                  <main className={styles.mainContent}>{children}</main>
-                </div>
-              </ProposalProvider>
-            </OpportunityProvider>
-          </ContractProvider>
-        </ActivityProvider>
-      </ClientProvider>
-    </ContactProvider>
-    </PricingRequestProvider>
+                  </ProposalProvider>
+                </OpportunityProvider>
+              </ContractProvider>
+            </ActivityProvider>
+          </ClientProvider>
+        </ContactProvider>
+      </PricingRequestProvider>
     </ChatProvider>
   );
 }

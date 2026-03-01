@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     if (!apiKey || !apiSecret) {
       return NextResponse.json(
         { error: "Stream credentials not configured" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -18,7 +18,10 @@ export async function GET(req: NextRequest) {
     const userName = searchParams.get("userName");
 
     if (!userId) {
-      return NextResponse.json({ error: "userId is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "userId is required" },
+        { status: 400 },
+      );
     }
 
     const serverClient = StreamChat.getInstance(apiKey, apiSecret);
@@ -34,6 +37,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ token });
   } catch (error) {
     console.error("Stream token error:", error);
-    return NextResponse.json({ error: "Failed to generate token" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to generate token" },
+      { status: 500 },
+    );
   }
 }

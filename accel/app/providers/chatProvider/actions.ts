@@ -4,14 +4,19 @@ import { getAxiosInstance } from "@/app/utils/axiosInstance";
 import { ChatAction } from "./reducers";
 import { OrgUser } from "./context";
 
-export function createChatActions(dispatch: Dispatch<ChatAction>, getClient: () => StreamChat | null) {
+export function createChatActions(
+  dispatch: Dispatch<ChatAction>,
+  getClient: () => StreamChat | null,
+) {
   const connectUser = async (userId: string, userName: string) => {
     dispatch({ type: "CONNECT_START" });
     try {
       const apiKey = process.env.NEXT_PUBLIC_STREAM_API_KEY!;
 
       // Pass userName so the token route can upsert this user into Stream
-      const res = await fetch(`/api/stream/token?userId=${userId}&userName=${encodeURIComponent(userName)}`);
+      const res = await fetch(
+        `/api/stream/token?userId=${userId}&userName=${encodeURIComponent(userName)}`,
+      );
       const { token } = await res.json();
 
       const client = StreamChat.getInstance(apiKey);
@@ -50,7 +55,7 @@ export function createChatActions(dispatch: Dispatch<ChatAction>, getClient: () 
   // Upsert a user into Stream via the token route (server has the secret)
   const ensureStreamUser = async (user: OrgUser) => {
     await fetch(
-      `/api/stream/token?userId=${user.id}&userName=${encodeURIComponent(user.fullName)}`
+      `/api/stream/token?userId=${user.id}&userName=${encodeURIComponent(user.fullName)}`,
     );
   };
 

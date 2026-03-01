@@ -37,9 +37,11 @@ const ShareTenantButton: React.FC<ShareTenantButtonProps> = ({ tenantId }) => {
 
   const handleEmail = () => {
     const joinLink = getJoinLink();
-    const subject = encodeURIComponent("You're invited to join my Accel organisation");
+    const subject = encodeURIComponent(
+      "You're invited to join my Accel organisation",
+    );
     const body = encodeURIComponent(
-      `Hi,\n\nI'd like to invite you to join my organisation on Accel — a sales CRM for managing opportunities, proposals, and contracts.\n\nClick the link below to register and you'll be automatically added to my organisation:\n\n${joinLink}\n\nAlternatively, you can sign up manually at /register, select "Join Organisation", and enter this Tenant ID:\n${tenantId}\n\nLooking forward to collaborating!\n`
+      `Hi,\n\nI'd like to invite you to join my organisation on Accel — a sales CRM for managing opportunities, proposals, and contracts.\n\nClick the link below to register and you'll be automatically added to my organisation:\n\n${joinLink}\n\nAlternatively, you can sign up manually at /register, select "Join Organisation", and enter this Tenant ID:\n${tenantId}\n\nLooking forward to collaborating!\n`,
     );
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   };

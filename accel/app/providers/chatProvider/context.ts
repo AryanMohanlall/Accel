@@ -26,7 +26,10 @@ export interface ChatActions {
   disconnectUser: () => Promise<void>;
   fetchOrgUsers: (searchTerm?: string) => Promise<void>;
   openDirectMessage: (otherUser: OrgUser) => Promise<Channel | null>;
-  openGroupChannel: (name: string, members: OrgUser[]) => Promise<Channel | null>;
+  openGroupChannel: (
+    name: string,
+    members: OrgUser[],
+  ) => Promise<Channel | null>;
   setActiveChannel: (channel: Channel | null) => void;
 }
 

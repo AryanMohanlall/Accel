@@ -1,7 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Form, Input, Button, message, Select, Segmented } from "antd";
+import { Form, Input, Button, message, Select } from "antd";
+import {
+  PlusCircleOutlined,
+  TeamOutlined,
+  AppstoreOutlined,
+} from "@ant-design/icons";
 import useStyles from "./style";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUserActions, useUserState } from "../../providers/userProvider";
@@ -9,18 +14,27 @@ import { useUserActions, useUserState } from "../../providers/userProvider";
 const ROLE_OPTIONS = [
   { value: "SalesRep", label: "Sales Rep" },
   { value: "SalesManager", label: "Sales Manager" },
-  {
-    value: "BusinessDevelopmentManager",
-    label: "Business Development Manager",
-  },
+  { value: "BusinessDevelopmentManager", label: "Business Development Manager" },
 ];
 
 type Scenario = "new" | "join" | "default";
 
-const SCENARIO_OPTIONS = [
-  { label: "New Organisation", value: "new" },
-  { label: "Join Organisation", value: "join" },
-  { label: "Default Tenant", value: "default" },
+const SCENARIOS: { value: Scenario; label: string; icon: React.ReactNode }[] = [
+  {
+    value: "new",
+    label: "New Organisation",
+    icon: <PlusCircleOutlined />,
+  },
+  {
+    value: "join",
+    label: "Join Organisation",
+    icon: <TeamOutlined />,
+  },
+  {
+    value: "default",
+    label: "Default Tenant",
+    icon: <AppstoreOutlined />,
+  },
 ];
 
 const Register = () => {
@@ -32,7 +46,6 @@ const Register = () => {
   const [scenario, setScenario] = useState<Scenario>("new");
   const [form] = Form.useForm();
 
-  // Pre-populate from invite link (?tenantId=...)
   useEffect(() => {
     const tenantIdFromLink = searchParams.get("tenantId");
     if (tenantIdFromLink) {
@@ -52,9 +65,8 @@ const Register = () => {
     }
   }, [isSuccess, isError, router]);
 
-  // Clear scenario-specific fields when switching
-  const handleScenarioChange = (val: any) => {
-    setScenario(val as Scenario);
+  const handleScenarioChange = (val: Scenario) => {
+    setScenario(val);
     form.resetFields(["tenantName", "tenantId", "role"]);
   };
 
@@ -80,11 +92,9 @@ const Register = () => {
       await register(payload);
     } catch (error: any) {
       const errorData = error.response?.data;
-      const msg =
-        errorData?.detail ||
-        errorData?.title ||
-        "Registration failed. Please try again.";
-      message.error(msg);
+      message.error(
+        errorData?.detail || errorData?.title || "Registration failed. Please try again."
+      );
     }
   };
 
@@ -95,13 +105,19 @@ const Register = () => {
       <div className={styles.card}>
         <h2 className={styles.title}>Create Account</h2>
 
-        {/* Scenario selector */}
-        <Segmented
-          options={SCENARIO_OPTIONS}
-          value={scenario}
-          onChange={handleScenarioChange}
-          style={{ marginBottom: 24, width: "100%" }}
-        />
+        {/* ── Custom scenario switcher ── */}
+        <div className={styles.scenarioSwitcher}>
+          {SCENARIOS.map((s) => (
+            <div
+              key={s.value}
+              className={`${styles.scenarioBtn} ${scenario === s.value ? styles.scenarioBtnActive : ""}`}
+              onClick={() => handleScenarioChange(s.value)}
+            >
+              <span className="scenario-icon">{s.icon}</span>
+              <span className="scenario-label">{s.label}</span>
+            </div>
+          ))}
+        </div>
 
         <Form
           form={form}
@@ -109,68 +125,84 @@ const Register = () => {
           onFinish={onFinish}
           requiredMark={false}
           autoComplete="off"
-          style={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
+          className={styles.form}
         >
-          {/* ── Always shown ── */}
-          <Form.Item
-            className={styles.formItem}
-            label={<span className={styles.label}>First Name</span>}
-            name="firstName"
-            rules={[{ required: true, message: "Required" }]}
-          >
-            <Input className={styles.input} placeholder="First Name" />
-          </Form.Item>
+          {/* ── Personal details — 2 column grid ── */}
+          <div className={styles.grid}>
+            <Form.Item
+              className={styles.gridItem}
+              label={<span className={styles.label}>First Name</span>}
+              name="firstName"
+              rules={[{ required: true, message: "Required" }]}
+            >
+              <Input className={styles.input} placeholder="First Name" />
+            </Form.Item>
 
-          <Form.Item
-            className={styles.formItem}
-            label={<span className={styles.label}>Last Name</span>}
-            name="lastName"
-            rules={[{ required: true, message: "Required" }]}
-          >
-            <Input className={styles.input} placeholder="Last Name" />
-          </Form.Item>
+            <Form.Item
+              className={styles.gridItem}
+              label={<span className={styles.label}>Last Name</span>}
+              name="lastName"
+              rules={[{ required: true, message: "Required" }]}
+            >
+              <Input className={styles.input} placeholder="Last Name" />
+            </Form.Item>
 
-          <Form.Item
-            className={styles.formItem}
-            label={<span className={styles.label}>Phone Number</span>}
-            name="phoneNumber"
-          >
-            <Input className={styles.input} placeholder="0123456789" />
-          </Form.Item>
+            <Form.Item
+              className={styles.gridItem}
+              label={<span className={styles.label}>Email</span>}
+              name="email"
+              rules={[
+                { required: true, message: "Required" },
+                { type: "email", message: "Invalid email" },
+              ]}
+            >
+              <Input className={styles.input} placeholder="Email Address" />
+            </Form.Item>
 
-          <Form.Item
-            className={styles.formItem}
-            label={<span className={styles.label}>Email</span>}
-            name="email"
-            rules={[
-              { required: true, message: "Required" },
-              { type: "email", message: "Invalid email" },
-            ]}
-          >
-            <Input className={styles.input} placeholder="Email Address" />
-          </Form.Item>
+            <Form.Item
+              className={styles.gridItem}
+              label={<span className={styles.label}>Phone Number</span>}
+              name="phoneNumber"
+            >
+              <Input className={styles.input} placeholder="0123456789" />
+            </Form.Item>
 
-          <Form.Item
-            className={styles.formItem}
-            label={<span className={styles.label}>Password</span>}
-            name="password"
-            rules={[
-              { required: true, message: "Required" },
-              { min: 6, message: "Minimum 6 characters" },
-            ]}
-          >
-            <Input.Password className={styles.input} placeholder="Password" />
-          </Form.Item>
+            <Form.Item
+              className={styles.gridItem}
+              label={<span className={styles.label}>Password</span>}
+              name="password"
+              rules={[
+                { required: true, message: "Required" },
+                { min: 6, message: "Minimum 6 characters" },
+              ]}
+            >
+              <Input.Password className={styles.input} placeholder="Password" />
+            </Form.Item>
+
+            <Form.Item
+              className={styles.gridItem}
+              label={<span className={styles.label}>Confirm Password</span>}
+              name="confirmPassword"
+              dependencies={["password"]}
+              rules={[
+                { required: true, message: "Required" },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue("password") === value)
+                      return Promise.resolve();
+                    return Promise.reject("Passwords do not match");
+                  },
+                }),
+              ]}
+            >
+              <Input.Password className={styles.input} placeholder="Confirm Password" />
+            </Form.Item>
+          </div>
 
           {/* ── Scenario A: New Organisation ── */}
           {scenario === "new" && (
             <Form.Item
-              className={styles.formItem}
+              className={styles.fullItem}
               label={<span className={styles.label}>Organisation Name</span>}
               name="tenantName"
               rules={[{ required: true, message: "Required" }]}
@@ -181,20 +213,17 @@ const Register = () => {
 
           {/* ── Scenario B: Join Organisation ── */}
           {scenario === "join" && (
-            <>
+            <div className={styles.grid}>
               <Form.Item
-                className={styles.formItem}
+                className={styles.gridItem}
                 label={<span className={styles.label}>Tenant ID</span>}
                 name="tenantId"
                 rules={[{ required: true, message: "Required" }]}
               >
-                <Input
-                  className={styles.input}
-                  placeholder="Organisation Tenant ID (UUID)"
-                />
+                <Input className={styles.input} placeholder="Organisation UUID" />
               </Form.Item>
               <Form.Item
-                className={styles.formItem}
+                className={styles.gridItem}
                 label={<span className={styles.label}>Role</span>}
                 name="role"
                 rules={[{ required: true, message: "Required" }]}
@@ -202,13 +231,13 @@ const Register = () => {
               >
                 <Select className={styles.input} options={ROLE_OPTIONS} />
               </Form.Item>
-            </>
+            </div>
           )}
 
           {/* ── Scenario C: Default Tenant ── */}
           {scenario === "default" && (
             <Form.Item
-              className={styles.formItem}
+              className={styles.fullItem}
               label={<span className={styles.label}>Role (optional)</span>}
               name="role"
               initialValue="SalesRep"
@@ -227,14 +256,14 @@ const Register = () => {
               SIGN UP
             </Button>
           </Form.Item>
-
-          <div style={{ marginTop: "10px", color: "#fff" }}>
-            Already have an account?{" "}
-            <a href="/login" style={{ color: "#52c41a" }}>
-              Login here
-            </a>
-          </div>
         </Form>
+
+        <div className={styles.footer}>
+          Already have an account?{" "}
+          <a href="/login" style={{ color: "#52c41a" }}>
+            Login here
+          </a>
+        </div>
       </div>
     </div>
   );

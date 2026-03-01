@@ -1,8 +1,15 @@
-import { IPricingRequestStateContext, INITIAL_PRICING_REQUEST_STATE } from "./context";
+import {
+  IPricingRequestStateContext,
+  INITIAL_PRICING_REQUEST_STATE,
+} from "./context";
 import {
   PricingRequestAction,
-  FETCH_PENDING, FETCH_SUCCESS, FETCH_ERROR,
-  MUTATE_PENDING, MUTATE_SUCCESS, MUTATE_ERROR,
+  FETCH_PENDING,
+  FETCH_SUCCESS,
+  FETCH_ERROR,
+  MUTATE_PENDING,
+  MUTATE_SUCCESS,
+  MUTATE_ERROR,
   SET_SELECTED,
 } from "./actions";
 

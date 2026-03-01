@@ -27,15 +27,17 @@ import {
   Window,
 } from "stream-chat-react";
 import { createStyles } from "antd-style";
-import { useChatState, useChatActions, OrgUser } from "../../providers/chatProvider/context";
+import {
+  useChatState,
+  useChatActions,
+  OrgUser,
+} from "../../providers/chatProvider/context";
 import { useUserState } from "../../providers/userProvider";
 
 import "stream-chat-react/dist/css/v2/index.css";
 import useStyles from "./style";
 
 const { Text } = Typography;
-
-
 
 // ─── Group Channel Modal ───────────────────────────────────────────────────
 const GroupChannelModal = ({
@@ -77,12 +79,15 @@ const GroupChannelModal = ({
       }}
       styles={{
         body: { background: "#1a1a1a", padding: "16px 0 0" },
-        header: { background: "#1a1a1a", borderBottom: "1px solid rgba(255,255,255,0.08)" },
+        header: {
+          background: "#1a1a1a",
+          borderBottom: "1px solid rgba(255,255,255,0.08)",
+        },
         footer: { background: "#1a1a1a" },
         mask: { backdropFilter: "blur(4px)" },
       }}
-      style={{ 
-        background: "#1a1a1a", 
+      style={{
+        background: "#1a1a1a",
         border: "1px solid rgba(255,255,255,0.08)",
         borderRadius: 12,
       }}
@@ -127,7 +132,7 @@ const GroupChannelModal = ({
                   setSelectedIds((prev) =>
                     e.target.checked
                       ? [...prev, u.id]
-                      : prev.filter((id) => id !== u.id)
+                      : prev.filter((id) => id !== u.id),
                   )
                 }
                 style={{ color: "#e0e0e0" }}
@@ -156,9 +161,16 @@ const GroupChannelModal = ({
 // ─── Main Chat Page ────────────────────────────────────────────────────────
 const ChatPage = () => {
   const { styles } = useStyles();
-  const { client, isConnected, isPending, orgUsers, usersLoading, activeChannel } =
-    useChatState();
-  const { fetchOrgUsers, openDirectMessage, openGroupChannel } = useChatActions();
+  const {
+    client,
+    isConnected,
+    isPending,
+    orgUsers,
+    usersLoading,
+    activeChannel,
+  } = useChatState();
+  const { fetchOrgUsers, openDirectMessage, openGroupChannel } =
+    useChatActions();
   const { user } = useUserState();
 
   const [search, setSearch] = useState("");
@@ -173,7 +185,7 @@ const ChatPage = () => {
     (u) =>
       u.id !== user?.userId &&
       (u.fullName.toLowerCase().includes(search.toLowerCase()) ||
-        u.email.toLowerCase().includes(search.toLowerCase()))
+        u.email.toLowerCase().includes(search.toLowerCase())),
   );
 
   const handleOpenDM = async (orgUser: OrgUser) => {
@@ -193,7 +205,9 @@ const ChatPage = () => {
     return (
       <div className={styles.emptyState} style={{ height: "100%" }}>
         <Spin size="large" />
-        <Text style={{ color: "rgba(255,255,255,0.3)" }}>Connecting to chat...</Text>
+        <Text style={{ color: "rgba(255,255,255,0.3)" }}>
+          Connecting to chat...
+        </Text>
       </div>
     );
   }
@@ -202,7 +216,9 @@ const ChatPage = () => {
     return (
       <div className={styles.emptyState} style={{ height: "100%" }}>
         <MessageOutlined className={styles.emptyIcon} />
-        <Text style={{ color: "rgba(255,255,255,0.3)" }}>Unable to connect to chat</Text>
+        <Text style={{ color: "rgba(255,255,255,0.3)" }}>
+          Unable to connect to chat
+        </Text>
       </div>
     );
   }
@@ -238,13 +254,20 @@ const ChatPage = () => {
 
         <div className={styles.userList}>
           {usersLoading ? (
-            <div style={{ display: "flex", justifyContent: "center", padding: 20 }}>
+            <div
+              style={{ display: "flex", justifyContent: "center", padding: 20 }}
+            >
               <Spin size="small" />
             </div>
           ) : filteredUsers.length === 0 ? (
             <Empty
               description={
-                <span style={{ color: "rgba(255,255,255,0.25)", fontSize: "0.8rem" }}>
+                <span
+                  style={{
+                    color: "rgba(255,255,255,0.25)",
+                    fontSize: "0.8rem",
+                  }}
+                >
                   No users found
                 </span>
               }
@@ -298,10 +321,14 @@ const ChatPage = () => {
         ) : (
           <div className={styles.emptyState}>
             <MessageOutlined className={styles.emptyIcon} />
-            <Text style={{ color: "rgba(255,255,255,0.35)", fontSize: "0.9rem" }}>
+            <Text
+              style={{ color: "rgba(255,255,255,0.35)", fontSize: "0.9rem" }}
+            >
               Select a colleague to start chatting
             </Text>
-            <Text style={{ color: "rgba(255,255,255,0.2)", fontSize: "0.75rem" }}>
+            <Text
+              style={{ color: "rgba(255,255,255,0.2)", fontSize: "0.75rem" }}
+            >
               or create a group channel
             </Text>
           </div>

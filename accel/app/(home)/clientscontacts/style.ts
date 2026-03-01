@@ -25,7 +25,7 @@ const useStyles = createStyles(({ css }) => ({
       border-bottom: 1px solid #1a1a1a;
     }
     .ant-tabs-tab {
-      color: #555 !important;
+      color: #9e9e9e !important;
       font-size: 0.82rem !important;
       font-weight: 600 !important;
       padding: 12px 0 !important;
@@ -58,7 +58,7 @@ const useStyles = createStyles(({ css }) => ({
   tabBadge: css`
     .ant-badge-count {
       background: #1a1a1a !important;
-      color: #555 !important;
+      color: #a2a2a2 !important;
       box-shadow: none !important;
       font-size: 10px !important;
     }
@@ -130,7 +130,7 @@ const useStyles = createStyles(({ css }) => ({
 
   clientAvatar: css`
     background: #00b86e !important;
-    color: #000 !important;
+    color: #d7d7d7 !important;
     font-weight: 700 !important;
     font-size: 0.9rem !important;
     flex-shrink: 0;
@@ -156,7 +156,7 @@ const useStyles = createStyles(({ css }) => ({
 
   clientIndustry: css`
     font-size: 0.72rem !important;
-    color: #555 !important;
+    color: #9c9c9c !important;
     display: block;
   `,
 
@@ -182,7 +182,7 @@ const useStyles = createStyles(({ css }) => ({
     border-radius: 6px;
     padding: 2px 8px;
     font-size: 0.72rem;
-    color: #888;
+    color: #d1d1d1;
     .anticon {
       font-size: 0.68rem;
       color: #555;
@@ -206,7 +206,7 @@ const useStyles = createStyles(({ css }) => ({
 
   clientFooterText: css`
     font-size: 0.7rem !important;
-    color: #555 !important;
+    color: #b1b1b1 !important;
   `,
 
   // ── Contact list ──
@@ -272,7 +272,7 @@ const useStyles = createStyles(({ css }) => ({
 
   contactPosition: css`
     font-size: 0.7rem !important;
-    color: #555 !important;
+    color: #ababab !important;
   `,
 
   contactDetails: css`
@@ -287,7 +287,7 @@ const useStyles = createStyles(({ css }) => ({
     align-items: center;
     gap: 5px;
     font-size: 0.72rem;
-    color: #666 !important;
+    color: #c0c0c0 !important;
     text-decoration: none !important;
     transition: color 0.2s;
     .anticon {
@@ -309,7 +309,7 @@ const useStyles = createStyles(({ css }) => ({
     border-radius: 6px !important;
     background: #1a1a1a !important;
     border-color: #2a2a2a !important;
-    color: #666 !important;
+    color: #cdcdcd !important;
     flex-shrink: 0;
     margin-left: auto;
   `,

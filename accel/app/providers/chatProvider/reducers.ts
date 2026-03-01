@@ -31,16 +31,29 @@ export const initialState: ChatStateData = {
   activeChannel: null,
 };
 
-export function chatReducer(state: ChatStateData, action: ChatAction): ChatStateData {
+export function chatReducer(
+  state: ChatStateData,
+  action: ChatAction,
+): ChatStateData {
   switch (action.type) {
     case "CONNECT_START":
       return { ...state, isPending: true, isError: false };
     case "CONNECT_SUCCESS":
-      return { ...state, isPending: false, isConnected: true, client: action.payload };
+      return {
+        ...state,
+        isPending: false,
+        isConnected: true,
+        client: action.payload,
+      };
     case "CONNECT_ERROR":
       return { ...state, isPending: false, isError: true };
     case "DISCONNECT":
-      return { ...state, isConnected: false, client: null, activeChannel: null };
+      return {
+        ...state,
+        isConnected: false,
+        client: null,
+        activeChannel: null,
+      };
     case "USERS_LOADING":
       return { ...state, usersLoading: true };
     case "USERS_SUCCESS":

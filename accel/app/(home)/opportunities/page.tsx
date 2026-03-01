@@ -83,7 +83,11 @@ const CURRENCY_OPTIONS = [
 ];
 
 // Users who can be assigned opportunities
-const ASSIGNABLE_ROLES = ["SalesRep", "SalesManager", "BusinessDevelopmentManager"];
+const ASSIGNABLE_ROLES = [
+  "SalesRep",
+  "SalesManager",
+  "BusinessDevelopmentManager",
+];
 
 interface OrgUser {
   id: string;
@@ -170,9 +174,9 @@ const OpportunitiesPage = () => {
       const params = new URLSearchParams({ pageSize: "100" });
       if (search) params.append("searchTerm", search);
       const res = await instance.get(`/api/users?${params.toString()}`);
-      const items: OrgUser[] = (res.data.items ?? []).filter((u: OrgUser) =>
-        u.isActive &&
-        u.roles.some(r => ASSIGNABLE_ROLES.includes(r))
+      const items: OrgUser[] = (res.data.items ?? []).filter(
+        (u: OrgUser) =>
+          u.isActive && u.roles.some((r) => ASSIGNABLE_ROLES.includes(r)),
       );
       setOrgUsers(items);
     } catch (error) {
@@ -194,7 +198,7 @@ const OpportunitiesPage = () => {
     if (!selected) return;
     try {
       await assignOpportunity(selected.id, values.userId);
-      const assignedUser = orgUsers.find(u => u.id === values.userId);
+      const assignedUser = orgUsers.find((u) => u.id === values.userId);
       message.success(`Assigned to ${assignedUser?.fullName ?? "user"}`);
       setAssignModalOpen(false);
       assignForm.resetFields();
@@ -415,7 +419,10 @@ const OpportunitiesPage = () => {
   }, [contacts]);
 
   const clientOptions = clients.map((c) => ({ value: c.id, label: c.name }));
-  const contactOptions = contacts.map((c) => ({ value: c.id, label: c.fullName }));
+  const contactOptions = contacts.map((c) => ({
+    value: c.id,
+    label: c.fullName,
+  }));
 
   const userOptions = orgUsers.map((u) => ({
     value: u.id,
@@ -428,7 +435,8 @@ const OpportunitiesPage = () => {
       {menu}
       {contactSearch.trim() &&
         !contacts.some(
-          (c) => c.fullName.toLowerCase() === contactSearch.trim().toLowerCase(),
+          (c) =>
+            c.fullName.toLowerCase() === contactSearch.trim().toLowerCase(),
         ) && (
           <>
             <Divider style={{ margin: "6px 0" }} />
@@ -500,11 +508,15 @@ const OpportunitiesPage = () => {
                           {opp.probability}%
                         </Tag>
                       </div>
-                      <Text className={styles.clientName}>{opp.clientName}</Text>
+                      <Text className={styles.clientName}>
+                        {opp.clientName}
+                      </Text>
                       {opp.contactName && (
                         <div className={styles.cardRow}>
                           <UserOutlined className={styles.cardIcon} />
-                          <Text className={styles.cardMeta}>{opp.contactName}</Text>
+                          <Text className={styles.cardMeta}>
+                            {opp.contactName}
+                          </Text>
                         </div>
                       )}
                       <div className={styles.cardRow}>
@@ -587,11 +599,16 @@ const OpportunitiesPage = () => {
       <Modal
         title={`Assign — ${selected?.title ?? ""}`}
         open={assignModalOpen}
-        onCancel={() => { setAssignModalOpen(false); assignForm.resetFields(); }}
+        onCancel={() => {
+          setAssignModalOpen(false);
+          assignForm.resetFields();
+        }}
         onOk={() => assignForm.submit()}
         okText="Assign"
         confirmLoading={isPending}
-        okButtonProps={{ style: { background: "#00b86e", borderColor: "#00b86e" } }}
+        okButtonProps={{
+          style: { background: "#00b86e", borderColor: "#00b86e" },
+        }}
         width={440}
       >
         <Form form={assignForm} layout="vertical" onFinish={handleAssign}>
@@ -604,18 +621,27 @@ const OpportunitiesPage = () => {
               showSearch
               placeholder="Search team members..."
               loading={usersLoading}
-              onSearch={(val) => { setUserSearch(val); fetchOrgUsers(val); }}
+              onSearch={(val) => {
+                setUserSearch(val);
+                fetchOrgUsers(val);
+              }}
               filterOption={false}
               optionLabelProp="label"
-              options={userOptions.map(u => ({
+              options={userOptions.map((u) => ({
                 value: u.value,
                 label: u.label,
                 desc: u.desc,
               }))}
               optionRender={(option) => (
-                <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
-                  <span style={{ fontWeight: 600, fontSize: "0.85rem" }}>{option.data.label}</span>
-                  <span style={{ fontSize: "0.7rem", color: "#454545" }}>{option.data.desc}</span>
+                <div
+                  style={{ display: "flex", flexDirection: "column", gap: 1 }}
+                >
+                  <span style={{ fontWeight: 600, fontSize: "0.85rem" }}>
+                    {option.data.label}
+                  </span>
+                  <span style={{ fontSize: "0.7rem", color: "#454545" }}>
+                    {option.data.desc}
+                  </span>
                 </div>
               )}
             />
@@ -624,7 +650,8 @@ const OpportunitiesPage = () => {
 
         {selected?.ownerName && (
           <p style={{ color: "#3f3f3f", fontSize: "0.8rem", marginTop: 0 }}>
-            Currently assigned to: <strong style={{ color: "#515151" }}>{selected.ownerName}</strong>
+            Currently assigned to:{" "}
+            <strong style={{ color: "#515151" }}>{selected.ownerName}</strong>
           </p>
         )}
       </Modal>
@@ -640,16 +667,24 @@ const OpportunitiesPage = () => {
         }}
         onOk={() => stageForm.submit()}
         okText="Confirm"
-        okButtonProps={{ style: { background: "#00b86e", borderColor: "#00b86e" } }}
+        okButtonProps={{
+          style: { background: "#00b86e", borderColor: "#00b86e" },
+        }}
         confirmLoading={isPending}
       >
         <Form form={stageForm} layout="vertical" onFinish={handleStageConfirm}>
           <Form.Item name="notes" label="Notes (optional)">
-            <Input.TextArea rows={2} placeholder='e.g. "Proposal sent to client"' />
+            <Input.TextArea
+              rows={2}
+              placeholder='e.g. "Proposal sent to client"'
+            />
           </Form.Item>
           {pendingStageMove?.stageName === "Closed Lost" && (
             <Form.Item name="lossReason" label="Loss Reason">
-              <Input.TextArea rows={2} placeholder='e.g. "Budget constraints"' />
+              <Input.TextArea
+                rows={2}
+                placeholder='e.g. "Budget constraints"'
+              />
             </Form.Item>
           )}
         </Form>
@@ -669,18 +704,33 @@ const OpportunitiesPage = () => {
         onOk={() => createForm.submit()}
         okText="Create"
         confirmLoading={isPending}
-        okButtonProps={{ style: { background: "#00b86e", borderColor: "#00b86e" } }}
+        okButtonProps={{
+          style: { background: "#00b86e", borderColor: "#00b86e" },
+        }}
       >
         <Form
           form={createForm}
           layout="vertical"
           onFinish={handleCreate}
-          initialValues={{ currency: "ZAR", stage: 1, source: 0, probability: 50 }}
+          initialValues={{
+            currency: "ZAR",
+            stage: 1,
+            source: 0,
+            probability: 50,
+          }}
         >
-          <Form.Item name="title" label="Title" rules={[{ required: true, message: "Required" }]}>
+          <Form.Item
+            name="title"
+            label="Title"
+            rules={[{ required: true, message: "Required" }]}
+          >
             <Input placeholder="Opportunity title" />
           </Form.Item>
-          <Form.Item name="clientId" label="Client" rules={[{ required: true, message: "Required" }]}>
+          <Form.Item
+            name="clientId"
+            label="Client"
+            rules={[{ required: true, message: "Required" }]}
+          >
             <Select
               showSearch
               placeholder="Search or create a client"
@@ -690,13 +740,19 @@ const OpportunitiesPage = () => {
               onSearch={setClientSearch}
               onChange={handleClientChange}
               filterOption={(input, option) =>
-                (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+                (option?.label ?? "")
+                  .toLowerCase()
+                  .includes(input.toLowerCase())
               }
               popupRender={(menu) => (
                 <>
                   {menu}
                   {clientSearch.trim() &&
-                    !clients.some((c) => c.name.toLowerCase() === clientSearch.trim().toLowerCase()) && (
+                    !clients.some(
+                      (c) =>
+                        c.name.toLowerCase() ===
+                        clientSearch.trim().toLowerCase(),
+                    ) && (
                       <>
                         <Divider style={{ margin: "6px 0" }} />
                         <div style={{ padding: "4px 8px" }}>
@@ -705,7 +761,11 @@ const OpportunitiesPage = () => {
                             icon={<PlusOutlined />}
                             loading={addingClient}
                             onClick={handleAddClient}
-                            style={{ width: "100%", textAlign: "left", color: "#00b86e" }}
+                            style={{
+                              width: "100%",
+                              textAlign: "left",
+                              color: "#00b86e",
+                            }}
                           >
                             Add "{clientSearch}"
                           </Button>
@@ -719,14 +779,20 @@ const OpportunitiesPage = () => {
           <Form.Item name="contactId" label="Contact (optional)">
             <Select
               showSearch
-              placeholder={selectedClientId ? "Search or create a contact" : "Select a client first"}
+              placeholder={
+                selectedClientId
+                  ? "Search or create a contact"
+                  : "Select a client first"
+              }
               disabled={!selectedClientId}
               loading={contactsLoading || addingContact}
               options={contactOptions}
               searchValue={contactSearch}
               onSearch={setContactSearch}
               filterOption={(input, option) =>
-                (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+                (option?.label ?? "")
+                  .toLowerCase()
+                  .includes(input.toLowerCase())
               }
               popupRender={contactDropdown}
             />
@@ -734,7 +800,11 @@ const OpportunitiesPage = () => {
           <Form.Item name="description" label="Description">
             <Input.TextArea rows={2} />
           </Form.Item>
-          <Form.Item name="estimatedValue" label="Estimated Value" rules={[{ required: true, message: "Required" }]}>
+          <Form.Item
+            name="estimatedValue"
+            label="Estimated Value"
+            rules={[{ required: true, message: "Required" }]}
+          >
             <InputNumber style={{ width: "100%" }} min={0} />
           </Form.Item>
           <Form.Item name="currency" label="Currency">
@@ -749,7 +819,11 @@ const OpportunitiesPage = () => {
           <Form.Item name="probability" label="Probability (%)">
             <InputNumber style={{ width: "100%" }} min={0} max={100} />
           </Form.Item>
-          <Form.Item name="expectedCloseDate" label="Expected Close Date" rules={[{ required: true, message: "Required" }]}>
+          <Form.Item
+            name="expectedCloseDate"
+            label="Expected Close Date"
+            rules={[{ required: true, message: "Required" }]}
+          >
             <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
           </Form.Item>
         </Form>
@@ -759,14 +833,23 @@ const OpportunitiesPage = () => {
       <Modal
         title={`Update — ${selected?.title ?? ""}`}
         open={updateModalOpen}
-        onCancel={() => { setUpdateModalOpen(false); updateForm.resetFields(); }}
+        onCancel={() => {
+          setUpdateModalOpen(false);
+          updateForm.resetFields();
+        }}
         onOk={() => updateForm.submit()}
         okText="Save"
         confirmLoading={isPending}
-        okButtonProps={{ style: { background: "#00b86e", borderColor: "#00b86e" } }}
+        okButtonProps={{
+          style: { background: "#00b86e", borderColor: "#00b86e" },
+        }}
       >
         <Form form={updateForm} layout="vertical" onFinish={handleUpdate}>
-          <Form.Item name="title" label="Title" rules={[{ required: true, message: "Required" }]}>
+          <Form.Item
+            name="title"
+            label="Title"
+            rules={[{ required: true, message: "Required" }]}
+          >
             <Input />
           </Form.Item>
           <Form.Item name="contactId" label="Contact (optional)">
@@ -779,7 +862,9 @@ const OpportunitiesPage = () => {
               searchValue={contactSearch}
               onSearch={setContactSearch}
               filterOption={(input, option) =>
-                (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+                (option?.label ?? "")
+                  .toLowerCase()
+                  .includes(input.toLowerCase())
               }
               popupRender={contactDropdown}
             />
@@ -787,7 +872,11 @@ const OpportunitiesPage = () => {
           <Form.Item name="description" label="Description">
             <Input.TextArea rows={2} />
           </Form.Item>
-          <Form.Item name="estimatedValue" label="Estimated Value" rules={[{ required: true, message: "Required" }]}>
+          <Form.Item
+            name="estimatedValue"
+            label="Estimated Value"
+            rules={[{ required: true, message: "Required" }]}
+          >
             <InputNumber style={{ width: "100%" }} min={0} />
           </Form.Item>
           <Form.Item name="currency" label="Currency">
@@ -799,7 +888,11 @@ const OpportunitiesPage = () => {
           <Form.Item name="probability" label="Probability (%)">
             <InputNumber style={{ width: "100%" }} min={0} max={100} />
           </Form.Item>
-          <Form.Item name="expectedCloseDate" label="Expected Close Date" rules={[{ required: true, message: "Required" }]}>
+          <Form.Item
+            name="expectedCloseDate"
+            label="Expected Close Date"
+            rules={[{ required: true, message: "Required" }]}
+          >
             <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
           </Form.Item>
         </Form>
@@ -815,8 +908,12 @@ const OpportunitiesPage = () => {
         okButtonProps={{ danger: true, loading: isPending }}
         cancelText="Cancel"
       >
-        <p>Are you sure you want to delete <strong>"{selected?.title}"</strong>?</p>
-        <p style={{ color: "#888", fontSize: "0.85rem" }}>This action cannot be undone.</p>
+        <p>
+          Are you sure you want to delete <strong>"{selected?.title}"</strong>?
+        </p>
+        <p style={{ color: "#888", fontSize: "0.85rem" }}>
+          This action cannot be undone.
+        </p>
       </Modal>
     </div>
   );

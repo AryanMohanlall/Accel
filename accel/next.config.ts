@@ -6,8 +6,8 @@ const nextConfig: NextConfig = {
   turbopack: {}, // silences Turbopack warning in dev
 };
 
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV === "development";
 
 export default isDev
   ? nextConfig
-  : PWA({ dest: 'public', register: true, skipWaiting: true })(nextConfig);
+  : PWA({ dest: "public", register: true, skipWaiting: true })(nextConfig);

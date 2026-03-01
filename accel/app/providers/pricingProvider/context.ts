@@ -54,5 +54,6 @@ export const INITIAL_PRICING_REQUEST_STATE: IPricingRequestStateContext = {
 export const PricingRequestStateContext =
   createContext<IPricingRequestStateContext>(INITIAL_PRICING_REQUEST_STATE);
 
-export const PricingRequestActionContext =
-  createContext<IPricingRequestActionContext | undefined>(undefined);
+export const PricingRequestActionContext = createContext<
+  IPricingRequestActionContext | undefined
+>(undefined);

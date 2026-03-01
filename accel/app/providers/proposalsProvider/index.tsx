@@ -158,6 +158,8 @@ export const useProposalState = () => {
 export const useProposalActions = () => {
   const context = useContext(ProposalActionContext);
   if (context === undefined)
-    throw new Error("useProposalActions must be used within a ProposalProvider");
+    throw new Error(
+      "useProposalActions must be used within a ProposalProvider",
+    );
   return context;
 };

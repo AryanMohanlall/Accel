@@ -10,8 +10,12 @@ import {
 } from "./context";
 import { PricingRequestReducer } from "./reducers";
 import {
-  fetchPending, fetchSuccess, fetchError,
-  mutatePending, mutateSuccess, mutateError,
+  fetchPending,
+  fetchSuccess,
+  fetchError,
+  mutatePending,
+  mutateSuccess,
+  mutateError,
   setSelectedAction,
 } from "./actions";
 
@@ -29,10 +33,18 @@ export const PricingRequestProvider = ({
   const fetchPricingRequests = async (params?: Record<string, any>) => {
     dispatch(fetchPending());
     try {
-      const query = new URLSearchParams({ pageSize: "50", ...params }).toString();
+      const query = new URLSearchParams({
+        pageSize: "50",
+        ...params,
+      }).toString();
       const res = await instance.get(`/api/pricingrequests?${query}`);
       const items = res.data.items ?? [];
-      dispatch(fetchSuccess({ items, totalCount: res.data.totalCount ?? items.length }));
+      dispatch(
+        fetchSuccess({
+          items,
+          totalCount: res.data.totalCount ?? items.length,
+        }),
+      );
     } catch (error) {
       console.error("Failed to fetch pricing requests:", error);
       dispatch(fetchError());
@@ -45,7 +57,12 @@ export const PricingRequestProvider = ({
     try {
       const res = await instance.get("/api/pricingrequests/my-requests");
       const items = res.data.items ?? [];
-      dispatch(fetchSuccess({ items, totalCount: res.data.totalCount ?? items.length }));
+      dispatch(
+        fetchSuccess({
+          items,
+          totalCount: res.data.totalCount ?? items.length,
+        }),
+      );
     } catch (error) {
       console.error("Failed to fetch my pricing requests:", error);
       dispatch(fetchError());
@@ -58,7 +75,12 @@ export const PricingRequestProvider = ({
     try {
       const res = await instance.get("/api/pricingrequests/pending");
       const items = res.data.items ?? [];
-      dispatch(fetchSuccess({ items, totalCount: res.data.totalCount ?? items.length }));
+      dispatch(
+        fetchSuccess({
+          items,
+          totalCount: res.data.totalCount ?? items.length,
+        }),
+      );
     } catch (error) {
       console.error("Failed to fetch pending pricing requests:", error);
       dispatch(fetchError());
@@ -145,13 +167,17 @@ export const PricingRequestProvider = ({
 export const usePricingRequestState = () => {
   const context = useContext(PricingRequestStateContext);
   if (context === undefined)
-    throw new Error("usePricingRequestState must be used within a PricingRequestProvider");
+    throw new Error(
+      "usePricingRequestState must be used within a PricingRequestProvider",
+    );
   return context;
 };
 
 export const usePricingRequestActions = () => {
   const context = useContext(PricingRequestActionContext);
   if (context === undefined)
-    throw new Error("usePricingRequestActions must be used within a PricingRequestProvider");
+    throw new Error(
+      "usePricingRequestActions must be used within a PricingRequestProvider",
+    );
   return context;
 };

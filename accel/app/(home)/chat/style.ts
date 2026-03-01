@@ -142,7 +142,12 @@ const useStyles = createStyles(({ css }) => ({
       --str-chat__surface-color: #111111 !important;
       --str-chat__secondary-surface-color: #1a1a1a !important;
       --str-chat__primary-surface-color: rgba(0, 184, 110, 0.1) !important;
-      --str-chat__primary-surface-color-low-emphasis: rgba(0, 184, 110, 0.05) !important;
+      --str-chat__primary-surface-color-low-emphasis: rgba(
+        0,
+        184,
+        110,
+        0.05
+      ) !important;
       --str-chat__background-color: #0d0d0d !important;
       --str-chat__message-highlight-color: rgba(0, 184, 110, 0.08) !important;
       --str-chat__border-radius-circle: 50% !important;

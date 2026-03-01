@@ -61,7 +61,7 @@ const useStyles = createStyles(({ css }) => ({
 
   statLabel: css`
     font-size: 0.7rem !important;
-    color: #555 !important;
+    color: #a4a4a4 !important;
   `,
 
   /* ── List ── */
@@ -73,8 +73,13 @@ const useStyles = createStyles(({ css }) => ({
     display: flex;
     flex-direction: column;
     gap: 8px;
-    &::-webkit-scrollbar { width: 4px; }
-    &::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 2px;
+    }
   `,
 
   centered: css`
@@ -104,7 +109,7 @@ const useStyles = createStyles(({ css }) => ({
   requestCardSelected: css`
     border-color: #00b86e !important;
     background: #0a1f15 !important;
-    box-shadow: 0 0 0 1px rgba(0,184,110,0.15);
+    box-shadow: 0 0 0 1px rgba(0, 184, 110, 0.15);
   `,
 
   cardTop: css`
@@ -123,7 +128,7 @@ const useStyles = createStyles(({ css }) => ({
 
   requestNumber: css`
     font-size: 0.62rem !important;
-    color: #444 !important;
+    color: #959595 !important;
     font-family: monospace;
     letter-spacing: 0.04em;
   `,
@@ -140,7 +145,7 @@ const useStyles = createStyles(({ css }) => ({
 
   opportunityChip: css`
     font-size: 0.65rem !important;
-    color: #888 !important;
+    color: #cdcdcd !important;
   `,
 
   tagRow: css`
@@ -164,8 +169,10 @@ const useStyles = createStyles(({ css }) => ({
     align-items: center;
     gap: 5px;
     font-size: 0.7rem;
-    color: #666;
-    .anticon { font-size: 0.65rem; }
+    color: #cccccc;
+    .anticon {
+      font-size: 0.65rem;
+    }
   `,
 
   overdueText: css`
@@ -205,7 +212,10 @@ const useStyles = createStyles(({ css }) => ({
     height: 34px !important;
     padding: 0 16px !important;
     font-size: 0.82rem !important;
-    &:hover { background: #00b86e !important; color: #fff !important; }
+    &:hover {
+      background: #00b86e !important;
+      color: #fff !important;
+    }
   `,
 
   btnAction: css`
@@ -217,7 +227,10 @@ const useStyles = createStyles(({ css }) => ({
     height: 34px !important;
     padding: 0 16px !important;
     font-size: 0.82rem !important;
-    &:hover { background: #333 !important; color: #fff !important; }
+    &:hover {
+      background: #333 !important;
+      color: #fff !important;
+    }
   `,
 
   btnDisabled: css`
@@ -231,9 +244,16 @@ const useStyles = createStyles(({ css }) => ({
     background: #1a1a1a !important;
     border: 1px solid #333 !important;
     height: 34px;
-    .ant-input { background: transparent !important; color: #fff !important; }
-    .ant-input::placeholder { color: #555 !important; }
-    .ant-input-clear-icon { color: #555 !important; }
+    .ant-input {
+      background: transparent !important;
+      color: #fff !important;
+    }
+    .ant-input::placeholder {
+      color: #555 !important;
+    }
+    .ant-input-clear-icon {
+      color: #555 !important;
+    }
   `,
 
   searchIcon: css`
