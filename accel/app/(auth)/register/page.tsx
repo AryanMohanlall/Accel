@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Form, Input, Button, message, Select, Segmented } from "antd";
 import useStyles from "./style";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useUserActions, useUserState } from "../../providers/userProvider";
 
 const ROLE_OPTIONS = [
@@ -26,10 +26,21 @@ const SCENARIO_OPTIONS = [
 const Register = () => {
   const { styles } = useStyles();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { register } = useUserActions();
   const { isPending, isSuccess, isError } = useUserState();
   const [scenario, setScenario] = useState<Scenario>("new");
   const [form] = Form.useForm();
+
+  // Pre-populate from invite link (?tenantId=...)
+  useEffect(() => {
+    const tenantIdFromLink = searchParams.get("tenantId");
+    if (tenantIdFromLink) {
+      setScenario("join");
+      form.setFieldsValue({ tenantId: tenantIdFromLink, role: "SalesRep" });
+      message.info("Tenant ID pre-filled from your invitation link.");
+    }
+  }, [searchParams, form]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -59,12 +70,10 @@ const Register = () => {
 
       if (scenario === "new") {
         payload.tenantName = values.tenantName;
-        // role is ignored by API when tenantName is provided
       } else if (scenario === "join") {
         payload.tenantId = values.tenantId;
         payload.role = values.role;
       } else {
-        // default — role optional
         if (values.role) payload.role = values.role;
       }
 
