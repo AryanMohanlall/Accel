@@ -23,6 +23,9 @@ import {
   SearchOutlined,
   FileTextOutlined,
   MinusCircleOutlined,
+  SendOutlined,
+  CheckOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import useStyles from "./style";
@@ -79,16 +82,27 @@ const ProposalsPage = () => {
     createProposal,
     updateProposal,
     deleteProposal,
+    submitProposal,
+    approveProposal,
+    rejectProposal,
   } = useProposalActions();
   const { opportunities } = useOpportunityState();
   const { fetchOpportunities } = useOpportunityActions();
+  const { user } = useUserState();
 
   const [search, setSearch] = useState("");
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [createForm] = Form.useForm();
   const [updateForm] = Form.useForm();
+  const [rejectForm] = Form.useForm();
+
+  const isAdminOrManager =
+    user?.roles.includes("Admin") ||
+    user?.roles.includes("SalesManager") ||
+    user?.roles.includes("BusinessDevelopmentManager");
 
   useEffect(() => {
     fetchProposals();
@@ -178,6 +192,53 @@ const ProposalsPage = () => {
         error.response?.data?.detail ||
           error.response?.data?.title ||
           "Failed to delete proposal",
+      );
+    }
+  };
+
+  // --- Submit ---
+  const handleSubmit = async () => {
+    if (!selected) return;
+    try {
+      await submitProposal(selected.id);
+      message.success(`"${selected.title}" submitted for approval`);
+    } catch (error: any) {
+      message.error(
+        error.response?.data?.detail ||
+          error.response?.data?.title ||
+          "Failed to submit proposal",
+      );
+    }
+  };
+
+  // --- Approve ---
+  const handleApprove = async () => {
+    if (!selected) return;
+    try {
+      await approveProposal(selected.id);
+      message.success(`"${selected.title}" approved`);
+    } catch (error: any) {
+      message.error(
+        error.response?.data?.detail ||
+          error.response?.data?.title ||
+          "Failed to approve proposal",
+      );
+    }
+  };
+
+  // --- Reject ---
+  const handleReject = async (values: any) => {
+    if (!selected) return;
+    try {
+      await rejectProposal(selected.id, values.reason);
+      message.success(`"${selected.title}" rejected`);
+      setRejectModalOpen(false);
+      rejectForm.resetFields();
+    } catch (error: any) {
+      message.error(
+        error.response?.data?.detail ||
+          error.response?.data?.title ||
+          "Failed to reject proposal",
       );
     }
   };
@@ -276,8 +337,6 @@ const ProposalsPage = () => {
     },
   ];
 
-  const { user } = useUserState();
-
   return (
     <div className={styles.wrapper}>
       <div className={styles.tableWrapper}>
@@ -303,7 +362,7 @@ const ProposalsPage = () => {
           icon={<PlusOutlined />}
           className={styles.btnCreate}
           onClick={() => {
-            fetchOpportunities(); // always re-fetch so dropdown is fresh
+            fetchOpportunities();
             setCreateModalOpen(true);
           }}
         >
@@ -317,6 +376,42 @@ const ProposalsPage = () => {
         >
           Update
         </Button>
+
+        {/* Submit — only for Draft proposals */}
+        <Button
+          icon={<SendOutlined />}
+          className={`${styles.btnAction} ${!selected || selected.status !== 1 ? styles.btnDisabled : ""}`}
+          disabled={!selected || selected.status !== 1}
+          loading={isPending}
+          onClick={handleSubmit}
+        >
+          Submit
+        </Button>
+
+        {/* Approve & Reject — only for Submitted proposals, Admin/Manager only */}
+        {isAdminOrManager && (
+          <>
+            <Button
+              icon={<CheckOutlined />}
+              className={`${styles.btnAction} ${!selected || selected.status !== 2 ? styles.btnDisabled : ""}`}
+              disabled={!selected || selected.status !== 2}
+              loading={isPending}
+              onClick={handleApprove}
+            >
+              Approve
+            </Button>
+            <Button
+              icon={<CloseOutlined />}
+              className={`${styles.btnAction} ${!selected || selected.status !== 2 ? styles.btnDisabled : ""}`}
+              disabled={!selected || selected.status !== 2}
+              loading={isPending}
+              onClick={() => setRejectModalOpen(true)}
+            >
+              Reject
+            </Button>
+          </>
+        )}
+
         {user?.roles.includes("Admin") && (
           <Button
             icon={<DeleteOutlined />}
@@ -328,6 +423,7 @@ const ProposalsPage = () => {
             Delete
           </Button>
         )}
+
         <Input
           placeholder="Search..."
           prefix={<SearchOutlined className={styles.searchIcon} />}
@@ -397,7 +493,6 @@ const ProposalsPage = () => {
             <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
           </Form.Item>
 
-          {/* LINE ITEMS */}
           <Divider
             titlePlacement="left"
             style={{ fontSize: "0.8rem", color: "#888" }}
@@ -549,7 +644,7 @@ const ProposalsPage = () => {
         </Form>
       </Modal>
 
-      {/* DELETE CONFIRMATION MODAL */}
+      {/* DELETE MODAL */}
       <Modal
         title="Delete Proposal"
         open={deleteModalOpen}
@@ -565,6 +660,33 @@ const ProposalsPage = () => {
         <p style={{ color: "#888", fontSize: "0.85rem" }}>
           This action cannot be undone.
         </p>
+      </Modal>
+
+      {/* REJECT MODAL */}
+      <Modal
+        title={`Reject — ${selected?.title ?? ""}`}
+        open={rejectModalOpen}
+        onCancel={() => {
+          setRejectModalOpen(false);
+          rejectForm.resetFields();
+        }}
+        onOk={() => rejectForm.submit()}
+        okText="Reject"
+        okButtonProps={{ danger: true, loading: isPending }}
+        confirmLoading={isPending}
+      >
+        <Form form={rejectForm} layout="vertical" onFinish={handleReject}>
+          <Form.Item
+            name="reason"
+            label="Rejection Reason"
+            rules={[{ required: true, message: "Please provide a reason" }]}
+          >
+            <TextArea
+              rows={3}
+              placeholder="e.g. Pricing too high, revise and resubmit"
+            />
+          </Form.Item>
+        </Form>
       </Modal>
     </div>
   );

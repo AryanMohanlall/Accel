@@ -56,6 +56,18 @@ The application focuses on:
 * Maintain a history of interactions
 * Improve collaboration and transparency
 
+### AI Assistant
+
+* Ask the system for intelligent suggestions or summaries
+* Powered by Gemini generative model via Google AI Studio
+* Accessible under the "AI Assistant" section in the app
+
+### Chat
+
+* Real‑time messaging between users and support
+* Built with Stream Chat; requires API key and secret
+* Integrated into the home dashboard for efficient communication
+
 ## Tech Stack
 
 * **Framework:** Next.js
@@ -168,15 +180,13 @@ Before running the application, set up your environment variables:
 
 ```
 NEXT_API_URL=your_api_url_here
-```
-
-**Create a `.env.local` file in the root directory and add:**
-
-```
 GEMINI_API_KEY=your_gemini_api_key_here
+NEXT_PUBLIC_STREAM_API_KEY=your_stream_public_key_here
+STREAM_API_SECRET=your_stream_api_secret_here
 ```
 
-You can obtain your Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
+* `GEMINI_API_KEY` is used by the AI Assistant feature (models from Google AI Studio). You can obtain it from [Google AI Studio](https://aistudio.google.com/app/apikey).
+* `NEXT_PUBLIC_STREAM_API_KEY` and `STREAM_API_SECRET` are required for the Chat functionality powered by Stream. Obtain these from your Stream dashboard.
 
 Run the development server
 

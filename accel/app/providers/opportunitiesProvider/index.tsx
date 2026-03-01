@@ -34,7 +34,6 @@ export const OpportunityProvider = ({
     dispatch(fetchPending());
     try {
       const res = await instance.get("/api/Opportunities");
-      console.log("Opportunities response:", res.data); // check what comes back after delete
       dispatch(
         fetchSuccess({
           items: res.data.items,
@@ -78,7 +77,6 @@ export const OpportunityProvider = ({
     }
   };
 
-  // Separate method for stage moves — hits the /stage endpoint
   const moveOpportunityStage = async (
     id: string,
     stage: number,
@@ -96,6 +94,19 @@ export const OpportunityProvider = ({
       await fetchOpportunities();
     } catch (error) {
       console.error("Failed to move opportunity stage:", error);
+      dispatch(mutateError());
+      throw error;
+    }
+  };
+
+  const assignOpportunity = async (id: string, userId: string) => {
+    dispatch(mutatePending());
+    try {
+      await instance.post(`/api/opportunities/${id}/assign`, { userId });
+      dispatch(mutateSuccess());
+      await fetchOpportunities();
+    } catch (error) {
+      console.error("Failed to assign opportunity:", error);
       dispatch(mutateError());
       throw error;
     }
@@ -120,6 +131,7 @@ export const OpportunityProvider = ({
     createOpportunity,
     updateOpportunity,
     moveOpportunityStage,
+    assignOpportunity,
     deleteOpportunity,
   };
 
