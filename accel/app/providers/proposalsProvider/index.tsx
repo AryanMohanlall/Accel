@@ -31,15 +31,11 @@ export const ProposalProvider = ({
     dispatch(fetchPending());
     try {
       const res = await instance.get("/api/Proposals");
-      console.log("Proposals response:", res.data);
-
-      // Handle both array response and paginated { items: [] } response
       const items = Array.isArray(res.data)
         ? res.data
         : Array.isArray(res.data.items)
           ? res.data.items
-          : [res.data]; // single object fallback
-
+          : [res.data];
       dispatch(fetchSuccess(items));
     } catch (error) {
       console.error("Failed to fetch proposals:", error);
@@ -91,12 +87,54 @@ export const ProposalProvider = ({
     }
   };
 
+  const submitProposal = async (id: string) => {
+    dispatch(mutatePending());
+    try {
+      await instance.put(`/api/Proposals/${id}/submit`);
+      dispatch(mutateSuccess());
+      await fetchProposals();
+    } catch (error) {
+      console.error("Failed to submit proposal:", error);
+      dispatch(mutateError());
+      throw error;
+    }
+  };
+
+  const approveProposal = async (id: string) => {
+    dispatch(mutatePending());
+    try {
+      await instance.put(`/api/Proposals/${id}/approve`);
+      dispatch(mutateSuccess());
+      await fetchProposals();
+    } catch (error) {
+      console.error("Failed to approve proposal:", error);
+      dispatch(mutateError());
+      throw error;
+    }
+  };
+
+  const rejectProposal = async (id: string, reason: string) => {
+    dispatch(mutatePending());
+    try {
+      await instance.put(`/api/Proposals/${id}/reject`, { reason });
+      dispatch(mutateSuccess());
+      await fetchProposals();
+    } catch (error) {
+      console.error("Failed to reject proposal:", error);
+      dispatch(mutateError());
+      throw error;
+    }
+  };
+
   const actions = {
     fetchProposals,
     setSelected,
     createProposal,
     updateProposal,
     deleteProposal,
+    submitProposal,
+    approveProposal,
+    rejectProposal,
   };
 
   return React.createElement(
@@ -120,8 +158,6 @@ export const useProposalState = () => {
 export const useProposalActions = () => {
   const context = useContext(ProposalActionContext);
   if (context === undefined)
-    throw new Error(
-      "useProposalActions must be used within a ProposalProvider",
-    );
+    throw new Error("useProposalActions must be used within a ProposalProvider");
   return context;
 };

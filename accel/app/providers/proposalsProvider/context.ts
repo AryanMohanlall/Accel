@@ -50,6 +50,9 @@ export interface IProposalActionContext {
   createProposal: (payload: any) => Promise<void>;
   updateProposal: (id: string, payload: any) => Promise<void>;
   deleteProposal: (id: string) => Promise<void>;
+  submitProposal: (id: string) => Promise<void>;
+  approveProposal: (id: string) => Promise<void>;
+  rejectProposal: (id: string, reason: string) => Promise<void>;
 }
 
 export const INITIAL_PROPOSAL_STATE: IProposalStateContext = {
