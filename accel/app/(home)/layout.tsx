@@ -14,6 +14,7 @@ import { ClientProvider } from "../providers/clientsProvider";
 import { ContactProvider } from "../providers/contactsProvider";
 import ShareTenantButton from "../components/ShareTenantButton";
 import { PricingRequestProvider } from "../providers/pricingProvider";
+import { ChatProvider } from "../providers/chatProvider";
 
 export default function MainLayout({
   children,
@@ -34,6 +35,7 @@ export default function MainLayout({
     { label: "Contracts", path: "/contracts" },
     { label: "Activities", path: "/activities" },
     { label: "Clients & Contacts", path: "/clientscontacts" },
+    { label: "Chat", path: "/chat" },
     { label: "AI Assistant", path: "/ai-assistant" },
   ];
 
@@ -53,6 +55,7 @@ export default function MainLayout({
   }, [user]);
 
   return (
+    <ChatProvider>
     <PricingRequestProvider>
     <ContactProvider>
       <ClientProvider>
@@ -104,5 +107,6 @@ export default function MainLayout({
       </ClientProvider>
     </ContactProvider>
     </PricingRequestProvider>
+    </ChatProvider>
   );
 }
