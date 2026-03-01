@@ -13,6 +13,7 @@ import { ActivityProvider } from "../providers/activitiesProvider";
 import { ClientProvider } from "../providers/clientsProvider";
 import { ContactProvider } from "../providers/contactsProvider";
 import ShareTenantButton from "../components/ShareTenantButton";
+import { PricingRequestProvider } from "../providers/pricingProvider";
 
 export default function MainLayout({
   children,
@@ -28,6 +29,7 @@ export default function MainLayout({
   const navItems = [
     { label: "Dashboard", path: "/dashboard" },
     { label: "Opportunities", path: "/opportunities" },
+    {label: "Pricing Requests", path: "/pricing"},
     { label: "Proposals", path: "/proposals" },
     { label: "Contracts", path: "/contracts" },
     { label: "Activities", path: "/activities" },
@@ -51,6 +53,7 @@ export default function MainLayout({
   }, [user]);
 
   return (
+    <PricingRequestProvider>
     <ContactProvider>
       <ClientProvider>
         <ActivityProvider>
@@ -100,5 +103,6 @@ export default function MainLayout({
         </ActivityProvider>
       </ClientProvider>
     </ContactProvider>
+    </PricingRequestProvider>
   );
 }
