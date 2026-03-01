@@ -24,6 +24,7 @@ import {
   SearchOutlined,
   UserOutlined,
   DollarOutlined,
+  UserSwitchOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import useStyles from "./style";
@@ -41,6 +42,7 @@ import {
 } from "../../providers/contactsProvider";
 import withAuth from "@/app/hoc/withAuth";
 import { useUserState } from "@/app/providers/userProvider";
+import { getAxiosInstance } from "@/app/utils/axiosInstance";
 
 const { Text, Title } = Typography;
 
@@ -80,6 +82,17 @@ const CURRENCY_OPTIONS = [
   { value: "GBP", label: "GBP" },
 ];
 
+// Users who can be assigned opportunities
+const ASSIGNABLE_ROLES = ["SalesRep", "SalesManager", "BusinessDevelopmentManager"];
+
+interface OrgUser {
+  id: string;
+  fullName: string;
+  email: string;
+  roles: string[];
+  isActive: boolean;
+}
+
 const formatCurrency = (value: number, currency: string) =>
   new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -103,17 +116,21 @@ const OpportunitiesPage = () => {
     createOpportunity,
     updateOpportunity,
     moveOpportunityStage,
+    assignOpportunity,
     deleteOpportunity,
   } = useOpportunityActions();
   const { clients, isPending: clientsLoading } = useClientState();
   const { fetchClients, createClient } = useClientActions();
   const { contacts, isPending: contactsLoading } = useContactState();
   const { fetchContacts, createContact } = useContactActions();
+  const { user } = useUserState();
+  const instance = getAxiosInstance();
 
   const [search, setSearch] = useState("");
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [stageModalOpen, setStageModalOpen] = useState(false);
+  const [assignModalOpen, setAssignModalOpen] = useState(false);
   const [dragOverStage, setDragOverStage] = useState<string | null>(null);
   const [pendingStageMove, setPendingStageMove] = useState<{
     id: string;
@@ -126,15 +143,69 @@ const OpportunitiesPage = () => {
   const [addingContact, setAddingContact] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  // Users state for assign modal
+  const [orgUsers, setOrgUsers] = useState<OrgUser[]>([]);
+  const [usersLoading, setUsersLoading] = useState(false);
+  const [userSearch, setUserSearch] = useState("");
+
   const [createForm] = Form.useForm();
   const [updateForm] = Form.useForm();
   const [stageForm] = Form.useForm();
+  const [assignForm] = Form.useForm();
+
+  const isAdminOrManager =
+    user?.roles?.includes("Admin") || user?.roles?.includes("SalesManager");
 
   useEffect(() => {
     fetchOpportunities();
     fetchClients();
     fetchContacts();
   }, []);
+
+  // ── Fetch org users for assign modal ──────────────────────────────────────
+  const fetchOrgUsers = async (search?: string) => {
+    setUsersLoading(true);
+    try {
+      const params = new URLSearchParams({ pageSize: "100" });
+      if (search) params.append("searchTerm", search);
+      const res = await instance.get(`/api/users?${params.toString()}`);
+      const items: OrgUser[] = (res.data.items ?? []).filter((u: OrgUser) =>
+        u.isActive &&
+        u.roles.some(r => ASSIGNABLE_ROLES.includes(r))
+      );
+      setOrgUsers(items);
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+    } finally {
+      setUsersLoading(false);
+    }
+  };
+
+  const handleOpenAssign = () => {
+    if (!selected) return;
+    assignForm.resetFields();
+
+    fetchOrgUsers();
+    setAssignModalOpen(true);
+  };
+
+  const handleAssign = async (values: { userId: string }) => {
+    if (!selected) return;
+    try {
+      await assignOpportunity(selected.id, values.userId);
+      const assignedUser = orgUsers.find(u => u.id === values.userId);
+      message.success(`Assigned to ${assignedUser?.fullName ?? "user"}`);
+      setAssignModalOpen(false);
+      assignForm.resetFields();
+    } catch (error: any) {
+      message.error(
+        error.response?.data?.detail ||
+          error.response?.data?.title ||
+          "Failed to assign",
+      );
+    }
+  };
 
   const handleClientChange = (clientId: string) => {
     setSelectedClientId(clientId);
@@ -230,7 +301,7 @@ const OpportunitiesPage = () => {
     }
   };
 
-  // --- Drag and drop handlers ---
+  // ── Drag and drop ──────────────────────────────────────────────────────────
   const handleDragStart = (e: React.DragEvent, opportunityId: string) => {
     e.dataTransfer.setData("opportunityId", opportunityId);
     e.dataTransfer.effectAllowed = "move";
@@ -242,18 +313,14 @@ const OpportunitiesPage = () => {
     setDragOverStage(stageName);
   };
 
-  const handleDragLeave = () => {
-    setDragOverStage(null);
-  };
+  const handleDragLeave = () => setDragOverStage(null);
 
   const handleDrop = (e: React.DragEvent, targetStageName: string) => {
     e.preventDefault();
     setDragOverStage(null);
     const opportunityId = e.dataTransfer.getData("opportunityId");
     const opp = opportunities.find((o) => o.id === opportunityId);
-    if (!opp) return;
-    if (opp.stageName === targetStageName) return; // no change
-    // Open reason modal before committing
+    if (!opp || opp.stageName === targetStageName) return;
     setPendingStageMove({
       id: opportunityId,
       stage: STAGE_NUMBERS[targetStageName],
@@ -285,7 +352,7 @@ const OpportunitiesPage = () => {
     }
   };
 
-  // --- Client/Contact inline creation ---
+  // ── Inline client/contact creation ────────────────────────────────────────
   const handleAddClient = async () => {
     if (!clientSearch.trim()) return;
     setAddingClient(true);
@@ -348,9 +415,12 @@ const OpportunitiesPage = () => {
   }, [contacts]);
 
   const clientOptions = clients.map((c) => ({ value: c.id, label: c.name }));
-  const contactOptions = contacts.map((c) => ({
-    value: c.id,
-    label: c.fullName,
+  const contactOptions = contacts.map((c) => ({ value: c.id, label: c.fullName }));
+
+  const userOptions = orgUsers.map((u) => ({
+    value: u.id,
+    label: u.fullName,
+    desc: u.roles.join(", "),
   }));
 
   const contactDropdown = (menu: React.ReactNode) => (
@@ -358,8 +428,7 @@ const OpportunitiesPage = () => {
       {menu}
       {contactSearch.trim() &&
         !contacts.some(
-          (c) =>
-            c.fullName.toLowerCase() === contactSearch.trim().toLowerCase(),
+          (c) => c.fullName.toLowerCase() === contactSearch.trim().toLowerCase(),
         ) && (
           <>
             <Divider style={{ margin: "6px 0" }} />
@@ -378,8 +447,6 @@ const OpportunitiesPage = () => {
         )}
     </>
   );
-
-  const { user } = useUserState();
 
   return (
     <div className={styles.wrapper}>
@@ -433,15 +500,11 @@ const OpportunitiesPage = () => {
                           {opp.probability}%
                         </Tag>
                       </div>
-                      <Text className={styles.clientName}>
-                        {opp.clientName}
-                      </Text>
+                      <Text className={styles.clientName}>{opp.clientName}</Text>
                       {opp.contactName && (
                         <div className={styles.cardRow}>
                           <UserOutlined className={styles.cardIcon} />
-                          <Text className={styles.cardMeta}>
-                            {opp.contactName}
-                          </Text>
+                          <Text className={styles.cardMeta}>{opp.contactName}</Text>
                         </div>
                       )}
                       <div className={styles.cardRow}>
@@ -485,7 +548,20 @@ const OpportunitiesPage = () => {
           Update
         </Button>
 
-        {user?.roles.includes("Admin") && (
+        {/* Assign — Admin & SalesManager only */}
+        {isAdminOrManager && (
+          <Button
+            icon={<UserSwitchOutlined />}
+            className={`${styles.btnAction} ${!selected ? styles.btnDisabled : ""}`}
+            disabled={!selected}
+            onClick={handleOpenAssign}
+          >
+            Assign
+          </Button>
+        )}
+
+        {/* Delete — Admin only */}
+        {user?.roles?.includes("Admin") && (
           <Button
             icon={<DeleteOutlined />}
             className={`${styles.btnAction} ${!selected ? styles.btnDisabled : ""}`}
@@ -496,9 +572,62 @@ const OpportunitiesPage = () => {
             Delete
           </Button>
         )}
-        {/* <Input placeholder="Search..." prefix={<SearchOutlined className={styles.searchIcon} />}
-          className={styles.searchInput} value={search} onChange={e => setSearch(e.target.value)} allowClear /> */}
+
+        <Input
+          placeholder="Search opportunities..."
+          prefix={<SearchOutlined style={{ color: "#555" }} />}
+          className={styles.searchInput}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          allowClear
+        />
       </div>
+
+      {/* ASSIGN MODAL */}
+      <Modal
+        title={`Assign — ${selected?.title ?? ""}`}
+        open={assignModalOpen}
+        onCancel={() => { setAssignModalOpen(false); assignForm.resetFields(); }}
+        onOk={() => assignForm.submit()}
+        okText="Assign"
+        confirmLoading={isPending}
+        okButtonProps={{ style: { background: "#00b86e", borderColor: "#00b86e" } }}
+        width={440}
+      >
+        <Form form={assignForm} layout="vertical" onFinish={handleAssign}>
+          <Form.Item
+            name="userId"
+            label="Assign to"
+            rules={[{ required: true, message: "Please select a user" }]}
+          >
+            <Select
+              showSearch
+              placeholder="Search team members..."
+              loading={usersLoading}
+              onSearch={(val) => { setUserSearch(val); fetchOrgUsers(val); }}
+              filterOption={false}
+              optionLabelProp="label"
+              options={userOptions.map(u => ({
+                value: u.value,
+                label: u.label,
+                desc: u.desc,
+              }))}
+              optionRender={(option) => (
+                <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                  <span style={{ fontWeight: 600, fontSize: "0.85rem" }}>{option.data.label}</span>
+                  <span style={{ fontSize: "0.7rem", color: "#454545" }}>{option.data.desc}</span>
+                </div>
+              )}
+            />
+          </Form.Item>
+        </Form>
+
+        {selected?.ownerName && (
+          <p style={{ color: "#3f3f3f", fontSize: "0.8rem", marginTop: 0 }}>
+            Currently assigned to: <strong style={{ color: "#515151" }}>{selected.ownerName}</strong>
+          </p>
+        )}
+      </Modal>
 
       {/* STAGE MOVE MODAL */}
       <Modal
@@ -511,24 +640,16 @@ const OpportunitiesPage = () => {
         }}
         onOk={() => stageForm.submit()}
         okText="Confirm"
-        okButtonProps={{
-          style: { background: "#00b86e", borderColor: "#00b86e" },
-        }}
+        okButtonProps={{ style: { background: "#00b86e", borderColor: "#00b86e" } }}
         confirmLoading={isPending}
       >
         <Form form={stageForm} layout="vertical" onFinish={handleStageConfirm}>
           <Form.Item name="notes" label="Notes (optional)">
-            <Input.TextArea
-              rows={2}
-              placeholder='e.g. "Proposal sent to client"'
-            />
+            <Input.TextArea rows={2} placeholder='e.g. "Proposal sent to client"' />
           </Form.Item>
           {pendingStageMove?.stageName === "Closed Lost" && (
             <Form.Item name="lossReason" label="Loss Reason">
-              <Input.TextArea
-                rows={2}
-                placeholder='e.g. "Budget constraints"'
-              />
+              <Input.TextArea rows={2} placeholder='e.g. "Budget constraints"' />
             </Form.Item>
           )}
         </Form>
@@ -548,33 +669,18 @@ const OpportunitiesPage = () => {
         onOk={() => createForm.submit()}
         okText="Create"
         confirmLoading={isPending}
-        okButtonProps={{
-          style: { background: "#00b86e", borderColor: "#00b86e" },
-        }}
+        okButtonProps={{ style: { background: "#00b86e", borderColor: "#00b86e" } }}
       >
         <Form
           form={createForm}
           layout="vertical"
           onFinish={handleCreate}
-          initialValues={{
-            currency: "ZAR",
-            stage: 1,
-            source: 0,
-            probability: 50,
-          }}
+          initialValues={{ currency: "ZAR", stage: 1, source: 0, probability: 50 }}
         >
-          <Form.Item
-            name="title"
-            label="Title"
-            rules={[{ required: true, message: "Required" }]}
-          >
+          <Form.Item name="title" label="Title" rules={[{ required: true, message: "Required" }]}>
             <Input placeholder="Opportunity title" />
           </Form.Item>
-          <Form.Item
-            name="clientId"
-            label="Client"
-            rules={[{ required: true, message: "Required" }]}
-          >
+          <Form.Item name="clientId" label="Client" rules={[{ required: true, message: "Required" }]}>
             <Select
               showSearch
               placeholder="Search or create a client"
@@ -584,19 +690,13 @@ const OpportunitiesPage = () => {
               onSearch={setClientSearch}
               onChange={handleClientChange}
               filterOption={(input, option) =>
-                (option?.label ?? "")
-                  .toLowerCase()
-                  .includes(input.toLowerCase())
+                (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
               }
               popupRender={(menu) => (
                 <>
                   {menu}
                   {clientSearch.trim() &&
-                    !clients.some(
-                      (c) =>
-                        c.name.toLowerCase() ===
-                        clientSearch.trim().toLowerCase(),
-                    ) && (
+                    !clients.some((c) => c.name.toLowerCase() === clientSearch.trim().toLowerCase()) && (
                       <>
                         <Divider style={{ margin: "6px 0" }} />
                         <div style={{ padding: "4px 8px" }}>
@@ -605,11 +705,7 @@ const OpportunitiesPage = () => {
                             icon={<PlusOutlined />}
                             loading={addingClient}
                             onClick={handleAddClient}
-                            style={{
-                              width: "100%",
-                              textAlign: "left",
-                              color: "#00b86e",
-                            }}
+                            style={{ width: "100%", textAlign: "left", color: "#00b86e" }}
                           >
                             Add "{clientSearch}"
                           </Button>
@@ -623,20 +719,14 @@ const OpportunitiesPage = () => {
           <Form.Item name="contactId" label="Contact (optional)">
             <Select
               showSearch
-              placeholder={
-                selectedClientId
-                  ? "Search or create a contact"
-                  : "Select a client first"
-              }
+              placeholder={selectedClientId ? "Search or create a contact" : "Select a client first"}
               disabled={!selectedClientId}
               loading={contactsLoading || addingContact}
               options={contactOptions}
               searchValue={contactSearch}
               onSearch={setContactSearch}
               filterOption={(input, option) =>
-                (option?.label ?? "")
-                  .toLowerCase()
-                  .includes(input.toLowerCase())
+                (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
               }
               popupRender={contactDropdown}
             />
@@ -644,11 +734,7 @@ const OpportunitiesPage = () => {
           <Form.Item name="description" label="Description">
             <Input.TextArea rows={2} />
           </Form.Item>
-          <Form.Item
-            name="estimatedValue"
-            label="Estimated Value"
-            rules={[{ required: true, message: "Required" }]}
-          >
+          <Form.Item name="estimatedValue" label="Estimated Value" rules={[{ required: true, message: "Required" }]}>
             <InputNumber style={{ width: "100%" }} min={0} />
           </Form.Item>
           <Form.Item name="currency" label="Currency">
@@ -663,11 +749,7 @@ const OpportunitiesPage = () => {
           <Form.Item name="probability" label="Probability (%)">
             <InputNumber style={{ width: "100%" }} min={0} max={100} />
           </Form.Item>
-          <Form.Item
-            name="expectedCloseDate"
-            label="Expected Close Date"
-            rules={[{ required: true, message: "Required" }]}
-          >
+          <Form.Item name="expectedCloseDate" label="Expected Close Date" rules={[{ required: true, message: "Required" }]}>
             <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
           </Form.Item>
         </Form>
@@ -677,23 +759,14 @@ const OpportunitiesPage = () => {
       <Modal
         title={`Update — ${selected?.title ?? ""}`}
         open={updateModalOpen}
-        onCancel={() => {
-          setUpdateModalOpen(false);
-          updateForm.resetFields();
-        }}
+        onCancel={() => { setUpdateModalOpen(false); updateForm.resetFields(); }}
         onOk={() => updateForm.submit()}
         okText="Save"
         confirmLoading={isPending}
-        okButtonProps={{
-          style: { background: "#00b86e", borderColor: "#00b86e" },
-        }}
+        okButtonProps={{ style: { background: "#00b86e", borderColor: "#00b86e" } }}
       >
         <Form form={updateForm} layout="vertical" onFinish={handleUpdate}>
-          <Form.Item
-            name="title"
-            label="Title"
-            rules={[{ required: true, message: "Required" }]}
-          >
+          <Form.Item name="title" label="Title" rules={[{ required: true, message: "Required" }]}>
             <Input />
           </Form.Item>
           <Form.Item name="contactId" label="Contact (optional)">
@@ -706,9 +779,7 @@ const OpportunitiesPage = () => {
               searchValue={contactSearch}
               onSearch={setContactSearch}
               filterOption={(input, option) =>
-                (option?.label ?? "")
-                  .toLowerCase()
-                  .includes(input.toLowerCase())
+                (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
               }
               popupRender={contactDropdown}
             />
@@ -716,11 +787,7 @@ const OpportunitiesPage = () => {
           <Form.Item name="description" label="Description">
             <Input.TextArea rows={2} />
           </Form.Item>
-          <Form.Item
-            name="estimatedValue"
-            label="Estimated Value"
-            rules={[{ required: true, message: "Required" }]}
-          >
+          <Form.Item name="estimatedValue" label="Estimated Value" rules={[{ required: true, message: "Required" }]}>
             <InputNumber style={{ width: "100%" }} min={0} />
           </Form.Item>
           <Form.Item name="currency" label="Currency">
@@ -732,17 +799,13 @@ const OpportunitiesPage = () => {
           <Form.Item name="probability" label="Probability (%)">
             <InputNumber style={{ width: "100%" }} min={0} max={100} />
           </Form.Item>
-          <Form.Item
-            name="expectedCloseDate"
-            label="Expected Close Date"
-            rules={[{ required: true, message: "Required" }]}
-          >
+          <Form.Item name="expectedCloseDate" label="Expected Close Date" rules={[{ required: true, message: "Required" }]}>
             <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
           </Form.Item>
         </Form>
       </Modal>
 
-      {/* DELETE CONFIRMATION MODAL */}
+      {/* DELETE MODAL */}
       <Modal
         title="Delete Opportunity"
         open={deleteModalOpen}
@@ -752,12 +815,8 @@ const OpportunitiesPage = () => {
         okButtonProps={{ danger: true, loading: isPending }}
         cancelText="Cancel"
       >
-        <p>
-          Are you sure you want to delete <strong>"{selected?.title}"</strong>?
-        </p>
-        <p style={{ color: "#888", fontSize: "0.85rem" }}>
-          This action cannot be undone.
-        </p>
+        <p>Are you sure you want to delete <strong>"{selected?.title}"</strong>?</p>
+        <p style={{ color: "#888", fontSize: "0.85rem" }}>This action cannot be undone.</p>
       </Modal>
     </div>
   );

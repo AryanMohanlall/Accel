@@ -40,6 +40,7 @@ export interface IOpportunityActionContext {
     lossReason?: string,
   ) => Promise<void>;
   deleteOpportunity: (id: string) => Promise<void>;
+  assignOpportunity: (id: string, userId: string) => Promise<void>;
 }
 
 export const INITIAL_OPPORTUNITY_STATE: IOpportunityStateContext = {
