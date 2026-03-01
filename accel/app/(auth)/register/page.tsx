@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -20,21 +21,9 @@ const ROLE_OPTIONS = [
 type Scenario = "new" | "join" | "default";
 
 const SCENARIOS: { value: Scenario; label: string; icon: React.ReactNode }[] = [
-  {
-    value: "new",
-    label: "New Organisation",
-    icon: <PlusCircleOutlined />,
-  },
-  {
-    value: "join",
-    label: "Join Organisation",
-    icon: <TeamOutlined />,
-  },
-  {
-    value: "default",
-    label: "Default Tenant",
-    icon: <AppstoreOutlined />,
-  },
+  { value: "new", label: "New Organisation", icon: <PlusCircleOutlined /> },
+  { value: "join", label: "Join Organisation", icon: <TeamOutlined /> },
+  { value: "default", label: "Default Tenant", icon: <AppstoreOutlined /> },
 ];
 
 const Register = () => {
@@ -43,17 +32,19 @@ const Register = () => {
   const searchParams = useSearchParams();
   const { register } = useUserActions();
   const { isPending, isSuccess, isError } = useUserState();
-  const [scenario, setScenario] = useState<Scenario>("new");
   const [form] = Form.useForm();
 
+  const tenantIdFromLink = searchParams.get("tenantId");
+  const [scenario, setScenario] = useState<Scenario>(
+    tenantIdFromLink ? "join" : "new"
+  );
+
   useEffect(() => {
-    const tenantIdFromLink = searchParams.get("tenantId");
     if (tenantIdFromLink) {
-      setScenario("join");
       form.setFieldsValue({ tenantId: tenantIdFromLink, role: "SalesRep" });
       message.info("Tenant ID pre-filled from your invitation link.");
     }
-  }, [searchParams, form]);
+  }, [tenantIdFromLink, form]);
 
   useEffect(() => {
     if (isSuccess) {
